@@ -1956,74 +1956,74 @@
                     <h5 style="color: var(--text-primary); margin-bottom: 10px;">3. Create the Client Script</h5>
                     <p style="color: var(--text-secondary); margin-bottom: 10px;">Create a file named <code style="background: rgba(139, 92, 246, 0.1); padding: 2px 8px; border-radius: 4px;">laptop_client.py</code> with the following content:</p>
                     <div style="background: rgba(10, 10, 15, 0.8); border: 1px solid var(--border-purple); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 11px; max-height: 300px; overflow-y: auto; margin-bottom: 10px;">
-                        import socketio<br>
-                        import aiohttp<br>
-                        import asyncio<br>
-                        import psutil<br>
-                        import platform<br>
-                        import socket<br>
-                        import uuid<br>
-                        import os<br>
-                        from datetime import datetime<br>
-                        <br>
-                        SERVER_URL = "YOUR_BACKEND_URL"  # e.g., "http://localhost:8000" or your deployed URL<br>
-                        WORKER_NAME = "My-Laptop"  # Change to your preferred name<br>
-                        <br>
-                        async def main():<br>
-                            sio = socketio.AsyncClient()<br>
-                            <br>
-                            @sio.event<br>
-                            async def connect():<br>
-                                print("✅ Connected to server!")<br>
-                                <br>
-                                # Register as worker<br>
-                                await sio.emit('worker_register', {{<br>
-                                    'name': WORKER_NAME,<br>
-                                    'hostname': socket.gethostname(),<br>
-                                    'platform': platform.system(),<br>
-                                    'cpu_count': psutil.cpu_count(),<br>
-                                    'total_memory': psutil.virtual_memory().total,<br>
-                                    'username': os.getlogin()<br>
-                                }})<br>
-                                <br>
-                            @sio.event<br>
-                            async def disconnect():<br>
-                                print("❌ Disconnected from server")<br>
-                                <br>
-                            @sio.on('deploy_bot_to_worker')<br>
-                            async def on_deploy_bot(data):<br>
-                                print(f"📦 Received bot deployment: {{data.get('name')}}")<br>
-                                <br>
-                            @sio.on('start_bot_on_worker')<br>
-                            async def on_start_bot(data):<br>
-                                print(f"▶️ Starting bot: {{data.get('bot_id')}}")<br>
-                                <br>
-                            @sio.on('stop_bot_on_worker')<br>
-                            async def on_stop_bot(data):<br>
-                                print(f"⏹️ Stopping bot: {{data.get('bot_id')}}")<br>
-                                <br>
-                            try:<br>
-                                await sio.connect(SERVER_URL, socketio_path='socket.io')<br>
-                                <br>
-                                # Send heartbeat every 10 seconds<br>
-                                while True:<br>
-                                    await sio.emit('worker_heartbeat', {{<br>
-                                        'name': WORKER_NAME,<br>
-                                        'status': 'online',<br>
-                                        'stats': {{<br>
-                                            'cpu': psutil.cpu_percent(interval=1),<br>
-                                            'memory_percent': psutil.virtual_memory().percent,<br>
-                                            'running_bots': []<br>
-                                        }},<br>
-                                        'last_seen': datetime.now().isoformat()<br>
-                                    }})<br>
-                                    await asyncio.sleep(10)<br>
-                                <br>
-                            except Exception as e:<br>
-                                print(f"❌ Connection failed: {{e}}")<br>
-                        <br>
-                        if __name__ == "__main__":<br>
-                            asyncio.run(main())<br>
+import socketio<br>
+import aiohttp<br>
+import asyncio<br>
+import psutil<br>
+import platform<br>
+import socket<br>
+import uuid<br>
+import os<br>
+from datetime import datetime<br>
+<br>
+SERVER_URL = "YOUR_BACKEND_URL"  # e.g., "http://localhost:8000" or your deployed URL<br>
+WORKER_NAME = "My-Laptop"  # Change to your preferred name<br>
+<br>
+async def main():<br>
+    sio = socketio.AsyncClient()<br>
+    <br>
+    @sio.event<br>
+    async def connect():<br>
+        print("✅ Connected to server!")<br>
+        <br>
+        # Register as worker<br>
+        await sio.emit('worker_register', {<br>
+            'name': WORKER_NAME,<br>
+            'hostname': socket.gethostname(),<br>
+            'platform': platform.system(),<br>
+            'cpu_count': psutil.cpu_count(),<br>
+            'total_memory': psutil.virtual_memory().total,<br>
+            'username': os.getlogin()<br>
+        })<br>
+        <br>
+    @sio.event<br>
+    async def disconnect():<br>
+        print("❌ Disconnected from server")<br>
+        <br>
+    @sio.on('deploy_bot_to_worker')<br>
+    async def on_deploy_bot(data):<br>
+        print(f"📦 Received bot deployment: {data.get('name')}")<br>
+        <br>
+    @sio.on('start_bot_on_worker')<br>
+    async def on_start_bot(data):<br>
+        print(f"▶️ Starting bot: {data.get('bot_id')}")<br>
+        <br>
+    @sio.on('stop_bot_on_worker')<br>
+    async def on_stop_bot(data):<br>
+        print(f"⏹️ Stopping bot: {data.get('bot_id')}")<br>
+        <br>
+    try:<br>
+        await sio.connect(SERVER_URL, socketio_path='socket.io')<br>
+        <br>
+        # Send heartbeat every 10 seconds<br>
+        while True:<br>
+            await sio.emit('worker_heartbeat', {<br>
+                'name': WORKER_NAME,<br>
+                'status': 'online',<br>
+                'stats': {<br>
+                    'cpu': psutil.cpu_percent(interval=1),<br>
+                    'memory_percent': psutil.virtual_memory().percent,<br>
+                    'running_bots': []<br>
+                },<br>
+                'last_seen': datetime.now().isoformat()<br>
+            })<br>
+            await asyncio.sleep(10)<br>
+        <br>
+    except Exception as e:<br>
+        print(f"❌ Connection failed: {e}")<br>
+<br>
+if __name__ == "__main__":<br>
+    asyncio.run(main())<br>
                     </div>
                     <p style="color: var(--text-secondary); font-size: 0.875rem;">Replace <code>YOUR_BACKEND_URL</code> with your actual backend URL</p>
                 </div>
@@ -2120,7 +2120,7 @@
             });
         }
         
-        // WebSocket Connection
+        // WebSocket Connection - UPDATED VERSION
         function connectWebSocket() {
             if (socket && socket.connected) {
                 socket.disconnect();
@@ -2140,8 +2140,8 @@
                 showNotification('Connected to server', 'success');
                 
                 // Request initial data
-                socket.emit('get_bots');
-                socket.emit('get_laptops');
+                socket.emit('get_bots', {});  // Send empty object to match backend expectation
+                socket.emit('get_laptops', {});
             });
             
             socket.on('disconnect', () => {
@@ -2155,9 +2155,11 @@
             
             socket.on('bots_list', (data) => {
                 bots = {};
-                data.bots.forEach(bot => {
-                    bots[bot.id] = bot;
-                });
+                if (data.bots && Array.isArray(data.bots)) {
+                    data.bots.forEach(bot => {
+                        bots[bot.id] = bot;
+                    });
+                }
                 
                 renderBots();
                 updateStats();
@@ -2166,7 +2168,7 @@
             
             socket.on('laptops_list', (data) => {
                 laptops = {};
-                if (data.laptops) {
+                if (data.laptops && Array.isArray(data.laptops)) {
                     data.laptops.forEach(laptop => {
                         laptops[laptop.id] = laptop;
                     });
@@ -2178,15 +2180,17 @@
             });
             
             socket.on('bot_update', (data) => {
-                updateBot(data.bot);
-                logToSystem(`[INFO] Bot ${data.bot.name || data.bot.id} status updated: ${data.bot.status}`);
+                if (data.bot && data.bot.id) {
+                    updateBot(data.bot);
+                    logToSystem(`[INFO] Bot ${data.bot.name || data.bot.id} status updated: ${data.bot.status}`);
+                }
             });
             
             socket.on('bot_deployed', (data) => {
                 showNotification('Bot deployed successfully!', 'success');
                 logToSystem(`[INFO] Bot deployed: ${data.bot.name}`);
                 closeModal('uploadModal');
-                socket.emit('get_bots');
+                socket.emit('get_bots', {});
             });
             
             socket.on('bot_started', (data) => {
@@ -2204,16 +2208,36 @@
                 showNotification('Bot restarted', 'info');
             });
             
-            socket.on('worker_connected', (data) => {
+            socket.on('bot_deleted', (data) => {
+                logToSystem(`[INFO] Bot deleted: ${data.bot_id}`);
+                delete bots[data.bot_id];
+                renderBots();
+                updateStats();
+                showNotification('Bot deleted', 'info');
+            });
+            
+            socket.on('worker_registered', (data) => {
                 logToSystem(`[INFO] Laptop connected: ${data.worker.name}`);
                 showNotification(`Laptop connected: ${data.worker.name}`, 'info');
-                socket.emit('get_laptops');
+                socket.emit('get_laptops', {});
             });
             
             socket.on('worker_disconnected', (data) => {
                 logToSystem(`[WARNING] Laptop disconnected: ${data.name}`);
                 showNotification(`Laptop disconnected: ${data.name}`, 'warning');
-                socket.emit('get_laptops');
+                socket.emit('get_laptops', {});
+            });
+            
+            socket.on('worker_heartbeat', (data) => {
+                if (data.workers && Array.isArray(data.workers)) {
+                    laptops = {};
+                    data.workers.forEach(worker => {
+                        laptops[worker.id] = worker;
+                    });
+                    updateLaptopUI();
+                    updateLaptopDropdown();
+                    updateStats();
+                }
             });
             
             socket.on('error', (data) => {
@@ -2223,7 +2247,7 @@
             
             socket.on('bot_log', (data) => {
                 if (currentBotDetails === data.bot_id) {
-                    updateBotLogsRealTime(data.log);
+                    updateBotLogsRealTime(data.message || data.log);
                 }
             });
         }
@@ -2293,7 +2317,7 @@
             logsContainer.scrollTop = logsContainer.scrollHeight;
         }
         
-        // Load bots via REST API
+        // Load bots via REST API - UPDATED
         async function loadBots() {
             try {
                 const response = await fetch(`${API_URL}/bots`);
@@ -2301,9 +2325,11 @@
                 
                 const data = await response.json();
                 bots = {};
-                data.bots.forEach(bot => {
-                    bots[bot.id] = bot;
-                });
+                if (data.bots && Array.isArray(data.bots)) {
+                    data.bots.forEach(bot => {
+                        bots[bot.id] = bot;
+                    });
+                }
                 
                 renderBots();
                 updateStats();
@@ -2315,23 +2341,23 @@
             }
         }
         
-        // Load laptops via REST API
+        // Load laptops via REST API - UPDATED to use /api/workers
         async function loadLaptops() {
             try {
-                const response = await fetch(`${API_URL}/laptops`);
+                const response = await fetch(`${API_URL}/workers`);
                 if (!response.ok) {
-                    // Try to get from WebSocket
+                    // Try WebSocket
                     if (socket && socket.connected) {
-                        socket.emit('get_laptops');
+                        socket.emit('get_laptops', {});
                     }
                     return;
                 }
                 
                 const data = await response.json();
                 laptops = {};
-                if (data.laptops) {
-                    data.laptops.forEach(laptop => {
-                        laptops[laptop.id] = laptop;
+                if (data.workers && Array.isArray(data.workers)) {
+                    data.workers.forEach(worker => {
+                        laptops[worker.id] = worker;
                     });
                 }
                 
@@ -2343,19 +2369,21 @@
                 console.log('Laptops API error:', error.message);
                 // Try WebSocket
                 if (socket && socket.connected) {
-                    socket.emit('get_laptops');
+                    socket.emit('get_laptops', {});
                 }
             }
         }
         
         // Update bot
         function updateBot(bot) {
-            bots[bot.id] = bot;
-            renderBots();
-            updateStats();
-            
-            if (currentBotDetails === bot.id) {
-                updateBotDetails(bot);
+            if (bot && bot.id) {
+                bots[bot.id] = bot;
+                renderBots();
+                updateStats();
+                
+                if (currentBotDetails === bot.id) {
+                    updateBotDetails(bot);
+                }
             }
         }
         
@@ -2377,17 +2405,22 @@
             allEmpty.style.display = 'none';
             recentEmpty.style.display = 'none';
             
+            // Sort bots by creation date (newest first)
+            const sortedBots = Object.values(bots).sort((a, b) => {
+                return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+            });
+            
             // Render all bots
             allContainer.innerHTML = '';
-            Object.values(bots).forEach((bot, index) => {
+            sortedBots.forEach((bot, index) => {
                 const botCard = createBotCard(bot);
                 botCard.style.animationDelay = `${index * 0.1}s`;
                 allContainer.appendChild(botCard);
             });
             
-            // Render recent bots (last 4)
+            // Render recent bots (first 4)
             recentContainer.innerHTML = '';
-            const recentBots = Object.values(bots).slice(-4);
+            const recentBots = sortedBots.slice(0, 4);
             recentBots.forEach((bot, index) => {
                 const botCard = createBotCard(bot);
                 botCard.style.animationDelay = `${index * 0.1}s`;
@@ -2398,29 +2431,29 @@
             document.getElementById('botCount').textContent = Object.keys(bots).length;
         }
         
-        // Create bot card
+        // Create bot card - IMPROVED
         function createBotCard(bot) {
             const div = document.createElement('div');
             div.className = 'bot-card';
             div.id = `bot-card-${bot.id}`;
             
-            const statusClass = `status-${bot.status}`;
+            const statusClass = `status-${bot.status || 'stopped'}`;
             const laptopName = bot.worker_id ? `Laptop-${bot.worker_id.substring(0, 8)}` : 'Not assigned';
             
             div.innerHTML = `
                 <div class="bot-header">
                     <div class="bot-info">
                         <div class="bot-name">
-                            <i class="bi bi-robot"></i> ${bot.name}
+                            <i class="bi bi-robot"></i> ${bot.name || 'Unnamed Bot'}
                         </div>
-                        <div class="bot-id">ID: ${bot.id.substring(0, 16)}...</div>
+                        <div class="bot-id">ID: ${(bot.id || 'N/A').substring(0, 16)}...</div>
                         <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">
                             <i class="bi bi-laptop"></i> ${laptopName}
                         </div>
                     </div>
                     <span class="bot-status-badge ${statusClass}">
                         <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i>
-                        ${bot.status}
+                        ${bot.status || 'stopped'}
                     </span>
                 </div>
                 
@@ -2472,7 +2505,7 @@
             return div;
         }
         
-        // Bot control functions
+        // Bot control functions - UPDATED
         function startBot(botId) {
             if (socket && socket.connected) {
                 socket.emit('start_bot', { bot_id: botId });
@@ -2505,20 +2538,33 @@
             }
         }
         
-        // Show bot details
+        function deleteBot(botId) {
+            if (confirm('Are you sure you want to delete this bot? This action cannot be undone.')) {
+                if (socket && socket.connected) {
+                    socket.emit('delete_bot', { bot_id: botId });
+                    logToSystem(`[INFO] Deleting bot: ${botId}`);
+                    showNotification('Deleting bot...', 'info');
+                    closeModal('botDetailsModal');
+                } else {
+                    showNotification('Not connected to server', 'error');
+                }
+            }
+        }
+        
+        // Show bot details - UPDATED
         function showBotDetails(botId) {
             const bot = bots[botId];
             if (!bot) return;
             
             currentBotDetails = botId;
             
-            document.getElementById('detailsBotName').textContent = bot.name;
-            document.getElementById('detailsStatus').className = `bot-status-badge status-${bot.status}`;
-            document.getElementById('detailsStatus').innerHTML = `<i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> ${bot.status}`;
+            document.getElementById('detailsBotName').textContent = bot.name || 'Unnamed Bot';
+            document.getElementById('detailsStatus').className = `bot-status-badge status-${bot.status || 'stopped'}`;
+            document.getElementById('detailsStatus').innerHTML = `<i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> ${bot.status || 'stopped'}`;
             document.getElementById('detailsUptime').textContent = bot.uptime || '0s';
             document.getElementById('detailsCpu').textContent = `${(bot.cpu || 0).toFixed(1)}%`;
             document.getElementById('detailsMemory').textContent = `${(bot.memory || 0).toFixed(1)} MB`;
-            document.getElementById('detailsBotId').textContent = bot.id;
+            document.getElementById('detailsBotId').textContent = bot.id || 'N/A';
             
             const laptopInfo = bot.worker_id ? `Laptop-${bot.worker_id.substring(0, 8)}` : 'Not assigned';
             document.getElementById('detailsLaptop').textContent = laptopInfo;
@@ -2534,6 +2580,9 @@
                 <button class="btn btn-warning" onclick="restartBot('${botId}')">
                     <i class="bi bi-arrow-clockwise"></i> Restart
                 </button>
+                <button class="btn btn-danger" onclick="deleteBot('${botId}')">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
             `;
             
             // Update logs
@@ -2542,48 +2591,53 @@
             showModal('botDetailsModal');
         }
         
-        // Update bot details
+        // Update bot details - UPDATED
         function updateBotDetails(bot) {
             if (currentBotDetails !== bot.id) return;
             
-            document.getElementById('detailsStatus').className = `bot-status-badge status-${bot.status}`;
-            document.getElementById('detailsStatus').innerHTML = `<i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> ${bot.status}`;
+            document.getElementById('detailsStatus').className = `bot-status-badge status-${bot.status || 'stopped'}`;
+            document.getElementById('detailsStatus').innerHTML = `<i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> ${bot.status || 'stopped'}`;
             document.getElementById('detailsUptime').textContent = bot.uptime || '0s';
             document.getElementById('detailsCpu').textContent = `${(bot.cpu || 0).toFixed(1)}%`;
             document.getElementById('detailsMemory').textContent = `${(bot.memory || 0).toFixed(1)} MB`;
-            
-            // Update logs
-            updateBotLogs(bot);
         }
         
-        // Update bot logs
+        // Update bot logs - IMPROVED
         function updateBotLogs(bot) {
             const logsContainer = document.getElementById('detailsLogs');
             if (!logsContainer) return;
             
             logsContainer.innerHTML = '';
             
-            const logs = bot.logs || [];
-            if (logs.length === 0) {
-                logsContainer.innerHTML = '<div class="log-line">No logs available</div>';
-                return;
-            }
-            
-            logs.forEach(log => {
-                const logLine = document.createElement('div');
-                logLine.className = 'log-line';
-                
-                if (typeof log === 'string') {
-                    logLine.textContent = log;
-                } else if (log.message) {
-                    const timestamp = new Date(log.timestamp || Date.now()).toLocaleTimeString();
-                    logLine.textContent = `[${timestamp}] ${log.message}`;
-                }
-                
-                logsContainer.appendChild(logLine);
-            });
-            
-            logsContainer.scrollTop = logsContainer.scrollHeight;
+            // Try to fetch logs from API
+            fetch(`${API_URL}/bot/${bot.id}/logs?limit=50`)
+                .then(response => response.json())
+                .then(data => {
+                    const logs = data.logs || bot.logs || [];
+                    if (logs.length === 0) {
+                        logsContainer.innerHTML = '<div class="log-line">No logs available</div>';
+                        return;
+                    }
+                    
+                    logs.forEach(log => {
+                        const logLine = document.createElement('div');
+                        logLine.className = 'log-line';
+                        
+                        if (typeof log === 'string') {
+                            logLine.textContent = log;
+                        } else if (log.message) {
+                            const timestamp = new Date(log.timestamp || Date.now()).toLocaleTimeString();
+                            logLine.textContent = `[${timestamp}] ${log.message}`;
+                        }
+                        
+                        logsContainer.appendChild(logLine);
+                    });
+                    
+                    logsContainer.scrollTop = logsContainer.scrollHeight;
+                })
+                .catch(error => {
+                    logsContainer.innerHTML = '<div class="log-line">Unable to load logs</div>';
+                });
         }
         
         // Update bot logs in real-time
@@ -2599,6 +2653,9 @@
             } else if (log.message) {
                 const timestamp = new Date(log.timestamp || Date.now()).toLocaleTimeString();
                 logLine.textContent = `[${timestamp}] ${log.message}`;
+            } else {
+                const timestamp = new Date().toLocaleTimeString();
+                logLine.textContent = `[${timestamp}] ${log}`;
             }
             
             logsContainer.appendChild(logLine);
@@ -2661,15 +2718,15 @@
             });
         }
         
-        // Create laptop card
+        // Create laptop card - IMPROVED
         function createLaptopCard(laptop, detailed = false) {
             const div = document.createElement('div');
             div.className = 'laptop-card';
             
             const statusClass = laptop.status === 'online' ? 'online' : 'offline';
-            const platformIcon = laptop.platform === 'linux' ? 'bi-ubuntu' : 
-                               laptop.platform === 'windows' ? 'bi-windows' : 
-                               laptop.platform === 'darwin' ? 'bi-apple' : 'bi-laptop';
+            const platformIcon = laptop.platform === 'Linux' ? 'bi-ubuntu' : 
+                               laptop.platform === 'Windows' ? 'bi-windows' : 
+                               laptop.platform === 'Darwin' ? 'bi-apple' : 'bi-laptop';
             
             const stats = laptop.stats || {};
             const cpuPercent = stats.cpu || 0;
@@ -2678,7 +2735,7 @@
             div.innerHTML = `
                 <div class="laptop-header">
                     <div class="laptop-name">
-                        <i class="bi ${platformIcon}"></i> ${laptop.name}
+                        <i class="bi ${platformIcon}"></i> ${laptop.name || 'Unnamed Laptop'}
                     </div>
                     <span class="laptop-status ${statusClass}">
                         ${laptop.status === 'online' ? 'Online' : 'Offline'}
@@ -2705,7 +2762,7 @@
                     ${detailed ? `
                     <div class="laptop-detail">
                         <span class="laptop-detail-label">Last Seen:</span>
-                        <span class="laptop-detail-value">${new Date(laptop.last_seen).toLocaleTimeString()}</span>
+                        <span class="laptop-detail-value">${new Date(laptop.last_seen || Date.now()).toLocaleTimeString()}</span>
                     </div>
                     ` : ''}
                 </div>
@@ -2729,13 +2786,13 @@
                 if (laptop.status === 'online') {
                     const option = document.createElement('option');
                     option.value = laptop.id;
-                    option.textContent = `${laptop.name} (${laptop.id.substring(0, 8)}...)`;
+                    option.textContent = `${laptop.name || 'Unnamed'} (${laptop.id ? laptop.id.substring(0, 8) : 'N/A'}...)`;
                     dropdown.appendChild(option);
                 }
             });
         }
         
-        // Switch section - FIXED VERSION
+        // Switch section
         function switchSection(section) {
             // Hide all sections
             document.querySelectorAll('.content-section').forEach(el => {
@@ -2999,7 +3056,7 @@ VERSION=latest`;
             showNotification('Example config loaded', 'info');
         }
         
-        // Deploy bot
+        // Deploy bot - UPDATED
         async function deployBot() {
             const botName = document.getElementById('botName').value.trim();
             const botType = document.getElementById('botType').value;
