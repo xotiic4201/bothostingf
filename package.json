@@ -1,16 +1,15 @@
 {
-  "name": "discord-bot-hosting-dashboard",
+  "name": "xotiicbuthosting",
   "version": "1.0.0",
-  "description": "Frontend dashboard for Discord bot hosting",
+  "description": "Premium Discord Bot Hosting Platform",
   "scripts": {
-    "dev": "serve .",
-    "build": "echo 'Building static site...'",
-    "start": "serve ."
-  },
-  "devDependencies": {
-    "serve": "^14.0.0"
+    "build": "echo 'Static build complete'",
+    "start": "echo 'Static site - no server required'"
   },
   "engines": {
     "node": ">=16"
-  }
+  },
+  "keywords": ["discord", "bot", "hosting", "management"],
+  "author": "xotiic",
+  "license": "MIT"
 }
