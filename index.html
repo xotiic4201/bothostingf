@@ -127,7 +127,7 @@
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, var(--accent-purple), var(--primary-purple);
+            background: linear-gradient(180deg, var(--accent-purple), var(--primary-purple));
         }
         
         /* Login Screen */
@@ -195,7 +195,7 @@
             content: '';
             position: absolute;
             inset: -2px;
-            background: linear-gradient(45deg, var(--primary-purple), var(--accent-purple), var(--primary-purple);
+            background: linear-gradient(45deg, var(--primary-purple), var(--accent-purple), var(--primary-purple));
             border-radius: 20px;
             z-index: -1;
             opacity: 0.5;
@@ -210,7 +210,7 @@
         .login-logo h1 {
             font-size: 2rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-light), var(--accent-purple);
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -381,7 +381,7 @@
             content: '';
             position: absolute;
             inset: -2px;
-            background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple);
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
             border-radius: 12px;
             z-index: -1;
             opacity: 0.3;
@@ -391,7 +391,7 @@
         .sidebar-brand .brand-text h4 {
             font-size: 1.25rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-light), var(--accent-purple);
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 0;
@@ -542,7 +542,7 @@
             font-size: 1.75rem;
             font-weight: 800;
             margin: 0;
-            background: linear-gradient(135deg, var(--text-primary), var(--primary-light);
+            background: linear-gradient(135deg, var(--text-primary), var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -658,7 +658,7 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple);
+            background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple));
         }
         
         .stat-card:hover {
@@ -698,7 +698,7 @@
         .stat-value {
             font-size: 2.25rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--text-primary), var(--primary-light);
+            background: linear-gradient(135deg, var(--text-primary), var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1;
@@ -888,7 +888,7 @@
         
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple);
+            background: linear-gradient(90deg, var(--primary-purple), var(--accent-purple));
             border-radius: 3px;
             transition: width 0.5s ease;
             position: relative;
@@ -931,7 +931,7 @@
             content: '';
             position: absolute;
             inset: -10px;
-            background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple);
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-purple));
             border-radius: 50%;
             opacity: 0.1;
             filter: blur(20px);
@@ -1188,14 +1188,14 @@
             color: var(--text-secondary);
         }
         
-        /* Workers Grid */
-        .workers-grid {
+        /* Laptops Grid */
+        .laptops-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
         
-        .worker-card {
+        .laptop-card {
             background: linear-gradient(135deg, rgba(26, 26, 46, 0.4), rgba(20, 20, 31, 0.6));
             border: 1px solid var(--border-purple);
             border-radius: 16px;
@@ -1203,20 +1203,20 @@
             transition: all 0.3s ease;
         }
         
-        .worker-card:hover {
+        .laptop-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
             border-color: var(--primary-purple);
         }
         
-        .worker-header {
+        .laptop-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
         
-        .worker-name {
+        .laptop-name {
             font-size: 1.125rem;
             font-weight: 600;
             color: var(--text-primary);
@@ -1225,43 +1225,43 @@
             gap: 10px;
         }
         
-        .worker-name i {
+        .laptop-name i {
             color: var(--primary-purple);
         }
         
-        .worker-status {
+        .laptop-status {
             font-size: 0.75rem;
             padding: 4px 8px;
             border-radius: 12px;
             font-weight: 600;
         }
         
-        .worker-status.online {
+        .laptop-status.online {
             background: rgba(16, 185, 129, 0.15);
             color: var(--success);
         }
         
-        .worker-status.offline {
+        .laptop-status.offline {
             background: rgba(239, 68, 68, 0.15);
             color: var(--danger);
         }
         
-        .worker-details {
+        .laptop-details {
             margin-bottom: 16px;
         }
         
-        .worker-detail {
+        .laptop-detail {
             display: flex;
             justify-content: space-between;
             margin-bottom: 8px;
             font-size: 0.875rem;
         }
         
-        .worker-detail-label {
+        .laptop-detail-label {
             color: var(--text-secondary);
         }
         
-        .worker-detail-value {
+        .laptop-detail-value {
             color: var(--text-primary);
             font-weight: 500;
         }
@@ -1412,10 +1412,10 @@
                         <span>My Bots</span>
                         <span class="menu-badge" id="botCount">0</span>
                     </div>
-                    <div class="menu-item" onclick="switchSection('workers')">
+                    <div class="menu-item" onclick="switchSection('laptops')">
                         <i class="bi bi-laptop"></i>
-                        <span>Workers</span>
-                        <span class="menu-badge" id="workerCount">0</span>
+                        <span>Laptops</span>
+                        <span class="menu-badge" id="laptopCount">0</span>
                     </div>
                     <div class="menu-item" onclick="showUploadModal()">
                         <i class="bi bi-plus-circle-fill"></i>
@@ -1455,8 +1455,8 @@
                         <p>Monitor and manage your Discord bots</p>
                     </div>
                     <div class="top-bar-actions">
-                        <button class="btn btn-secondary" onclick="loadBots()">
-                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        <button class="btn btn-secondary" onclick="refreshAll()">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh All
                         </button>
                         <button class="btn btn-primary" onclick="showUploadModal()">
                             <i class="bi bi-plus-lg"></i> Deploy New Bot
@@ -1492,8 +1492,8 @@
                                 <i class="bi bi-laptop"></i>
                             </div>
                         </div>
-                        <div class="stat-label">Active Workers</div>
-                        <div class="stat-value" id="activeWorkers">0</div>
+                        <div class="stat-label">Active Laptops</div>
+                        <div class="stat-value" id="activeLaptops">0</div>
                     </div>
                     
                     <div class="stat-card">
@@ -1535,29 +1535,29 @@
                     </div>
                 </div>
                 
-                <!-- Connected Workers -->
+                <!-- Connected Laptops -->
                 <div class="content-section">
                     <div class="section-header">
                         <div class="section-title">
                             <i class="bi bi-laptop"></i>
-                            Connected Workers
+                            Connected Laptops
                         </div>
-                        <button class="btn btn-secondary" onclick="switchSection('workers')">
-                            <i class="bi bi-arrow-right"></i> Manage Workers
+                        <button class="btn btn-secondary" onclick="switchSection('laptops')">
+                            <i class="bi bi-arrow-right"></i> Manage Laptops
                         </button>
                     </div>
                     
-                    <div class="workers-grid" id="connectedWorkers">
-                        <!-- Connected workers will be added here -->
+                    <div class="laptops-grid" id="connectedLaptops">
+                        <!-- Connected laptops will be added here -->
                     </div>
                     
-                    <div class="empty-state" id="workersEmpty">
+                    <div class="empty-state" id="laptopsEmpty">
                         <div class="empty-icon">
                             <i class="bi bi-laptop"></i>
                         </div>
-                        <h3>No Workers Connected</h3>
-                        <p>Connect a laptop/PC to start hosting bots</p>
-                        <button class="btn btn-primary" onclick="showWorkerInstructions()">
+                        <h3>No Laptops Connected</h3>
+                        <p>Connect a laptop to start hosting bots</p>
+                        <button class="btn btn-primary" onclick="showLaptopInstructions()">
                             <i class="bi bi-info-circle"></i> How to Connect
                         </button>
                     </div>
@@ -1590,47 +1590,47 @@
                         <i class="bi bi-robot"></i>
                     </div>
                     <h3>No Bots Deployed Yet</h3>
-                        <p>Get started by deploying your first Discord bot</p>
-                        <button class="btn btn-primary" onclick="showUploadModal()">
-                            <i class="bi bi-rocket-takeoff"></i> Deploy Your First Bot
-                        </button>
+                    <p>Get started by deploying your first Discord bot</p>
+                    <button class="btn btn-primary" onclick="showUploadModal()">
+                        <i class="bi bi-rocket-takeoff"></i> Deploy Your First Bot
+                    </button>
                 </div>
             </div>
             
-            <!-- Workers Section -->
-            <div class="content-section" id="workersSection" style="display: none;">
+            <!-- Laptops Section -->
+            <div class="content-section" id="laptopsSection" style="display: none;">
                 <div class="section-header">
                     <div class="section-title">
                         <i class="bi bi-laptop"></i>
-                        Connected Workers
+                        Connected Laptops
                     </div>
                     <div class="top-bar-actions">
-                        <button class="btn btn-secondary" onclick="loadWorkers()">
+                        <button class="btn btn-secondary" onclick="loadLaptops()">
                             <i class="bi bi-arrow-clockwise"></i> Refresh
                         </button>
-                        <button class="btn btn-info" onclick="showWorkerInstructions()">
+                        <button class="btn btn-info" onclick="showLaptopInstructions()">
                             <i class="bi bi-info-circle"></i> How to Connect
                         </button>
                     </div>
                 </div>
                 
-                <div class="workers-grid" id="workersContainer">
-                    <!-- All workers will be added here -->
+                <div class="laptops-grid" id="laptopsContainer">
+                    <!-- All laptops will be added here -->
                 </div>
                 
-                <div class="empty-state" id="workersSectionEmpty">
+                <div class="empty-state" id="laptopsSectionEmpty">
                     <div class="empty-icon">
                         <i class="bi bi-laptop"></i>
                     </div>
-                    <h3>No Workers Connected</h3>
-                    <p>To connect a laptop/PC:</p>
+                    <h3>No Laptops Connected</h3>
+                    <p>To connect a laptop:</p>
                     <ol style="text-align: left; margin: 20px 0; color: var(--text-secondary);">
-                        <li style="margin-bottom: 10px;">Install Python 3.8+ on the computer</li>
+                        <li style="margin-bottom: 10px;">Install Python 3.8+ on the laptop</li>
                         <li style="margin-bottom: 10px;">Install required packages: <code style="background: rgba(139, 92, 246, 0.1); padding: 2px 8px; border-radius: 4px;">pip install python-socketio aiohttp psutil</code></li>
-                        <li style="margin-bottom: 10px;">Run the worker client script</li>
-                        <li>The worker will automatically appear here</li>
+                        <li style="margin-bottom: 10px;">Run the laptop_client.py script</li>
+                        <li>The laptop will automatically appear here</li>
                     </ol>
-                    <button class="btn btn-primary" onclick="showWorkerInstructions()">
+                    <button class="btn btn-primary" onclick="showLaptopInstructions()">
                         <i class="bi bi-info-circle"></i> View Detailed Instructions
                     </button>
                 </div>
@@ -1643,9 +1643,14 @@
                         <i class="bi bi-file-text-fill"></i>
                         System Logs
                     </div>
-                    <button class="btn btn-secondary" onclick="clearLogs()">
-                        <i class="bi bi-trash"></i> Clear Logs
-                    </button>
+                    <div class="top-bar-actions">
+                        <button class="btn btn-secondary" onclick="clearLogs()">
+                            <i class="bi bi-trash"></i> Clear Logs
+                        </button>
+                        <button class="btn btn-info" onclick="exportLogs()">
+                            <i class="bi bi-download"></i> Export Logs
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="log-container" id="systemLogs">
@@ -1685,6 +1690,20 @@
                 </div>
                 
                 <div class="form-group">
+                    <label class="form-label">Theme Settings</label>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="darkMode" checked>
+                            <span>Dark Mode</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="animations" checked>
+                            <span>Enable Animations</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
                     <label class="form-label">Notification Settings</label>
                     <div style="display: flex; flex-direction: column; gap: 10px;">
                         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
@@ -1698,6 +1717,10 @@
                         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                             <input type="checkbox" id="notifyErrors" checked>
                             <span>Notify on errors</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="notifyLaptops" checked>
+                            <span>Notify when laptops connect/disconnect</span>
                         </label>
                     </div>
                 </div>
@@ -1794,10 +1817,10 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Target Worker (Optional)</label>
-                    <select class="form-select" id="targetWorker">
-                        <option value="">Auto-assign (Any available worker)</option>
-                        <!-- Worker options will be added dynamically -->
+                    <label class="form-label">Target Laptop (Optional)</label>
+                    <select class="form-select" id="targetLaptop">
+                        <option value="">Auto-assign (Any available laptop)</option>
+                        <!-- Laptop options will be added dynamically -->
                     </select>
                 </div>
             </div>
@@ -1847,8 +1870,8 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Worker</label>
-                    <div id="detailsWorker" style="padding: 10px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; font-family: monospace; font-size: 0.875rem;">
+                    <label class="form-label">Laptop</label>
+                    <div id="detailsLaptop" style="padding: 10px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; font-family: monospace; font-size: 0.875rem;">
                         Not assigned
                     </div>
                 </div>
@@ -1924,12 +1947,12 @@
         </div>
     </div>
     
-    <!-- Worker Instructions Modal -->
-    <div class="modal" id="workerInstructionsModal">
+    <!-- Laptop Instructions Modal -->
+    <div class="modal" id="laptopInstructionsModal">
         <div class="modal-dialog" style="max-width: 800px;">
             <div class="modal-header">
-                <h2 class="modal-title">How to Connect a Worker (Laptop/PC)</h2>
-                <div class="modal-close" onclick="closeModal('workerInstructionsModal')">
+                <h2 class="modal-title">How to Connect a Laptop</h2>
+                <div class="modal-close" onclick="closeModal('laptopInstructionsModal')">
                     <i class="bi bi-x-lg"></i>
                 </div>
             </div>
@@ -1937,11 +1960,10 @@
                 <h4 style="color: var(--primary-light); margin-bottom: 20px;">📋 Step-by-Step Instructions:</h4>
                 
                 <div style="margin-bottom: 30px;">
-                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">1. Prepare the Computer</h5>
+                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">1. Prepare the Laptop</h5>
                     <ul style="color: var(--text-secondary); margin-left: 20px;">
                         <li>Install Python 3.8 or higher</li>
                         <li>Make sure you have pip (Python package manager)</li>
-                        <li>Ensure the computer is connected to the same network as your server</li>
                     </ul>
                 </div>
                 
@@ -1954,103 +1976,100 @@
                 </div>
                 
                 <div style="margin-bottom: 30px;">
-                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">3. Create the Worker Script</h5>
-                    <p style="color: var(--text-secondary); margin-bottom: 10px;">Create a file named <code style="background: rgba(139, 92, 246, 0.1); padding: 2px 8px; border-radius: 4px;">worker_client.py</code> with the following content:</p>
+                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">3. Create the Client Script</h5>
+                    <p style="color: var(--text-secondary); margin-bottom: 10px;">Create a file named <code style="background: rgba(139, 92, 246, 0.1); padding: 2px 8px; border-radius: 4px;">laptop_client.py</code> with the following content:</p>
                     <div style="background: rgba(10, 10, 15, 0.8); border: 1px solid var(--border-purple); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 11px; max-height: 300px; overflow-y: auto; margin-bottom: 10px;">
-                        import socketio<br>
-                        import aiohttp<br>
-                        import asyncio<br>
-                        import psutil<br>
-                        import platform<br>
-                        import socket<br>
-                        import uuid<br>
-                        import os<br>
-                        from datetime import datetime<br>
-                        <br>
-                        SERVER_URL = "YOUR_BACKEND_URL"  # e.g., "http://localhost:8000" or your deployed URL<br>
-                        WORKER_NAME = "My-Computer"  # Change to your preferred name<br>
-                        <br>
-                        async def main():<br>
-                            sio = socketio.AsyncClient()<br>
-                            <br>
-                            @sio.event<br>
-                            async def connect():<br>
-                                print("✅ Connected to server!")<br>
-                                <br>
-                                # Register as worker<br>
-                                await sio.emit('worker_register', {{<br>
-                                    'id': str(uuid.uuid4()),<br>
-                                    'name': WORKER_NAME,<br>
-                                    'hostname': socket.gethostname(),<br>
-                                    'platform': platform.system(),<br>
-                                    'cpu_count': psutil.cpu_count(),<br>
-                                    'total_memory': psutil.virtual_memory().total,<br>
-                                    'username': os.getlogin()<br>
-                                }})<br>
-                                <br>
-                            @sio.event<br>
-                            async def disconnect():<br>
-                                print("❌ Disconnected from server")<br>
-                                <br>
-                            @sio.on('deploy_bot_to_worker')<br>
-                            async def on_deploy_bot(data):<br>
-                                print(f"📦 Received bot deployment: {{data.get('name')}}")<br>
-                                # Add your bot deployment logic here<br>
-                                <br>
-                            @sio.on('start_bot_on_worker')<br>
-                            async def on_start_bot(data):<br>
-                                print(f"▶️ Starting bot: {{data.get('bot_id')}}")<br>
-                                <br>
-                            @sio.on('stop_bot_on_worker')<br>
-                            async def on_stop_bot(data):<br>
-                                print(f"⏹️ Stopping bot: {{data.get('bot_id')}}")<br>
-                                <br>
-                            try:<br>
-                                await sio.connect(SERVER_URL, socketio_path='socket.io')<br>
-                                <br>
-                                # Send heartbeat every 10 seconds<br>
-                                while True:<br>
-                                    await sio.emit('worker_heartbeat', {{<br>
-                                        'id': WORKER_NAME,<br>
-                                        'status': 'online',<br>
-                                        'stats': {{<br>
-                                            'cpu': psutil.cpu_percent(interval=1),<br>
-                                            'memory_percent': psutil.virtual_memory().percent,<br>
-                                            'running_bots': []<br>
-                                        }},<br>
-                                        'last_seen': datetime.now().isoformat()<br>
-                                    }})<br>
-                                    await asyncio.sleep(10)<br>
-                                <br>
-                            except Exception as e:<br>
-                                print(f"❌ Connection failed: {{e}}")<br>
-                        <br>
-                        if __name__ == "__main__":<br>
-                            asyncio.run(main())<br>
+import socketio<br>
+import aiohttp<br>
+import asyncio<br>
+import psutil<br>
+import platform<br>
+import socket<br>
+import uuid<br>
+import os<br>
+from datetime import datetime<br>
+<br>
+SERVER_URL = "YOUR_BACKEND_URL"  # e.g., "http://localhost:8000" or your deployed URL<br>
+WORKER_NAME = "My-Laptop"  # Change to your preferred name<br>
+<br>
+async def main():<br>
+    sio = socketio.AsyncClient()<br>
+    <br>
+    @sio.event<br>
+    async def connect():<br>
+        print("✅ Connected to server!")<br>
+        <br>
+        # Register as worker<br>
+        await sio.emit('worker_register', {<br>
+            'name': WORKER_NAME,<br>
+            'hostname': socket.gethostname(),<br>
+            'platform': platform.system(),<br>
+            'cpu_count': psutil.cpu_count(),<br>
+            'total_memory': psutil.virtual_memory().total,<br>
+            'username': os.getlogin()<br>
+        })<br>
+        <br>
+    @sio.event<br>
+    async def disconnect():<br>
+        print("❌ Disconnected from server")<br>
+        <br>
+    @sio.on('deploy_bot_to_worker')<br>
+    async def on_deploy_bot(data):<br>
+        print(f"📦 Received bot deployment: {data.get('name')}")<br>
+        <br>
+    @sio.on('start_bot_on_worker')<br>
+    async def on_start_bot(data):<br>
+        print(f"▶️ Starting bot: {data.get('bot_id')}")<br>
+        <br>
+    @sio.on('stop_bot_on_worker')<br>
+    async def on_stop_bot(data):<br>
+        print(f"⏹️ Stopping bot: {data.get('bot_id')}")<br>
+        <br>
+    try:<br>
+        await sio.connect(SERVER_URL, socketio_path='socket.io')<br>
+        <br>
+        # Send heartbeat every 10 seconds<br>
+        while True:<br>
+            await sio.emit('worker_heartbeat', {<br>
+                'name': WORKER_NAME,<br>
+                'status': 'online',<br>
+                'stats': {<br>
+                    'cpu': psutil.cpu_percent(interval=1),<br>
+                    'memory_percent': psutil.virtual_memory().percent,<br>
+                    'running_bots': []<br>
+                },<br>
+                'last_seen': datetime.now().isoformat()<br>
+            })<br>
+            await asyncio.sleep(10)<br>
+        <br>
+    except Exception as e:<br>
+        print(f"❌ Connection failed: {e}")<br>
+<br>
+if __name__ == "__main__":<br>
+    asyncio.run(main())<br>
                     </div>
                     <p style="color: var(--text-secondary); font-size: 0.875rem;">Replace <code>YOUR_BACKEND_URL</code> with your actual backend URL</p>
                 </div>
                 
                 <div style="margin-bottom: 30px;">
-                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">4. Run the Worker Client</h5>
+                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">4. Run the Client</h5>
                     <div style="background: rgba(10, 10, 15, 0.8); border: 1px solid var(--border-purple); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; margin-bottom: 10px;">
-                        python worker_client.py
+                        python laptop_client.py
                     </div>
-                    <p style="color: var(--text-secondary); font-size: 0.875rem;">The computer will automatically connect and appear in your dashboard as a worker</p>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;">The laptop will automatically connect and appear in your dashboard</p>
                 </div>
                 
                 <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid var(--border-purple); border-radius: 8px; padding: 12px;">
                     <h6 style="color: var(--primary-light); margin-bottom: 8px;">💡 Tips:</h6>
                     <ul style="color: var(--text-secondary); font-size: 0.875rem; margin-left: 20px;">
-                        <li>You can run this on multiple computers/laptops</li>
-                        <li>The worker will automatically reconnect if connection is lost</li>
-                        <li>Bots deployed to workers will run even when you close the dashboard</li>
-                        <li>For Windows, you might need to run as Administrator</li>
+                        <li>You can run this on multiple computers</li>
+                        <li>The laptop will automatically reconnect if connection is lost</li>
+                        <li>Bots deployed to laptops will run even when you close the dashboard</li>
                     </ul>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeModal('workerInstructionsModal')">
+                <button class="btn btn-primary" onclick="closeModal('laptopInstructionsModal')">
                     <i class="bi bi-check-lg"></i> Got it!
                 </button>
             </div>
@@ -2059,17 +2078,18 @@
     
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script>
-        // Configuration
-        let SERVER_URL = localStorage.getItem('serverUrl') || 'http://localhost:8000';
+        // ============= CONFIGURATION =============
+        let SERVER_URL = localStorage.getItem('serverUrl') || window.location.origin;
         const API_URL = `${SERVER_URL}/api`;
         let socket = null;
         let bots = {};
-        let workers = {};
+        let laptops = {};
         let currentBotDetails = null;
         let isAuthenticated = false;
         let refreshInterval = null;
-        
-        // Login function
+        let autoLoginAttempted = false;
+
+        // ============= LOGIN FUNCTIONS =============
         function attemptLogin() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -2089,12 +2109,12 @@
                 errorElement.style.display = 'block';
             }
         }
-        
-        // Initialize dashboard
+
+        // ============= DASHBOARD INITIALIZATION =============
         function initializeDashboard() {
             connectWebSocket();
             loadBots();
-            loadWorkers();
+            loadLaptops();
             setupDragAndDrop();
             setupEventListeners();
             setupModalEventListeners();
@@ -2104,8 +2124,7 @@
             const interval = parseInt(localStorage.getItem('refreshInterval') || '10000');
             startAutoRefresh(interval);
         }
-        
-        // Setup modal event listeners
+
         function setupModalEventListeners() {
             // Close modal when clicking outside
             document.addEventListener('click', function(event) {
@@ -2123,8 +2142,8 @@
                 }
             });
         }
-        
-        // WebSocket Connection
+
+        // ============= WEBSOCKET FUNCTIONS =============
         function connectWebSocket() {
             if (socket && socket.connected) {
                 socket.disconnect();
@@ -2145,7 +2164,7 @@
                 
                 // Request initial data
                 socket.emit('get_bots');
-                socket.emit('worker_heartbeat', { action: 'get_workers' });
+                socket.emit('get_laptops');
             });
             
             socket.on('disconnect', () => {
@@ -2159,7 +2178,7 @@
             
             socket.on('bots_list', (data) => {
                 bots = {};
-                if (data.bots) {
+                if (data.bots && Array.isArray(data.bots)) {
                     data.bots.forEach(bot => {
                         bots[bot.id] = bot;
                     });
@@ -2167,50 +2186,19 @@
                 
                 renderBots();
                 updateStats();
-                updateWorkerDropdown();
+                updateLaptopDropdown();
             });
             
-            socket.on('workers_list', (data) => {
-                workers = {};
-                if (data.workers) {
-                    data.workers.forEach(worker => {
-                        workers[worker.id] = worker;
+            socket.on('laptops_list', (data) => {
+                laptops = {};
+                if (data.laptops && Array.isArray(data.laptops)) {
+                    data.laptops.forEach(laptop => {
+                        laptops[laptop.id] = laptop;
                     });
                 }
                 
-                updateWorkerUI();
-                updateWorkerDropdown();
-                updateStats();
-            });
-            
-            socket.on('worker_registered', (data) => {
-                logToSystem(`[INFO] Worker registered: ${data.worker.name}`);
-                showNotification(`Worker connected: ${data.worker.name}`, 'info');
-                
-                // Update workers list
-                workers[data.worker.id] = data.worker;
-                updateWorkerUI();
-                updateWorkerDropdown();
-                updateStats();
-            });
-            
-            socket.on('worker_heartbeat', (data) => {
-                if (data.workers) {
-                    workers = {};
-                    data.workers.forEach(worker => {
-                        workers[worker.id] = worker;
-                    });
-                    updateWorkerUI();
-                    updateWorkerDropdown();
-                    updateStats();
-                }
-            });
-            
-            socket.on('worker_disconnected', (data) => {
-                logToSystem(`[WARNING] Worker disconnected: ${data.worker_id}`);
-                delete workers[data.worker_id];
-                updateWorkerUI();
-                updateWorkerDropdown();
+                updateLaptopUI();
+                updateLaptopDropdown();
                 updateStats();
             });
             
@@ -2225,13 +2213,7 @@
                 showNotification('Bot deployed successfully!', 'success');
                 logToSystem(`[INFO] Bot deployed: ${data.bot.name}`);
                 closeModal('uploadModal');
-                
-                // Add to bots list
-                if (data.bot && data.bot.id) {
-                    bots[data.bot.id] = data.bot;
-                    renderBots();
-                    updateStats();
-                }
+                socket.emit('get_bots');
             });
             
             socket.on('bot_started', (data) => {
@@ -2257,9 +2239,27 @@
                 showNotification('Bot deleted', 'info');
             });
             
-            socket.on('bot_log', (data) => {
-                if (currentBotDetails === data.bot_id) {
-                    updateBotLogsRealTime(data.message);
+            socket.on('worker_registered', (data) => {
+                logToSystem(`[INFO] Laptop connected: ${data.worker.name}`);
+                showNotification(`Laptop connected: ${data.worker.name}`, 'info');
+                socket.emit('get_laptops');
+            });
+            
+            socket.on('worker_disconnected', (data) => {
+                logToSystem(`[WARNING] Laptop disconnected: ${data.name}`);
+                showNotification(`Laptop disconnected: ${data.name}`, 'warning');
+                socket.emit('get_laptops');
+            });
+            
+            socket.on('worker_heartbeat', (data) => {
+                if (data.workers && Array.isArray(data.workers)) {
+                    laptops = {};
+                    data.workers.forEach(worker => {
+                        laptops[worker.id] = worker;
+                    });
+                    updateLaptopUI();
+                    updateLaptopDropdown();
+                    updateStats();
                 }
             });
             
@@ -2267,9 +2267,14 @@
                 logToSystem(`[ERROR] ${data.message}`);
                 showNotification(`Error: ${data.message}`, 'error');
             });
+            
+            socket.on('bot_log', (data) => {
+                if (currentBotDetails === data.bot_id) {
+                    updateBotLogsRealTime(data.log);
+                }
+            });
         }
-        
-        // Update connection status
+
         function updateConnectionStatus(connected) {
             const statusDot = document.getElementById('statusDot');
             const connectionText = document.getElementById('connectionText');
@@ -2282,13 +2287,19 @@
                 connectionText.textContent = 'Disconnected';
             }
         }
-        
-        // Show notification
+
+        // ============= NOTIFICATION FUNCTIONS =============
         function showNotification(message, type = 'info') {
             // Check if notifications are enabled for this type
-            if (type === 'info' && !document.getElementById('notifyBotStart')?.checked) return;
-            if (type === 'warning' && !document.getElementById('notifyBotStop')?.checked) return;
-            if (type === 'error' && !document.getElementById('notifyErrors')?.checked) return;
+            const notifyBotStart = document.getElementById('notifyBotStart');
+            const notifyBotStop = document.getElementById('notifyBotStop');
+            const notifyErrors = document.getElementById('notifyErrors');
+            const notifyLaptops = document.getElementById('notifyLaptops');
+            
+            if (type === 'success' && notifyBotStart && !notifyBotStart.checked) return;
+            if (type === 'warning' && notifyBotStop && !notifyBotStop.checked) return;
+            if (type === 'error' && notifyErrors && !notifyErrors.checked) return;
+            if (type === 'info' && notifyLaptops && !notifyLaptops.checked) return;
             
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
@@ -2319,8 +2330,8 @@
                 setTimeout(() => notification.remove(), 300);
             }, 5000);
         }
-        
-        // System log
+
+        // ============= LOG FUNCTIONS =============
         function logToSystem(message) {
             const logsContainer = document.getElementById('systemLogs');
             const logLine = document.createElement('div');
@@ -2333,8 +2344,25 @@
             logsContainer.appendChild(logLine);
             logsContainer.scrollTop = logsContainer.scrollHeight;
         }
-        
-        // Load bots via REST API
+
+        function clearLogs() {
+            document.getElementById('systemLogs').innerHTML = '<div class="log-line">[INFO] Logs cleared</div>';
+            showNotification('Logs cleared', 'info');
+        }
+
+        function exportLogs() {
+            const logs = document.getElementById('systemLogs').innerText;
+            const blob = new Blob([logs], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `system-logs-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('Logs exported', 'success');
+        }
+
+        // ============= BOT MANAGEMENT FUNCTIONS =============
         async function loadBots() {
             try {
                 const response = await fetch(`${API_URL}/bots`);
@@ -2342,7 +2370,7 @@
                 
                 const data = await response.json();
                 bots = {};
-                if (data.bots) {
+                if (data.bots && Array.isArray(data.bots)) {
                     data.bots.forEach(bot => {
                         bots[bot.id] = bot;
                     });
@@ -2357,52 +2385,19 @@
                 logToSystem(`[ERROR] Failed to load bots: ${error.message}`);
             }
         }
-        
-        // Load workers via REST API
-        async function loadWorkers() {
-            try {
-                const response = await fetch(`${API_URL}/workers`);
-                if (!response.ok) {
-                    // If API fails, try via WebSocket
-                    if (socket && socket.connected) {
-                        socket.emit('worker_heartbeat', { action: 'get_workers' });
-                    }
-                    return;
-                }
-                
-                const data = await response.json();
-                workers = {};
-                if (data.workers) {
-                    data.workers.forEach(worker => {
-                        workers[worker.id] = worker;
-                    });
-                }
-                
-                updateWorkerUI();
-                updateWorkerDropdown();
+
+        function updateBot(bot) {
+            if (bot && bot.id) {
+                bots[bot.id] = bot;
+                renderBots();
                 updateStats();
                 
-            } catch (error) {
-                console.log('Workers API error:', error.message);
-                // Try WebSocket
-                if (socket && socket.connected) {
-                    socket.emit('worker_heartbeat', { action: 'get_workers' });
+                if (currentBotDetails === bot.id) {
+                    updateBotDetails(bot);
                 }
             }
         }
-        
-        // Update bot
-        function updateBot(bot) {
-            bots[bot.id] = bot;
-            renderBots();
-            updateStats();
-            
-            if (currentBotDetails === bot.id) {
-                updateBotDetails(bot);
-            }
-        }
-        
-        // Render bots
+
         function renderBots() {
             const allContainer = document.getElementById('botsContainer');
             const recentContainer = document.getElementById('recentBotsContainer');
@@ -2445,15 +2440,14 @@
             // Update bot count
             document.getElementById('botCount').textContent = Object.keys(bots).length;
         }
-        
-        // Create bot card
+
         function createBotCard(bot) {
             const div = document.createElement('div');
             div.className = 'bot-card';
             div.id = `bot-card-${bot.id}`;
             
             const statusClass = `status-${bot.status || 'stopped'}`;
-            const workerName = bot.worker_id ? `Worker-${bot.worker_id.substring(0, 8)}` : 'Not assigned';
+            const laptopName = bot.worker_id ? `Laptop-${bot.worker_id.substring(0, 8)}` : 'Not assigned';
             
             div.innerHTML = `
                 <div class="bot-header">
@@ -2463,7 +2457,7 @@
                         </div>
                         <div class="bot-id">ID: ${(bot.id || 'N/A').substring(0, 16)}...</div>
                         <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">
-                            <i class="bi bi-laptop"></i> ${workerName}
+                            <i class="bi bi-laptop"></i> ${laptopName}
                         </div>
                     </div>
                     <span class="bot-status-badge ${statusClass}">
@@ -2519,8 +2513,7 @@
             
             return div;
         }
-        
-        // Bot control functions
+
         function startBot(botId) {
             if (socket && socket.connected) {
                 socket.emit('start_bot', { bot_id: botId });
@@ -2530,7 +2523,7 @@
                 showNotification('Not connected to server', 'error');
             }
         }
-        
+
         function stopBot(botId) {
             if (confirm('Are you sure you want to stop this bot?')) {
                 if (socket && socket.connected) {
@@ -2542,7 +2535,7 @@
                 }
             }
         }
-        
+
         function restartBot(botId) {
             if (socket && socket.connected) {
                 socket.emit('restart_bot', { bot_id: botId });
@@ -2552,8 +2545,20 @@
                 showNotification('Not connected to server', 'error');
             }
         }
-        
-        // Show bot details
+
+        function deleteBot(botId) {
+            if (confirm('Are you sure you want to delete this bot? This action cannot be undone.')) {
+                if (socket && socket.connected) {
+                    socket.emit('delete_bot', { bot_id: botId });
+                    logToSystem(`[INFO] Deleting bot: ${botId}`);
+                    showNotification('Deleting bot...', 'info');
+                    closeModal('botDetailsModal');
+                } else {
+                    showNotification('Not connected to server', 'error');
+                }
+            }
+        }
+
         function showBotDetails(botId) {
             const bot = bots[botId];
             if (!bot) return;
@@ -2568,8 +2573,8 @@
             document.getElementById('detailsMemory').textContent = `${(bot.memory || 0).toFixed(1)} MB`;
             document.getElementById('detailsBotId').textContent = bot.id || 'N/A';
             
-            const workerInfo = bot.worker_id ? `Worker-${bot.worker_id.substring(0, 8)}` : 'Not assigned';
-            document.getElementById('detailsWorker').textContent = workerInfo;
+            const laptopInfo = bot.worker_id ? `Laptop-${bot.worker_id.substring(0, 8)}` : 'Not assigned';
+            document.getElementById('detailsLaptop').textContent = laptopInfo;
             
             const actionsContainer = document.getElementById('detailsActions');
             actionsContainer.innerHTML = `
@@ -2592,22 +2597,7 @@
             
             showModal('botDetailsModal');
         }
-        
-        // Delete bot
-        function deleteBot(botId) {
-            if (confirm('Are you sure you want to delete this bot? This action cannot be undone.')) {
-                if (socket && socket.connected) {
-                    socket.emit('delete_bot', { bot_id: botId });
-                    logToSystem(`[INFO] Deleting bot: ${botId}`);
-                    showNotification('Deleting bot...', 'info');
-                    closeModal('botDetailsModal');
-                } else {
-                    showNotification('Not connected to server', 'error');
-                }
-            }
-        }
-        
-        // Update bot details
+
         function updateBotDetails(bot) {
             if (currentBotDetails !== bot.id) return;
             
@@ -2617,8 +2607,7 @@
             document.getElementById('detailsCpu').textContent = `${(bot.cpu || 0).toFixed(1)}%`;
             document.getElementById('detailsMemory').textContent = `${(bot.memory || 0).toFixed(1)} MB`;
         }
-        
-        // Update bot logs
+
         function updateBotLogs(bot) {
             const logsContainer = document.getElementById('detailsLogs');
             if (!logsContainer) return;
@@ -2647,8 +2636,7 @@
             
             logsContainer.scrollTop = logsContainer.scrollHeight;
         }
-        
-        // Update bot logs in real-time
+
         function updateBotLogsRealTime(log) {
             const logsContainer = document.getElementById('detailsLogs');
             if (!logsContainer) return;
@@ -2666,13 +2654,167 @@
             logsContainer.appendChild(logLine);
             logsContainer.scrollTop = logsContainer.scrollHeight;
         }
-        
-        // Update stats
+
+        function clearBotLogs() {
+            document.getElementById('detailsLogs').innerHTML = '<div class="log-line">Logs cleared</div>';
+            showNotification('Bot logs cleared', 'info');
+        }
+
+        function downloadBotLogs() {
+            const logs = document.getElementById('detailsLogs').innerText;
+            const blob = new Blob([logs], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bot-logs-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('Logs downloaded', 'success');
+        }
+
+        // ============= LAPTOP MANAGEMENT FUNCTIONS =============
+        async function loadLaptops() {
+            try {
+                const response = await fetch(`${API_URL}/workers`);
+                if (!response.ok) {
+                    // If API fails, try via WebSocket
+                    if (socket && socket.connected) {
+                        socket.emit('get_laptops');
+                    }
+                    return;
+                }
+                
+                const data = await response.json();
+                laptops = {};
+                if (data.workers && Array.isArray(data.workers)) {
+                    data.workers.forEach(laptop => {
+                        laptops[laptop.id] = laptop;
+                    });
+                }
+                
+                updateLaptopUI();
+                updateLaptopDropdown();
+                updateStats();
+                
+            } catch (error) {
+                console.log('Laptops API error:', error.message);
+                // Try WebSocket
+                if (socket && socket.connected) {
+                    socket.emit('get_laptops');
+                }
+            }
+        }
+
+        function updateLaptopUI() {
+            const container = document.getElementById('connectedLaptops');
+            const sectionContainer = document.getElementById('laptopsContainer');
+            const emptyState = document.getElementById('laptopsEmpty');
+            const sectionEmpty = document.getElementById('laptopsSectionEmpty');
+            
+            if (Object.keys(laptops).length === 0) {
+                container.innerHTML = '';
+                sectionContainer.innerHTML = '';
+                emptyState.style.display = 'block';
+                sectionEmpty.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            sectionEmpty.style.display = 'none';
+            
+            // Render to dashboard (only online laptops)
+            container.innerHTML = '';
+            Object.values(laptops).forEach(laptop => {
+                if (laptop.status === 'online') {
+                    container.appendChild(createLaptopCard(laptop, false));
+                }
+            });
+            
+            // Render to laptops section (all laptops)
+            sectionContainer.innerHTML = '';
+            Object.values(laptops).forEach(laptop => {
+                sectionContainer.appendChild(createLaptopCard(laptop, true));
+            });
+        }
+
+        function createLaptopCard(laptop, detailed = false) {
+            const div = document.createElement('div');
+            div.className = 'laptop-card';
+            
+            const statusClass = laptop.status === 'online' ? 'online' : 'offline';
+            const platformIcon = laptop.platform === 'Linux' ? 'bi-ubuntu' : 
+                               laptop.platform === 'Windows' ? 'bi-windows' : 
+                               laptop.platform === 'Darwin' ? 'bi-apple' : 'bi-laptop';
+            
+            const stats = laptop.stats || {};
+            const cpuPercent = stats.cpu || 0;
+            const memoryPercent = stats.memory_percent || 0;
+            
+            div.innerHTML = `
+                <div class="laptop-header">
+                    <div class="laptop-name">
+                        <i class="bi ${platformIcon}"></i> ${laptop.name || 'Unnamed Laptop'}
+                    </div>
+                    <span class="laptop-status ${statusClass}">
+                        ${laptop.status === 'online' ? 'Online' : 'Offline'}
+                    </span>
+                </div>
+                
+                <div class="laptop-details">
+                    <div class="laptop-detail">
+                        <span class="laptop-detail-label">Hostname:</span>
+                        <span class="laptop-detail-value">${laptop.hostname || 'N/A'}</span>
+                    </div>
+                    <div class="laptop-detail">
+                        <span class="laptop-detail-label">Platform:</span>
+                        <span class="laptop-detail-value">${laptop.platform || 'Unknown'}</span>
+                    </div>
+                    <div class="laptop-detail">
+                        <span class="laptop-detail-label">CPU:</span>
+                        <span class="laptop-detail-value">${cpuPercent.toFixed(1)}%</span>
+                    </div>
+                    <div class="laptop-detail">
+                        <span class="laptop-detail-label">Memory:</span>
+                        <span class="laptop-detail-value">${memoryPercent.toFixed(1)}%</span>
+                    </div>
+                    ${detailed ? `
+                    <div class="laptop-detail">
+                        <span class="laptop-detail-label">Last Seen:</span>
+                        <span class="laptop-detail-value">${new Date(laptop.last_seen || Date.now()).toLocaleTimeString()}</span>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            return div;
+        }
+
+        function updateLaptopDropdown() {
+            const dropdown = document.getElementById('targetLaptop');
+            if (!dropdown) return;
+            
+            // Clear existing options except the first
+            while (dropdown.options.length > 1) {
+                dropdown.remove(1);
+            }
+            
+            // Add laptop options (only online laptops)
+            Object.values(laptops).forEach(laptop => {
+                if (laptop.status === 'online') {
+                    const option = document.createElement('option');
+                    option.value = laptop.id;
+                    option.textContent = `${laptop.name} (${laptop.id ? laptop.id.substring(0, 8) : 'N/A'}...)`;
+                    dropdown.appendChild(option);
+                }
+            });
+        }
+
+        // ============= STATS FUNCTIONS =============
         function updateStats() {
             const total = Object.keys(bots).length;
             const running = Object.values(bots).filter(b => b.status === 'running').length;
-            const workerCount = Object.keys(workers).length;
-            const onlineWorkers = Object.values(workers).filter(w => w.status === 'online').length;
+            const laptopCount = Object.keys(laptops).length;
+            const onlineLaptops = Object.values(laptops).filter(l => l.status === 'online').length;
             
             let totalCpu = 0;
             let totalMemory = 0;
@@ -2684,120 +2826,13 @@
             
             document.getElementById('totalBots').textContent = total;
             document.getElementById('runningBots').textContent = running;
-            document.getElementById('activeWorkers').textContent = onlineWorkers;
+            document.getElementById('activeLaptops').textContent = onlineLaptops;
             document.getElementById('totalCpu').textContent = `${totalCpu.toFixed(1)}%`;
             document.getElementById('botCount').textContent = total;
-            document.getElementById('workerCount').textContent = workerCount;
+            document.getElementById('laptopCount').textContent = laptopCount;
         }
-        
-        // Update worker UI
-        function updateWorkerUI() {
-            const container = document.getElementById('connectedWorkers');
-            const sectionContainer = document.getElementById('workersContainer');
-            const emptyState = document.getElementById('workersEmpty');
-            const sectionEmpty = document.getElementById('workersSectionEmpty');
-            
-            if (Object.keys(workers).length === 0) {
-                container.innerHTML = '';
-                sectionContainer.innerHTML = '';
-                emptyState.style.display = 'block';
-                sectionEmpty.style.display = 'block';
-                return;
-            }
-            
-            emptyState.style.display = 'none';
-            sectionEmpty.style.display = 'none';
-            
-            // Render to dashboard (only online workers)
-            container.innerHTML = '';
-            Object.values(workers).forEach(worker => {
-                if (worker.status === 'online') {
-                    container.appendChild(createWorkerCard(worker, false));
-                }
-            });
-            
-            // Render to workers section (all workers)
-            sectionContainer.innerHTML = '';
-            Object.values(workers).forEach(worker => {
-                sectionContainer.appendChild(createWorkerCard(worker, true));
-            });
-        }
-        
-        // Create worker card
-        function createWorkerCard(worker, detailed = false) {
-            const div = document.createElement('div');
-            div.className = 'worker-card';
-            
-            const statusClass = worker.status === 'online' ? 'online' : 'offline';
-            const platformIcon = worker.platform === 'Linux' ? 'bi-ubuntu' : 
-                               worker.platform === 'Windows' ? 'bi-windows' : 
-                               worker.platform === 'Darwin' ? 'bi-apple' : 'bi-laptop';
-            
-            const stats = worker.stats || {};
-            const cpuPercent = stats.cpu || 0;
-            const memoryPercent = stats.memory_percent || 0;
-            
-            div.innerHTML = `
-                <div class="worker-header">
-                    <div class="worker-name">
-                        <i class="bi ${platformIcon}"></i> ${worker.name || 'Unnamed Worker'}
-                    </div>
-                    <span class="worker-status ${statusClass}">
-                        ${worker.status === 'online' ? 'Online' : 'Offline'}
-                    </span>
-                </div>
-                
-                <div class="worker-details">
-                    <div class="worker-detail">
-                        <span class="worker-detail-label">Hostname:</span>
-                        <span class="worker-detail-value">${worker.hostname || 'N/A'}</span>
-                    </div>
-                    <div class="worker-detail">
-                        <span class="worker-detail-label">Platform:</span>
-                        <span class="worker-detail-value">${worker.platform || 'Unknown'}</span>
-                    </div>
-                    <div class="worker-detail">
-                        <span class="worker-detail-label">CPU:</span>
-                        <span class="worker-detail-value">${cpuPercent.toFixed(1)}%</span>
-                    </div>
-                    <div class="worker-detail">
-                        <span class="worker-detail-label">Memory:</span>
-                        <span class="worker-detail-value">${memoryPercent.toFixed(1)}%</span>
-                    </div>
-                    ${detailed ? `
-                    <div class="worker-detail">
-                        <span class="worker-detail-label">Last Seen:</span>
-                        <span class="worker-detail-value">${new Date(worker.last_seen || Date.now()).toLocaleTimeString()}</span>
-                    </div>
-                    ` : ''}
-                </div>
-            `;
-            
-            return div;
-        }
-        
-        // Update worker dropdown
-        function updateWorkerDropdown() {
-            const dropdown = document.getElementById('targetWorker');
-            if (!dropdown) return;
-            
-            // Clear existing options except the first
-            while (dropdown.options.length > 1) {
-                dropdown.remove(1);
-            }
-            
-            // Add worker options (only online workers)
-            Object.values(workers).forEach(worker => {
-                if (worker.status === 'online') {
-                    const option = document.createElement('option');
-                    option.value = worker.id;
-                    option.textContent = `${worker.name} (${worker.id ? worker.id.substring(0, 8) : 'N/A'}...)`;
-                    dropdown.appendChild(option);
-                }
-            });
-        }
-        
-        // Switch section
+
+        // ============= SECTION NAVIGATION =============
         function switchSection(section) {
             // Hide all sections
             document.querySelectorAll('.content-section').forEach(el => {
@@ -2826,15 +2861,15 @@
                 const text = item.querySelector('span').textContent.toLowerCase();
                 if ((section === 'dashboard' && text === 'dashboard') ||
                     (section === 'bots' && text === 'my bots') ||
-                    (section === 'workers' && text === 'workers') ||
+                    (section === 'laptops' && text === 'laptops') ||
                     (section === 'logs' && text === 'logs') ||
                     (section === 'settings' && text === 'settings')) {
                     item.classList.add('active');
                 }
             });
         }
-        
-        // Modal functions
+
+        // ============= MODAL FUNCTIONS =============
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -2851,7 +2886,7 @@
                 }
             }
         }
-        
+
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -2859,7 +2894,7 @@
                 document.body.style.overflow = 'auto';
             }
         }
-        
+
         function showUploadModal() {
             // Reset form
             document.getElementById('botName').value = '';
@@ -2867,7 +2902,7 @@
             document.getElementById('botCode').value = '';
             document.getElementById('configFileName').value = '';
             document.getElementById('configPreview').style.display = 'none';
-            document.getElementById('targetWorker').value = '';
+            document.getElementById('targetLaptop').value = '';
             
             // Reset drop area
             const dropArea = document.getElementById('dropArea');
@@ -2882,12 +2917,12 @@
             
             showModal('uploadModal');
         }
-        
-        function showWorkerInstructions() {
-            showModal('workerInstructionsModal');
+
+        function showLaptopInstructions() {
+            showModal('laptopInstructionsModal');
         }
-        
-        // Setup drag and drop
+
+        // ============= FILE UPLOAD FUNCTIONS =============
         function setupDragAndDrop() {
             const dropArea = document.getElementById('dropArea');
             
@@ -2921,8 +2956,7 @@
                 handleFiles(e.target.files);
             });
         }
-        
-        // Handle files
+
         function handleFiles(files) {
             const file = files[0];
             if (!file) return;
@@ -2950,8 +2984,8 @@
                 <p>${(file.size / 1024).toFixed(2)} KB • Ready to deploy</p>
             `;
         }
-        
-        // Config file functions
+
+        // ============= CONFIG FILE FUNCTIONS =============
         document.getElementById('configFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -2969,7 +3003,7 @@
             };
             reader.readAsText(file);
         });
-        
+
         function parseConfigFile(content) {
             const lines = content.split('\n');
             const config = {};
@@ -3005,7 +3039,7 @@
             
             showNotification('Config file loaded successfully', 'success');
         }
-        
+
         function generateDefaultConfig() {
             const botName = document.getElementById('botName').value || 'My Bot';
             const botType = document.getElementById('botType').value;
@@ -3027,13 +3061,13 @@
             
             return config;
         }
-        
+
         function showConfigEditor() {
             const config = generateDefaultConfig();
             document.getElementById('configEditor').value = config;
             showModal('configEditorModal');
         }
-        
+
         function useConfigFromEditor() {
             const configText = document.getElementById('configEditor').value;
             document.getElementById('configPreview').style.display = 'block';
@@ -3044,7 +3078,7 @@
             closeModal('configEditorModal');
             showNotification('Config applied successfully', 'success');
         }
-        
+
         function loadExampleConfig() {
             const example = `APT=tools
 AUTORESTART=true
@@ -3060,15 +3094,15 @@ VERSION=latest`;
             document.getElementById('configEditor').value = example;
             showNotification('Example config loaded', 'info');
         }
-        
-        // Deploy bot
+
+        // ============= BOT DEPLOYMENT FUNCTION =============
         async function deployBot() {
             const botName = document.getElementById('botName').value.trim();
             const botType = document.getElementById('botType').value;
             const botToken = document.getElementById('botToken').value.trim();
             const botCode = document.getElementById('botCode').value.trim();
             const configContent = document.getElementById('configContent').textContent;
-            const targetWorker = document.getElementById('targetWorker').value;
+            const targetLaptop = document.getElementById('targetLaptop').value;
             
             // Validation
             if (!botName) {
@@ -3102,7 +3136,7 @@ VERSION=latest`;
                     token: botToken,
                     code: botCode,
                     config: configContent || '',
-                    target_worker: targetWorker || undefined
+                    target_worker: targetLaptop || undefined
                 });
                 
                 // Show notification
@@ -3120,31 +3154,8 @@ VERSION=latest`;
                 }, 3000);
             }
         }
-        
-        // Log functions
-        function clearLogs() {
-            document.getElementById('systemLogs').innerHTML = '<div class="log-line">[INFO] Logs cleared</div>';
-            showNotification('Logs cleared', 'info');
-        }
-        
-        function clearBotLogs() {
-            document.getElementById('detailsLogs').innerHTML = '<div class="log-line">Logs cleared</div>';
-            showNotification('Bot logs cleared', 'info');
-        }
-        
-        function downloadBotLogs() {
-            const logs = document.getElementById('detailsLogs').innerText;
-            const blob = new Blob([logs], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `bot-logs-${Date.now()}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showNotification('Logs downloaded', 'success');
-        }
-        
-        // Settings functions
+
+        // ============= SETTINGS FUNCTIONS =============
         function setupEventListeners() {
             document.getElementById('serverUrl').addEventListener('change', function() {
                 SERVER_URL = this.value;
@@ -3158,13 +3169,16 @@ VERSION=latest`;
                 startAutoRefresh(interval);
             });
         }
-        
+
         function loadSettings() {
             const serverUrl = localStorage.getItem('serverUrl');
             const refreshInterval = localStorage.getItem('refreshInterval');
             const notifyBotStart = localStorage.getItem('notifyBotStart');
             const notifyBotStop = localStorage.getItem('notifyBotStop');
             const notifyErrors = localStorage.getItem('notifyErrors');
+            const notifyLaptops = localStorage.getItem('notifyLaptops');
+            const darkMode = localStorage.getItem('darkMode');
+            const animations = localStorage.getItem('animations');
             
             if (serverUrl) {
                 document.getElementById('serverUrl').value = serverUrl;
@@ -3186,14 +3200,29 @@ VERSION=latest`;
             if (notifyErrors !== null) {
                 document.getElementById('notifyErrors').checked = notifyErrors === 'true';
             }
+            
+            if (notifyLaptops !== null) {
+                document.getElementById('notifyLaptops').checked = notifyLaptops === 'true';
+            }
+            
+            if (darkMode !== null) {
+                document.getElementById('darkMode').checked = darkMode === 'true';
+            }
+            
+            if (animations !== null) {
+                document.getElementById('animations').checked = animations === 'true';
+            }
         }
-        
+
         function saveSettings() {
             localStorage.setItem('serverUrl', document.getElementById('serverUrl').value);
             localStorage.setItem('refreshInterval', document.getElementById('refreshInterval').value);
             localStorage.setItem('notifyBotStart', document.getElementById('notifyBotStart').checked);
             localStorage.setItem('notifyBotStop', document.getElementById('notifyBotStop').checked);
             localStorage.setItem('notifyErrors', document.getElementById('notifyErrors').checked);
+            localStorage.setItem('notifyLaptops', document.getElementById('notifyLaptops').checked);
+            localStorage.setItem('darkMode', document.getElementById('darkMode').checked);
+            localStorage.setItem('animations', document.getElementById('animations').checked);
             
             showNotification('Settings saved successfully', 'success');
             logToSystem('[INFO] Settings saved');
@@ -3204,43 +3233,52 @@ VERSION=latest`;
                 connectWebSocket();
             }
         }
-        
+
         function resetSettings() {
             localStorage.clear();
             loadSettings();
             showNotification('Settings reset to defaults', 'info');
             logToSystem('[INFO] Settings reset');
         }
-        
-        // Auto-refresh
+
+        // ============= AUTO-REFRESH FUNCTIONS =============
         function startAutoRefresh(interval) {
             if (refreshInterval) clearInterval(refreshInterval);
             
             refreshInterval = setInterval(() => {
                 if (document.getElementById('dashboardSection').style.display !== 'none') {
                     loadBots();
-                    loadWorkers();
+                    loadLaptops();
                 }
             }, interval);
             
             logToSystem(`[INFO] Auto-refresh interval set to ${interval/1000} seconds`);
         }
-        
-        // Enter key support for login
+
+        function refreshAll() {
+            loadBots();
+            loadLaptops();
+            showNotification('Refreshed all data', 'info');
+        }
+
+        // ============= KEYBOARD SHORTCUTS =============
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
                 attemptLogin();
             }
         });
-        
-        // Initialize on page load
+
+        // ============= INITIALIZATION =============
         window.addEventListener('DOMContentLoaded', function() {
-            // Auto-login for development
-            setTimeout(() => {
-                if (document.getElementById('loginScreen').style.display !== 'none') {
-                    attemptLogin();
-                }
-            }, 100);
+            // Auto-login for development (only once)
+            if (!autoLoginAttempted) {
+                autoLoginAttempted = true;
+                setTimeout(() => {
+                    if (document.getElementById('loginScreen').style.display !== 'none') {
+                        attemptLogin();
+                    }
+                }, 100);
+            }
         });
     </script>
 </body>
