@@ -1,1 +1,16 @@
-
+{
+  "name": "discord-bot-hosting-dashboard",
+  "version": "1.0.0",
+  "description": "Frontend dashboard for Discord bot hosting",
+  "scripts": {
+    "dev": "serve .",
+    "build": "echo 'Building static site...'",
+    "start": "serve ."
+  },
+  "devDependencies": {
+    "serve": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
