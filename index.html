@@ -1184,7 +1184,7 @@
             color: var(--text-secondary);
         }
         
-        /* Laptops Section */
+        /* Laptops Grid */
         .laptops-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1430,18 +1430,6 @@
                         <span>Settings</span>
                     </a>
                 </div>
-                
-                <div class="menu-section">
-                    <div class="menu-section-title">Support</div>
-                    <a href="#" class="menu-item" onclick="showNotification('Documentation coming soon', 'info')">
-                        <i class="bi bi-book-fill"></i>
-                        <span>Documentation</span>
-                    </a>
-                    <a href="#" class="menu-item" onclick="showNotification('Help center coming soon', 'info')">
-                        <i class="bi bi-question-circle-fill"></i>
-                        <span>Help Center</span>
-                    </a>
-                </div>
             </div>
             
             <div class="sidebar-footer">
@@ -1460,7 +1448,7 @@
                 <div class="top-bar">
                     <div class="page-header">
                         <h1>Dashboard Overview</h1>
-                        <p>Monitor and manage your Discord bots across connected laptops</p>
+                        <p>Monitor and manage your Discord bots</p>
                     </div>
                     <div class="top-bar-actions">
                         <button class="btn btn-secondary" onclick="loadBots()">
@@ -1565,7 +1553,7 @@
                         </div>
                         <h3>No Laptops Connected</h3>
                         <p>Connect a laptop to start hosting bots</p>
-                        <button class="btn btn-primary" onclick="showNotification('Run the laptop_client.py script on a computer to connect', 'info')">
+                        <button class="btn btn-primary" onclick="showLaptopInstructions()">
                             <i class="bi bi-info-circle"></i> How to Connect
                         </button>
                     </div>
@@ -1616,7 +1604,7 @@
                         <button class="btn btn-secondary" onclick="loadLaptops()">
                             <i class="bi bi-arrow-clockwise"></i> Refresh
                         </button>
-                        <button class="btn btn-info" onclick="showNotification('Run laptop_client.py on any computer to connect', 'info')">
+                        <button class="btn btn-info" onclick="showLaptopInstructions()">
                             <i class="bi bi-info-circle"></i> How to Connect
                         </button>
                     </div>
@@ -1638,8 +1626,8 @@
                         <li style="margin-bottom: 10px;">Run the laptop_client.py script</li>
                         <li>The laptop will automatically appear here</li>
                     </ol>
-                    <button class="btn btn-primary" onclick="showNotification('Download the laptop_client.py script from the documentation', 'info')">
-                        <i class="bi bi-download"></i> Download Client Script
+                    <button class="btn btn-primary" onclick="showLaptopInstructions()">
+                        <i class="bi bi-info-circle"></i> View Detailed Instructions
                     </button>
                 </div>
             </div>
@@ -1675,8 +1663,11 @@
                         <label class="form-label">Backend Server URL</label>
                         <div class="input-wrapper">
                             <i class="bi bi-server"></i>
-                            <input type="text" class="form-control" id="serverUrl" placeholder="https://your-backend.com">
+                            <input type="text" class="form-control" id="serverUrl" placeholder="http://localhost:8000">
                         </div>
+                        <small style="color: var(--text-secondary); margin-top: 5px; display: block;">
+                            Change this if your backend is hosted elsewhere
+                        </small>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Auto-refresh Interval</label>
@@ -1929,6 +1920,104 @@
         </div>
     </div>
     
+    <!-- Laptop Instructions Modal -->
+    <div class="modal" id="laptopInstructionsModal">
+        <div class="modal-dialog" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title">How to Connect a Laptop</h2>
+                <div class="modal-close" onclick="closeModal('laptopInstructionsModal')">
+                    <i class="bi bi-x-lg"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <h4 style="color: var(--primary-light); margin-bottom: 20px;">📋 Step-by-Step Instructions:</h4>
+                
+                <div style="margin-bottom: 30px;">
+                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">1. Prepare the Laptop</h5>
+                    <ul style="color: var(--text-secondary); margin-left: 20px;">
+                        <li>Install Python 3.8 or higher</li>
+                        <li>Make sure you have pip (Python package manager)</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">2. Install Required Packages</h5>
+                    <div style="background: rgba(10, 10, 15, 0.8); border: 1px solid var(--border-purple); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; margin-bottom: 10px;">
+                        pip install socketio aiohttp psutil
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Run this command in your terminal/command prompt</p>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">3. Create the Client Script</h5>
+                    <p style="color: var(--text-secondary); margin-bottom: 10px;">Create a file named <code style="background: rgba(139, 92, 246, 0.1); padding: 2px 8px; border-radius: 4px;">laptop_client.py</code> with the following content:</p>
+                    <div style="background: rgba(10, 10, 15, 0.8); border: 1px solid var(--border-purple); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 11px; max-height: 300px; overflow-y: auto; margin-bottom: 10px;">
+                        import socketio<br>
+                        import aiohttp<br>
+                        import asyncio<br>
+                        import os<br>
+                        import sys<br>
+                        <br>
+                        # Configuration<br>
+                        SERVER_URL = "YOUR_BACKEND_URL"  # Replace with your backend URL<br>
+                        <br>
+                        class LaptopClient:<br>
+                            def __init__(self, server_url):<br>
+                                self.server_url = server_url<br>
+                                self.sio = socketio.AsyncClient()<br>
+                                <br>
+                            async def connect(self):<br>
+                                try:<br>
+                                    await self.sio.connect(self.server_url)<br>
+                                    print("✅ Connected to server!")<br>
+                                    <br>
+                                    # Send registration<br>
+                                    await self.sio.emit('register_laptop', {<br>
+                                        'laptop_name': f"Laptop-{os.getlogin()}",<br>
+                                        'platform': sys.platform,<br>
+                                        'hostname': os.uname().nodename if hasattr(os, 'uname') else 'unknown'<br>
+                                    })<br>
+                                    <br>
+                                    # Keep running<br>
+                                    await self.sio.wait()<br>
+                                except Exception as e:<br>
+                                    print(f"❌ Connection failed: {e}")<br>
+                        <br>
+                        async def main():<br>
+                            client = LaptopClient(SERVER_URL)<br>
+                            await client.connect()<br>
+                        <br>
+                        if __name__ == "__main__":<br>
+                            asyncio.run(main())<br>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Replace <code>YOUR_BACKEND_URL</code> with your actual backend URL (e.g., https://bot-hosting-b.onrender.com)</p>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <h5 style="color: var(--text-primary); margin-bottom: 10px;">4. Run the Client</h5>
+                    <div style="background: rgba(10, 10, 15, 0.8); border: 1px solid var(--border-purple); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; margin-bottom: 10px;">
+                        python laptop_client.py
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;">The laptop will automatically connect and appear in your dashboard</p>
+                </div>
+                
+                <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid var(--border-purple); border-radius: 8px; padding: 12px;">
+                    <h6 style="color: var(--primary-light); margin-bottom: 8px;">💡 Tips:</h6>
+                    <ul style="color: var(--text-secondary); font-size: 0.875rem; margin-left: 20px;">
+                        <li>You can run this on multiple computers</li>
+                        <li>The laptop will automatically reconnect if connection is lost</li>
+                        <li>Bots deployed to laptops will run even when you close the dashboard</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('laptopInstructionsModal')">
+                    <i class="bi bi-check-lg"></i> Got it!
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script>
         // Configuration
@@ -1978,6 +2067,10 @@
         
         // WebSocket Connection
         function connectWebSocket() {
+            if (socket && socket.connected) {
+                socket.disconnect();
+            }
+            
             socket = io(SERVER_URL, {
                 transports: ['websocket', 'polling'],
                 reconnection: true,
@@ -1989,41 +2082,98 @@
                 updateConnectionStatus(true);
                 logToSystem('[INFO] Connected to server');
                 showNotification('Connected to server', 'success');
+                
+                // Request initial data
+                socket.emit('get_bots');
+                socket.emit('get_laptops');
             });
             
             socket.on('disconnect', () => {
                 updateConnectionStatus(false);
                 logToSystem('[WARNING] Disconnected from server');
-                showNotification('Disconnected from server', 'warning');
+            });
+            
+            socket.on('welcome', (data) => {
+                logToSystem(`[INFO] ${data.message}`);
+            });
+            
+            socket.on('bots_list', (data) => {
+                bots = {};
+                data.bots.forEach(bot => {
+                    bots[bot.id] = bot;
+                });
+                
+                laptops = {};
+                if (data.laptops) {
+                    data.laptops.forEach(laptop => {
+                        laptops[laptop.id] = laptop;
+                    });
+                }
+                
+                renderBots();
+                updateStats();
+                updateLaptopDropdown();
+            });
+            
+            socket.on('laptops_list', (data) => {
+                laptops = {};
+                data.laptops.forEach(laptop => {
+                    laptops[laptop.id] = laptop;
+                });
+                
+                updateLaptopUI();
+                updateLaptopDropdown();
+                updateStats();
             });
             
             socket.on('bot_update', (data) => {
-                updateBot(data);
-                logToSystem(`[INFO] Bot ${data.name || data.id} status updated: ${data.status}`);
+                updateBot(data.bot);
+                logToSystem(`[INFO] Bot ${data.bot.name || data.bot.id} status updated: ${data.bot.status}`);
             });
             
             socket.on('bot_deployed', (data) => {
                 showNotification('Bot deployed successfully!', 'success');
                 logToSystem(`[INFO] Bot deployed: ${data.bot.name}`);
                 closeModal('uploadModal');
-                loadBots();
+                socket.emit('get_bots');
+            });
+            
+            socket.on('bot_started', (data) => {
+                logToSystem(`[INFO] Bot started: ${data.bot_id}`);
+                showNotification('Bot started', 'success');
+            });
+            
+            socket.on('bot_stopped', (data) => {
+                logToSystem(`[INFO] Bot stopped: ${data.bot_id}`);
+                showNotification('Bot stopped', 'warning');
+            });
+            
+            socket.on('bot_restarted', (data) => {
+                logToSystem(`[INFO] Bot restarted: ${data.bot_id}`);
+                showNotification('Bot restarted', 'info');
             });
             
             socket.on('laptop_connected', (data) => {
-                logToSystem(`[INFO] Laptop connected: ${data.name || data.id}`);
+                logToSystem(`[INFO] Laptop connected: ${data.name}`);
                 showNotification(`Laptop connected: ${data.name}`, 'info');
-                loadLaptops();
+                socket.emit('get_laptops');
             });
             
             socket.on('laptop_disconnected', (data) => {
-                logToSystem(`[WARNING] Laptop disconnected: ${data.id}`);
-                showNotification(`Laptop disconnected: ${data.id}`, 'warning');
-                loadLaptops();
+                logToSystem(`[WARNING] Laptop disconnected: ${data.name}`);
+                showNotification(`Laptop disconnected: ${data.name}`, 'warning');
+                socket.emit('get_laptops');
             });
             
             socket.on('error', (data) => {
                 logToSystem(`[ERROR] ${data.message}`);
                 showNotification(`Error: ${data.message}`, 'error');
+            });
+            
+            socket.on('bot_log', (data) => {
+                if (currentBotDetails === data.bot_id) {
+                    updateBotLogsRealTime(data.log);
+                }
             });
         }
         
@@ -2092,7 +2242,7 @@
             logsContainer.scrollTop = logsContainer.scrollHeight;
         }
         
-        // Load bots
+        // Load bots via REST API
         async function loadBots() {
             try {
                 const response = await fetch(`${API_URL}/bots`);
@@ -2107,23 +2257,36 @@
                 renderBots();
                 updateStats();
                 
-                // Update laptop dropdown
-                updateLaptopDropdown();
-                
             } catch (error) {
                 console.error('Error loading bots:', error);
                 showNotification('Failed to load bots', 'error');
+                logToSystem(`[ERROR] Failed to load bots: ${error.message}`);
             }
         }
         
-        // Load laptops
+        // Load laptops via REST API
         async function loadLaptops() {
             try {
-                // In a real app, you'd have an API endpoint for laptops
-                // For now, we'll simulate with WebSocket
+                const response = await fetch(`${API_URL}/laptops`);
+                if (!response.ok) {
+                    // API might not be implemented yet
+                    logToSystem('[INFO] Laptops API not available');
+                    return;
+                }
+                
+                const data = await response.json();
+                laptops = {};
+                data.laptops.forEach(laptop => {
+                    laptops[laptop.id] = laptop;
+                });
+                
                 updateLaptopUI();
+                updateLaptopDropdown();
+                updateStats();
+                
             } catch (error) {
-                console.error('Error loading laptops:', error);
+                // Silently fail - laptops API might not be implemented
+                console.log('Laptops API not available:', error.message);
             }
         }
         
@@ -2184,7 +2347,7 @@
             div.id = `bot-card-${bot.id}`;
             
             const statusClass = `status-${bot.status}`;
-            const laptopName = bot.laptop_id ? `Laptop: ${bot.laptop_id.substring(0, 8)}...` : 'Not assigned';
+            const laptopName = bot.laptop ? bot.laptop.name : (bot.laptop_name || 'Not assigned');
             
             div.innerHTML = `
                 <div class="bot-header">
@@ -2253,23 +2416,35 @@
         
         // Bot control functions
         function startBot(botId) {
-            socket.emit('start_bot', { bot_id: botId });
-            logToSystem(`[INFO] Starting bot: ${botId}`);
-            showNotification('Starting bot...', 'info');
+            if (socket && socket.connected) {
+                socket.emit('start_bot', { bot_id: botId });
+                logToSystem(`[INFO] Starting bot: ${botId}`);
+                showNotification('Starting bot...', 'info');
+            } else {
+                showNotification('Not connected to server', 'error');
+            }
         }
         
         function stopBot(botId) {
             if (confirm('Are you sure you want to stop this bot?')) {
-                socket.emit('stop_bot', { bot_id: botId });
-                logToSystem(`[INFO] Stopping bot: ${botId}`);
-                showNotification('Stopping bot...', 'warning');
+                if (socket && socket.connected) {
+                    socket.emit('stop_bot', { bot_id: botId });
+                    logToSystem(`[INFO] Stopping bot: ${botId}`);
+                    showNotification('Stopping bot...', 'warning');
+                } else {
+                    showNotification('Not connected to server', 'error');
+                }
             }
         }
         
         function restartBot(botId) {
-            socket.emit('restart_bot', { bot_id: botId });
-            logToSystem(`[INFO] Restarting bot: ${botId}`);
-            showNotification('Restarting bot...', 'info');
+            if (socket && socket.connected) {
+                socket.emit('restart_bot', { bot_id: botId });
+                logToSystem(`[INFO] Restarting bot: ${botId}`);
+                showNotification('Restarting bot...', 'info');
+            } else {
+                showNotification('Not connected to server', 'error');
+            }
         }
         
         // Show bot details
@@ -2286,7 +2461,10 @@
             document.getElementById('detailsCpu').textContent = `${(bot.cpu || 0).toFixed(1)}%`;
             document.getElementById('detailsMemory').textContent = `${(bot.memory || 0).toFixed(1)} MB`;
             document.getElementById('detailsBotId').textContent = bot.id;
-            document.getElementById('detailsLaptop').textContent = bot.laptop_id ? `ID: ${bot.laptop_id}` : 'Not assigned';
+            
+            const laptopInfo = bot.laptop ? `${bot.laptop.name} (${bot.laptop.status})` : 
+                              bot.laptop_name ? `${bot.laptop_name} (Unknown)` : 'Not assigned';
+            document.getElementById('detailsLaptop').textContent = laptopInfo;
             
             const actionsContainer = document.getElementById('detailsActions');
             actionsContainer.innerHTML = `
@@ -2351,11 +2529,31 @@
             logsContainer.scrollTop = logsContainer.scrollHeight;
         }
         
+        // Update bot logs in real-time
+        function updateBotLogsRealTime(log) {
+            const logsContainer = document.getElementById('detailsLogs');
+            if (!logsContainer) return;
+            
+            const logLine = document.createElement('div');
+            logLine.className = 'log-line';
+            
+            if (typeof log === 'string') {
+                logLine.textContent = log;
+            } else if (log.message) {
+                const timestamp = new Date(log.timestamp || Date.now()).toLocaleTimeString();
+                logLine.textContent = `[${timestamp}] ${log.message}`;
+            }
+            
+            logsContainer.appendChild(logLine);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+        
         // Update stats
         function updateStats() {
             const total = Object.keys(bots).length;
             const running = Object.values(bots).filter(b => b.status === 'running').length;
             const laptopCount = Object.keys(laptops).length;
+            const onlineLaptops = Object.values(laptops).filter(l => l.status === 'online').length;
             
             let totalCpu = 0;
             let totalMemory = 0;
@@ -2367,7 +2565,7 @@
             
             document.getElementById('totalBots').textContent = total;
             document.getElementById('runningBots').textContent = running;
-            document.getElementById('activeLaptops').textContent = laptopCount;
+            document.getElementById('activeLaptops').textContent = onlineLaptops;
             document.getElementById('totalCpu').textContent = `${totalCpu.toFixed(1)}%`;
             document.getElementById('botCount').textContent = total;
             document.getElementById('laptopCount').textContent = laptopCount;
@@ -2380,13 +2578,7 @@
             const emptyState = document.getElementById('laptopsEmpty');
             const sectionEmpty = document.getElementById('laptopsSectionEmpty');
             
-            // For now, show placeholder laptops
-            const placeholderLaptops = [
-                { id: 'laptop-001', name: 'Main Server', status: 'online', platform: 'linux', bots: 2 },
-                { id: 'laptop-002', name: 'Backup PC', status: 'offline', platform: 'windows', bots: 1 }
-            ];
-            
-            if (placeholderLaptops.length === 0) {
+            if (Object.keys(laptops).length === 0) {
                 container.innerHTML = '';
                 sectionContainer.innerHTML = '';
                 emptyState.style.display = 'block';
@@ -2397,15 +2589,17 @@
             emptyState.style.display = 'none';
             sectionEmpty.style.display = 'none';
             
-            // Render to dashboard
+            // Render to dashboard (only online laptops)
             container.innerHTML = '';
-            placeholderLaptops.forEach(laptop => {
-                container.appendChild(createLaptopCard(laptop));
+            Object.values(laptops).forEach(laptop => {
+                if (laptop.status === 'online') {
+                    container.appendChild(createLaptopCard(laptop, false));
+                }
             });
             
-            // Render to laptops section
+            // Render to laptops section (all laptops)
             sectionContainer.innerHTML = '';
-            placeholderLaptops.forEach(laptop => {
+            Object.values(laptops).forEach(laptop => {
                 sectionContainer.appendChild(createLaptopCard(laptop, true));
             });
         }
@@ -2417,7 +2611,8 @@
             
             const statusClass = laptop.status === 'online' ? 'online' : 'offline';
             const platformIcon = laptop.platform === 'linux' ? 'bi-ubuntu' : 
-                               laptop.platform === 'windows' ? 'bi-windows' : 'bi-laptop';
+                               laptop.platform === 'windows' ? 'bi-windows' : 
+                               laptop.platform === 'darwin' ? 'bi-apple' : 'bi-laptop';
             
             div.innerHTML = `
                 <div class="laptop-header">
@@ -2432,7 +2627,7 @@
                 <div class="laptop-details">
                     <div class="laptop-detail">
                         <span class="laptop-detail-label">ID:</span>
-                        <span class="laptop-detail-value">${laptop.id}</span>
+                        <span class="laptop-detail-value">${laptop.id.substring(0, 12)}...</span>
                     </div>
                     <div class="laptop-detail">
                         <span class="laptop-detail-label">Platform:</span>
@@ -2440,20 +2635,15 @@
                     </div>
                     <div class="laptop-detail">
                         <span class="laptop-detail-label">Bots:</span>
-                        <span class="laptop-detail-value">${laptop.bots || 0}</span>
+                        <span class="laptop-detail-value">${laptop.bots?.length || 0}</span>
                     </div>
+                    ${detailed ? `
+                    <div class="laptop-detail">
+                        <span class="laptop-detail-label">Last Seen:</span>
+                        <span class="laptop-detail-value">${new Date(laptop.last_seen).toLocaleTimeString()}</span>
+                    </div>
+                    ` : ''}
                 </div>
-                
-                ${detailed ? `
-                <div style="display: flex; gap: 8px; margin-top: 16px;">
-                    <button class="btn btn-secondary" style="flex: 1;" onclick="showNotification('Feature coming soon', 'info')">
-                        <i class="bi bi-info-circle"></i> Details
-                    </button>
-                    <button class="btn btn-danger" style="flex: 1;" onclick="showNotification('Feature coming soon', 'info')">
-                        <i class="bi bi-power"></i> Disconnect
-                    </button>
-                </div>
-                ` : ''}
             `;
             
             return div;
@@ -2469,7 +2659,7 @@
                 dropdown.remove(1);
             }
             
-            // Add laptop options
+            // Add laptop options (only online laptops)
             Object.values(laptops).forEach(laptop => {
                 if (laptop.status === 'online') {
                     const option = document.createElement('option');
@@ -2527,8 +2717,13 @@
             document.getElementById('botCode').value = '';
             document.getElementById('configFileName').value = '';
             document.getElementById('configPreview').style.display = 'none';
+            document.getElementById('targetLaptop').value = '';
             
             showModal('uploadModal');
+        }
+        
+        function showLaptopInstructions() {
+            showModal('laptopInstructionsModal');
         }
         
         // Setup drag and drop
@@ -2583,6 +2778,8 @@
                     showNotification('File loaded successfully', 'success');
                 };
                 reader.readAsText(file);
+            } else if (file.name.endsWith('.zip')) {
+                showNotification('ZIP file detected. Upload will extract contents.', 'info');
             }
             
             const dropArea = document.getElementById('dropArea');
@@ -2699,35 +2896,39 @@ VERSION=latest`;
             showNotification('Example config loaded', 'info');
         }
         
-        // Deploy bot
+        // Deploy bot - FIXED VERSION
         async function deployBot() {
-            const botName = document.getElementById('botName').value;
+            const botName = document.getElementById('botName').value.trim();
             const botType = document.getElementById('botType').value;
-            const botToken = document.getElementById('botToken').value;
-            const botCode = document.getElementById('botCode').value;
-            const configFile = document.getElementById('configFile').files[0];
+            const botToken = document.getElementById('botToken').value.trim();
+            const botCode = document.getElementById('botCode').value.trim();
+            const configContent = document.getElementById('configContent').textContent;
             const targetLaptop = document.getElementById('targetLaptop').value;
             
-            if (!botName.trim()) {
+            // Validation
+            if (!botName) {
                 showNotification('Please enter a bot name', 'error');
                 return;
             }
             
-            if (!botToken.trim()) {
+            if (!botToken) {
                 showNotification('Please enter a bot token', 'error');
                 return;
             }
             
+            if (!socket || !socket.connected) {
+                showNotification('Not connected to server. Please refresh the page.', 'error');
+                return;
+            }
+            
             const deployBtn = document.getElementById('deployBtn');
+            const originalText = deployBtn.innerHTML;
+            
             deployBtn.disabled = true;
             deployBtn.innerHTML = '<i class="bi bi-hourglass"></i> Deploying...';
             
             try {
-                // Get config content
-                let configContent = '';
-                if (document.getElementById('configPreview').style.display === 'block') {
-                    configContent = document.getElementById('configContent').textContent;
-                }
+                logToSystem(`[INFO] Deploying bot: ${botName}`);
                 
                 // Send deployment request via WebSocket
                 socket.emit('deploy_bot', {
@@ -2735,20 +2936,25 @@ VERSION=latest`;
                     type: botType,
                     token: botToken,
                     code: botCode,
-                    config: configContent,
+                    config: configContent || '',
                     target_laptop: targetLaptop || undefined
                 });
                 
-                logToSystem(`[INFO] Deploying bot: ${botName}`);
+                // Show notification
+                showNotification('Deploying bot...', 'info');
+                
+                // The bot_deployed event will handle success
+                // The error event will handle failures
                 
             } catch (error) {
                 console.error('Deployment error:', error);
                 showNotification(`Error: ${error.message}`, 'error');
                 logToSystem(`[ERROR] Deployment failed: ${error.message}`);
             } finally {
+                // Re-enable button after 3 seconds
                 setTimeout(() => {
                     deployBtn.disabled = false;
-                    deployBtn.innerHTML = '<i class="bi bi-rocket-takeoff"></i> Deploy Bot';
+                    deployBtn.innerHTML = originalText;
                 }, 3000);
             }
         }
@@ -2780,11 +2986,14 @@ VERSION=latest`;
         function setupEventListeners() {
             document.getElementById('serverUrl').addEventListener('change', function() {
                 SERVER_URL = this.value;
+                localStorage.setItem('serverUrl', SERVER_URL);
             });
             
             document.getElementById('refreshInterval').addEventListener('change', function() {
                 if (refreshInterval) clearInterval(refreshInterval);
-                startAutoRefresh(parseInt(this.value));
+                const interval = parseInt(this.value);
+                localStorage.setItem('refreshInterval', interval);
+                startAutoRefresh(interval);
             });
         }
         
@@ -2826,6 +3035,12 @@ VERSION=latest`;
             
             showNotification('Settings saved successfully', 'success');
             logToSystem('[INFO] Settings saved');
+            
+            // Reconnect with new server URL if changed
+            if (SERVER_URL !== document.getElementById('serverUrl').value) {
+                SERVER_URL = document.getElementById('serverUrl').value;
+                connectWebSocket();
+            }
         }
         
         function resetSettings() {
@@ -2849,11 +3064,21 @@ VERSION=latest`;
             logToSystem(`[INFO] Auto-refresh interval set to ${interval/1000} seconds`);
         }
         
-        // Enter key support
+        // Enter key support for login
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
                 attemptLogin();
             }
+        });
+        
+        // Initialize config when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            // Auto-generate config for upload modal when it opens
+            document.getElementById('uploadModal').addEventListener('shown', function() {
+                if (!document.getElementById('configContent').textContent) {
+                    generateDefaultConfig();
+                }
+            });
         });
     </script>
 </body>
