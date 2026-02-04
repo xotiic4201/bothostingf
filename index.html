@@ -434,6 +434,7 @@
             margin-bottom: 4px;
             position: relative;
             cursor: pointer;
+            user-select: none;
         }
         
         .menu-item i {
@@ -950,7 +951,6 @@
         
         /* Modals */
         .modal {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -959,13 +959,17 @@
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
             z-index: 9999;
+            display: none;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .modal.show {
             display: flex;
+            opacity: 1;
         }
         
         .modal-dialog {
@@ -1358,7 +1362,7 @@
                 <label class="form-label" for="username">Username</label>
                 <div class="input-wrapper">
                     <i class="bi bi-person-fill"></i>
-                    <input type="text" class="form-control" id="username" placeholder="Enter username" value="">
+                    <input type="text" class="form-control" id="username" placeholder="Enter username" value="xotiic">
                 </div>
             </div>
             
@@ -1366,7 +1370,7 @@
                 <label class="form-label" for="password">Password</label>
                 <div class="input-wrapper">
                     <i class="bi bi-lock-fill"></i>
-                    <input type="password" class="form-control" id="password" placeholder="Enter password" value="">
+                    <input type="password" class="form-control" id="password" placeholder="Enter password" value="40671Mps19*">
                 </div>
             </div>
             
@@ -1399,36 +1403,36 @@
             <div class="sidebar-menu">
                 <div class="menu-section">
                     <div class="menu-section-title">Main</div>
-                    <a href="#" class="menu-item active" onclick="switchSection('dashboard')">
+                    <div class="menu-item active" onclick="switchSection('dashboard')">
                         <i class="bi bi-grid-fill"></i>
                         <span>Dashboard</span>
-                    </a>
-                    <a href="#" class="menu-item" onclick="switchSection('bots')">
+                    </div>
+                    <div class="menu-item" onclick="switchSection('bots')">
                         <i class="bi bi-robot"></i>
                         <span>My Bots</span>
                         <span class="menu-badge" id="botCount">0</span>
-                    </a>
-                    <a href="#" class="menu-item" onclick="switchSection('laptops')">
+                    </div>
+                    <div class="menu-item" onclick="switchSection('laptops')">
                         <i class="bi bi-laptop"></i>
                         <span>Laptops</span>
                         <span class="menu-badge" id="laptopCount">0</span>
-                    </a>
-                    <a href="#" class="menu-item" onclick="showUploadModal()">
+                    </div>
+                    <div class="menu-item" onclick="showUploadModal()">
                         <i class="bi bi-plus-circle-fill"></i>
                         <span>Deploy Bot</span>
-                    </a>
+                    </div>
                 </div>
                 
                 <div class="menu-section">
                     <div class="menu-section-title">Management</div>
-                    <a href="#" class="menu-item" onclick="switchSection('logs')">
+                    <div class="menu-item" onclick="switchSection('logs')">
                         <i class="bi bi-file-text-fill"></i>
                         <span>Logs</span>
-                    </a>
-                    <a href="#" class="menu-item" onclick="switchSection('settings')">
+                    </div>
+                    <div class="menu-item" onclick="switchSection('settings')">
                         <i class="bi bi-gear-fill"></i>
                         <span>Settings</span>
-                    </a>
+                    </div>
                 </div>
             </div>
             
@@ -1943,7 +1947,7 @@
                 <div style="margin-bottom: 30px;">
                     <h5 style="color: var(--text-primary); margin-bottom: 10px;">2. Install Required Packages</h5>
                     <div style="background: rgba(10, 10, 15, 0.8); border: 1px solid var(--border-purple); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; margin-bottom: 10px;">
-                        pip install socketio aiohttp psutil
+                        pip install python-socketio aiohttp psutil
                     </div>
                     <p style="color: var(--text-secondary); font-size: 0.875rem;">Run this command in your terminal/command prompt</p>
                 </div>
@@ -1955,42 +1959,73 @@
                         import socketio<br>
                         import aiohttp<br>
                         import asyncio<br>
+                        import psutil<br>
+                        import platform<br>
+                        import socket<br>
+                        import uuid<br>
                         import os<br>
-                        import sys<br>
+                        from datetime import datetime<br>
                         <br>
-                        # Configuration<br>
-                        SERVER_URL = "YOUR_BACKEND_URL"  # Replace with your backend URL<br>
-                        <br>
-                        class LaptopClient:<br>
-                            def __init__(self, server_url):<br>
-                                self.server_url = server_url<br>
-                                self.sio = socketio.AsyncClient()<br>
-                                <br>
-                            async def connect(self):<br>
-                                try:<br>
-                                    await self.sio.connect(self.server_url)<br>
-                                    print("✅ Connected to server!")<br>
-                                    <br>
-                                    # Send registration<br>
-                                    await self.sio.emit('register_laptop', {<br>
-                                        'laptop_name': f"Laptop-{os.getlogin()}",<br>
-                                        'platform': sys.platform,<br>
-                                        'hostname': os.uname().nodename if hasattr(os, 'uname') else 'unknown'<br>
-                                    })<br>
-                                    <br>
-                                    # Keep running<br>
-                                    await self.sio.wait()<br>
-                                except Exception as e:<br>
-                                    print(f"❌ Connection failed: {e}")<br>
+                        SERVER_URL = "YOUR_BACKEND_URL"  # e.g., "http://localhost:8000" or your deployed URL<br>
+                        WORKER_NAME = "My-Laptop"  # Change to your preferred name<br>
                         <br>
                         async def main():<br>
-                            client = LaptopClient(SERVER_URL)<br>
-                            await client.connect()<br>
+                            sio = socketio.AsyncClient()<br>
+                            <br>
+                            @sio.event<br>
+                            async def connect():<br>
+                                print("✅ Connected to server!")<br>
+                                <br>
+                                # Register as worker<br>
+                                await sio.emit('worker_register', {{<br>
+                                    'name': WORKER_NAME,<br>
+                                    'hostname': socket.gethostname(),<br>
+                                    'platform': platform.system(),<br>
+                                    'cpu_count': psutil.cpu_count(),<br>
+                                    'total_memory': psutil.virtual_memory().total,<br>
+                                    'username': os.getlogin()<br>
+                                }})<br>
+                                <br>
+                            @sio.event<br>
+                            async def disconnect():<br>
+                                print("❌ Disconnected from server")<br>
+                                <br>
+                            @sio.on('deploy_bot_to_worker')<br>
+                            async def on_deploy_bot(data):<br>
+                                print(f"📦 Received bot deployment: {{data.get('name')}}")<br>
+                                <br>
+                            @sio.on('start_bot_on_worker')<br>
+                            async def on_start_bot(data):<br>
+                                print(f"▶️ Starting bot: {{data.get('bot_id')}}")<br>
+                                <br>
+                            @sio.on('stop_bot_on_worker')<br>
+                            async def on_stop_bot(data):<br>
+                                print(f"⏹️ Stopping bot: {{data.get('bot_id')}}")<br>
+                                <br>
+                            try:<br>
+                                await sio.connect(SERVER_URL, socketio_path='socket.io')<br>
+                                <br>
+                                # Send heartbeat every 10 seconds<br>
+                                while True:<br>
+                                    await sio.emit('worker_heartbeat', {{<br>
+                                        'name': WORKER_NAME,<br>
+                                        'status': 'online',<br>
+                                        'stats': {{<br>
+                                            'cpu': psutil.cpu_percent(interval=1),<br>
+                                            'memory_percent': psutil.virtual_memory().percent,<br>
+                                            'running_bots': []<br>
+                                        }},<br>
+                                        'last_seen': datetime.now().isoformat()<br>
+                                    }})<br>
+                                    await asyncio.sleep(10)<br>
+                                <br>
+                            except Exception as e:<br>
+                                print(f"❌ Connection failed: {{e}}")<br>
                         <br>
                         if __name__ == "__main__":<br>
                             asyncio.run(main())<br>
                     </div>
-                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Replace <code>YOUR_BACKEND_URL</code> with your actual backend URL (e.g., https://bot-hosting-b.onrender.com)</p>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Replace <code>YOUR_BACKEND_URL</code> with your actual backend URL</p>
                 </div>
                 
                 <div style="margin-bottom: 30px;">
@@ -2058,11 +2093,31 @@
             loadLaptops();
             setupDragAndDrop();
             setupEventListeners();
+            setupModalEventListeners();
             loadSettings();
             
             // Start auto-refresh
             const interval = parseInt(localStorage.getItem('refreshInterval') || '10000');
             startAutoRefresh(interval);
+        }
+        
+        // Setup modal event listeners
+        function setupModalEventListeners() {
+            // Close modal when clicking outside
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target.id);
+                }
+            });
+            
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    document.querySelectorAll('.modal.show').forEach(modal => {
+                        closeModal(modal.id);
+                    });
+                }
+            });
         }
         
         // WebSocket Connection
@@ -2075,7 +2130,8 @@
                 transports: ['websocket', 'polling'],
                 reconnection: true,
                 reconnectionAttempts: 5,
-                reconnectionDelay: 1000
+                reconnectionDelay: 1000,
+                path: '/socket.io'
             });
             
             socket.on('connect', () => {
@@ -2103,13 +2159,6 @@
                     bots[bot.id] = bot;
                 });
                 
-                laptops = {};
-                if (data.laptops) {
-                    data.laptops.forEach(laptop => {
-                        laptops[laptop.id] = laptop;
-                    });
-                }
-                
                 renderBots();
                 updateStats();
                 updateLaptopDropdown();
@@ -2117,9 +2166,11 @@
             
             socket.on('laptops_list', (data) => {
                 laptops = {};
-                data.laptops.forEach(laptop => {
-                    laptops[laptop.id] = laptop;
-                });
+                if (data.laptops) {
+                    data.laptops.forEach(laptop => {
+                        laptops[laptop.id] = laptop;
+                    });
+                }
                 
                 updateLaptopUI();
                 updateLaptopDropdown();
@@ -2153,13 +2204,13 @@
                 showNotification('Bot restarted', 'info');
             });
             
-            socket.on('laptop_connected', (data) => {
-                logToSystem(`[INFO] Laptop connected: ${data.name}`);
-                showNotification(`Laptop connected: ${data.name}`, 'info');
+            socket.on('worker_connected', (data) => {
+                logToSystem(`[INFO] Laptop connected: ${data.worker.name}`);
+                showNotification(`Laptop connected: ${data.worker.name}`, 'info');
                 socket.emit('get_laptops');
             });
             
-            socket.on('laptop_disconnected', (data) => {
+            socket.on('worker_disconnected', (data) => {
                 logToSystem(`[WARNING] Laptop disconnected: ${data.name}`);
                 showNotification(`Laptop disconnected: ${data.name}`, 'warning');
                 socket.emit('get_laptops');
@@ -2269,24 +2320,31 @@
             try {
                 const response = await fetch(`${API_URL}/laptops`);
                 if (!response.ok) {
-                    // API might not be implemented yet
-                    logToSystem('[INFO] Laptops API not available');
+                    // Try to get from WebSocket
+                    if (socket && socket.connected) {
+                        socket.emit('get_laptops');
+                    }
                     return;
                 }
                 
                 const data = await response.json();
                 laptops = {};
-                data.laptops.forEach(laptop => {
-                    laptops[laptop.id] = laptop;
-                });
+                if (data.laptops) {
+                    data.laptops.forEach(laptop => {
+                        laptops[laptop.id] = laptop;
+                    });
+                }
                 
                 updateLaptopUI();
                 updateLaptopDropdown();
                 updateStats();
                 
             } catch (error) {
-                // Silently fail - laptops API might not be implemented
-                console.log('Laptops API not available:', error.message);
+                console.log('Laptops API error:', error.message);
+                // Try WebSocket
+                if (socket && socket.connected) {
+                    socket.emit('get_laptops');
+                }
             }
         }
         
@@ -2347,7 +2405,7 @@
             div.id = `bot-card-${bot.id}`;
             
             const statusClass = `status-${bot.status}`;
-            const laptopName = bot.laptop ? bot.laptop.name : (bot.laptop_name || 'Not assigned');
+            const laptopName = bot.worker_id ? `Laptop-${bot.worker_id.substring(0, 8)}` : 'Not assigned';
             
             div.innerHTML = `
                 <div class="bot-header">
@@ -2462,8 +2520,7 @@
             document.getElementById('detailsMemory').textContent = `${(bot.memory || 0).toFixed(1)} MB`;
             document.getElementById('detailsBotId').textContent = bot.id;
             
-            const laptopInfo = bot.laptop ? `${bot.laptop.name} (${bot.laptop.status})` : 
-                              bot.laptop_name ? `${bot.laptop_name} (Unknown)` : 'Not assigned';
+            const laptopInfo = bot.worker_id ? `Laptop-${bot.worker_id.substring(0, 8)}` : 'Not assigned';
             document.getElementById('detailsLaptop').textContent = laptopInfo;
             
             const actionsContainer = document.getElementById('detailsActions');
@@ -2614,6 +2671,10 @@
                                laptop.platform === 'windows' ? 'bi-windows' : 
                                laptop.platform === 'darwin' ? 'bi-apple' : 'bi-laptop';
             
+            const stats = laptop.stats || {};
+            const cpuPercent = stats.cpu || 0;
+            const memoryPercent = stats.memory_percent || 0;
+            
             div.innerHTML = `
                 <div class="laptop-header">
                     <div class="laptop-name">
@@ -2626,16 +2687,20 @@
                 
                 <div class="laptop-details">
                     <div class="laptop-detail">
-                        <span class="laptop-detail-label">ID:</span>
-                        <span class="laptop-detail-value">${laptop.id.substring(0, 12)}...</span>
+                        <span class="laptop-detail-label">Hostname:</span>
+                        <span class="laptop-detail-value">${laptop.hostname || 'N/A'}</span>
                     </div>
                     <div class="laptop-detail">
                         <span class="laptop-detail-label">Platform:</span>
-                        <span class="laptop-detail-value">${laptop.platform}</span>
+                        <span class="laptop-detail-value">${laptop.platform || 'Unknown'}</span>
                     </div>
                     <div class="laptop-detail">
-                        <span class="laptop-detail-label">Bots:</span>
-                        <span class="laptop-detail-value">${laptop.bots?.length || 0}</span>
+                        <span class="laptop-detail-label">CPU:</span>
+                        <span class="laptop-detail-value">${cpuPercent.toFixed(1)}%</span>
+                    </div>
+                    <div class="laptop-detail">
+                        <span class="laptop-detail-label">Memory:</span>
+                        <span class="laptop-detail-value">${memoryPercent.toFixed(1)}%</span>
                     </div>
                     ${detailed ? `
                     <div class="laptop-detail">
@@ -2670,7 +2735,7 @@
             });
         }
         
-        // Switch section
+        // Switch section - FIXED VERSION
         function switchSection(section) {
             // Hide all sections
             document.querySelectorAll('.content-section').forEach(el => {
@@ -2682,32 +2747,55 @@
             if (section === 'dashboard') {
                 document.getElementById('dashboardSection').style.display = 'block';
             } else {
-                document.getElementById(section + 'Section').style.display = 'block';
+                const sectionElement = document.getElementById(section + 'Section');
+                if (sectionElement) {
+                    sectionElement.style.display = 'block';
+                }
             }
             
             // Update menu items
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.classList.add('active');
+            
+            // Find and activate the clicked menu item
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                const text = item.querySelector('span').textContent.toLowerCase();
+                if ((section === 'dashboard' && text === 'dashboard') ||
+                    (section === 'bots' && text === 'my bots') ||
+                    (section === 'laptops' && text === 'laptops') ||
+                    (section === 'logs' && text === 'logs') ||
+                    (section === 'settings' && text === 'settings')) {
+                    item.classList.add('active');
+                }
+            });
         }
         
         // Modal functions
         function showModal(modalId) {
-            document.getElementById(modalId).classList.add('show');
-            
-            if (modalId === 'uploadModal') {
-                // Generate default config
-                setTimeout(() => {
-                    if (!document.getElementById('configContent').textContent) {
-                        generateDefaultConfig();
-                    }
-                }, 100);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                
+                if (modalId === 'uploadModal') {
+                    // Generate default config
+                    setTimeout(() => {
+                        if (!document.getElementById('configContent').textContent) {
+                            generateDefaultConfig();
+                        }
+                    }, 100);
+                }
             }
         }
         
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('show');
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
         }
         
         function showUploadModal() {
@@ -2718,6 +2806,17 @@
             document.getElementById('configFileName').value = '';
             document.getElementById('configPreview').style.display = 'none';
             document.getElementById('targetLaptop').value = '';
+            
+            // Reset drop area
+            const dropArea = document.getElementById('dropArea');
+            if (dropArea) {
+                dropArea.innerHTML = `
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <h5>Drop your bot files here</h5>
+                    <p>or click to browse • Supports .py, .js, .zip files</p>
+                    <input type="file" id="botFile" hidden accept=".py,.js,.zip,.json">
+                `;
+            }
             
             showModal('uploadModal');
         }
@@ -2860,6 +2959,10 @@
             config += `TYPE=bot\n`;
             config += `VERSION=latest`;
             
+            document.getElementById('configPreview').style.display = 'block';
+            document.getElementById('configContent').textContent = config;
+            document.getElementById('configEditor').value = config;
+            
             return config;
         }
         
@@ -2896,7 +2999,7 @@ VERSION=latest`;
             showNotification('Example config loaded', 'info');
         }
         
-        // Deploy bot - FIXED VERSION
+        // Deploy bot
         async function deployBot() {
             const botName = document.getElementById('botName').value.trim();
             const botType = document.getElementById('botType').value;
@@ -2937,14 +3040,11 @@ VERSION=latest`;
                     token: botToken,
                     code: botCode,
                     config: configContent || '',
-                    target_laptop: targetLaptop || undefined
+                    target_worker: targetLaptop || undefined
                 });
                 
                 // Show notification
                 showNotification('Deploying bot...', 'info');
-                
-                // The bot_deployed event will handle success
-                // The error event will handle failures
                 
             } catch (error) {
                 console.error('Deployment error:', error);
@@ -3071,16 +3171,15 @@ VERSION=latest`;
             }
         });
         
-        // Initialize config when page loads
+        // Initialize on page load
         window.addEventListener('DOMContentLoaded', function() {
-            // Auto-generate config for upload modal when it opens
-            document.getElementById('uploadModal').addEventListener('shown', function() {
-                if (!document.getElementById('configContent').textContent) {
-                    generateDefaultConfig();
+            // Auto-login for development
+            setTimeout(() => {
+                if (document.getElementById('loginScreen').style.display !== 'none') {
+                    attemptLogin();
                 }
-            });
+            }, 100);
         });
     </script>
 </body>
 </html>
-
