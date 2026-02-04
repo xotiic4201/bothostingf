@@ -6,8 +6,6 @@
     "build": "echo 'Static build complete'",
     "start": "echo 'Static site - no server required'"
   },
-  "engines": {
-    "node": ">=16"
   },
   "keywords": ["discord", "bot", "hosting", "management"],
   "author": "xotiic",
