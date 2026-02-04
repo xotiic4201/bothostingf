@@ -1,13 +1,12 @@
 {
-  "name": "xotiicbuthosting",
-  "version": "1.0.0",
-  "description": "Premium Discord Bot Hosting Platform",
+  "name": "xotiic-bot-hosting",
+  "version": "2.0.0",
+  "description": "Discord Bot Hosting Dashboard",
   "scripts": {
-    "build": "echo 'Static build complete'",
-    "start": "echo 'Static site - no server required'"
+    "build": "echo 'Building static site' && cp index.html /vercel/output/index.html"
   },
-  },
-  "keywords": ["discord", "bot", "hosting", "management"],
-  "author": "xotiic",
-  "license": "MIT"
-
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16"
+  }
+}
