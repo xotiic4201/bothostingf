@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "xotiicsverify-frontend",
   "builds": [
     {
       "src": "index.html",
@@ -9,19 +8,12 @@
   ],
   "routes": [
     {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://bot-hosting-b.onrender.com;"
-        }
-      ]
     }
   ]
 }
