@@ -115,6 +115,11 @@
             color: white;
         }
         
+        .btn-success {
+            background: #4ade80;
+            color: white;
+        }
+        
         /* Dashboard Layout */
         .dashboard-container {
             display: grid;
@@ -187,6 +192,7 @@
             padding: 1.5rem;
             border: 1px solid var(--border);
             transition: var(--transition);
+            cursor: pointer;
         }
         
         .server-card:hover {
@@ -249,6 +255,7 @@
         
         .status-verified { background: rgba(76, 201, 240, 0.2); color: var(--success); }
         .status-pending { background: rgba(248, 150, 30, 0.2); color: var(--warning); }
+        .status-restored { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
         
         /* Forms */
         .form-group { margin-bottom: 1.5rem; }
@@ -344,10 +351,13 @@
             animation: slideIn 0.3s ease;
             max-width: 400px;
             z-index: 1002;
+            backdrop-filter: blur(10px);
         }
         
         .alert-success { background: rgba(76, 201, 240, 0.2); border: 1px solid var(--success); color: var(--success); }
         .alert-error { background: rgba(247, 37, 133, 0.2); border: 1px solid var(--danger); color: var(--danger); }
+        .alert-info { background: rgba(67, 97, 238, 0.2); border: 1px solid var(--primary); color: var(--primary); }
+        .alert-warning { background: rgba(248, 150, 30, 0.2); border: 1px solid var(--warning); color: var(--warning); }
         
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
@@ -446,6 +456,51 @@
         
         input:checked + .toggle-slider { background-color: var(--primary); }
         input:checked + .toggle-slider:before { transform: translateX(26px); }
+        
+        /* Verification Link Modal */
+        .verification-link {
+            background: rgba(67, 97, 238, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            word-break: break-all;
+            border: 1px solid var(--primary);
+        }
+        
+        .verification-link code {
+            font-family: monospace;
+            color: var(--success);
+        }
+        
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .copy-btn:hover { background: var(--primary-dark); }
+        
+        /* Server Selection */
+        .server-selector {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .server-selector label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .server-selector select {
+            flex: 1;
+            max-width: 300px;
+        }
     </style>
 </head>
 <body>
@@ -467,7 +522,7 @@
                 </button>
             </div>
             <button id="loginBtn" class="btn btn-primary">
-                <i class="fab fa-discord"></i> Login with Discord
+                <i class="fab fa-discord"></i> Login to Dashboard
             </button>
         </div>
     </nav>
@@ -482,9 +537,15 @@
                 </div>
                 <h3>Bot Configuration Dashboard</h3>
                 <p style="margin: 1rem 0; color: var(--gray);">Login with Discord to configure your bot and manage members.</p>
-                <button id="dashboardLoginBtn" class="btn btn-primary" style="width: 100%;">
-                    <i class="fab fa-discord"></i> Login with Discord
+                <button onclick="openDashboardLogin()" class="btn btn-primary" style="width: 100%;">
+                    <i class="fab fa-discord"></i> Login to Dashboard
                 </button>
+                <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <p style="font-size: 0.9rem; color: var(--gray);">
+                        <i class="fas fa-info-circle"></i> 
+                        For user verification, use the bot command in your Discord server.
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -558,12 +619,18 @@
                         <!-- Quick Actions -->
                         <div class="config-section">
                             <h3>Quick Actions</h3>
+                            <div class="server-selector" style="display: none;" id="serverSelector">
+                                <label for="selectedServer"><i class="fas fa-server"></i> Select Server:</label>
+                                <select id="selectedServer" class="form-select" onchange="onServerChange()">
+                                    <option value="">Choose a server...</option>
+                                </select>
+                            </div>
                             <div class="action-buttons">
                                 <button onclick="showPage('verifications')" class="btn btn-primary">
                                     <i class="fas fa-play"></i> Run Verification
                                 </button>
-                                <button onclick="sendVerificationEmbed()" class="btn btn-primary">
-                                    <i class="fas fa-paper-plane"></i> Send Verification Button
+                                <button onclick="generateVerificationLink()" class="btn btn-success" id="generateLinkBtn" disabled>
+                                    <i class="fas fa-link"></i> Generate Verification Link
                                 </button>
                                 <button onclick="showPage('members')" class="btn btn-outline">
                                     <i class="fas fa-sync-alt"></i> Restore Members
@@ -591,6 +658,12 @@
                             <button onclick="refreshServers()" class="btn btn-outline">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
+                            <button onclick="selectAllServers()" class="btn btn-outline" id="selectAllBtn">
+                                <i class="fas fa-check-square"></i> Select All
+                            </button>
+                            <button onclick="generateBulkVerificationLinks()" class="btn btn-primary" id="bulkGenerateBtn" disabled>
+                                <i class="fas fa-bolt"></i> Generate Links for Selected
+                            </button>
                         </div>
 
                         <div id="serversList" class="server-grid">
@@ -602,19 +675,26 @@
                     <div id="membersPage" class="page">
                         <h2 style="margin-bottom: 1.5rem;">Member Management</h2>
                         
+                        <div class="server-selector">
+                            <label for="membersServerSelect"><i class="fas fa-server"></i> Select Server:</label>
+                            <select id="membersServerSelect" class="form-select" onchange="loadMembers()">
+                                <option value="">Choose a server...</option>
+                            </select>
+                        </div>
+                        
                         <div class="action-buttons">
                             <input type="text" id="memberSearch" class="search-box" placeholder="Search members...">
                             <button onclick="refreshMembers()" class="btn btn-outline">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
-                            <button onclick="restoreAllMembers()" class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i> Restore All
+                            <button onclick="restoreSelectedMembers()" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> Restore Selected
                             </button>
                         </div>
 
                         <div class="members-table">
                             <div class="table-header">
-                                <div></div>
+                                <div><input type="checkbox" id="selectAllMembers" onchange="toggleAllMembers()"></div>
                                 <div>Username</div>
                                 <div>Status</div>
                                 <div>Verified</div>
@@ -631,9 +711,17 @@
                     <div id="verificationsPage" class="page">
                         <h2 style="margin-bottom: 1.5rem;">Verification Management</h2>
                         
+                        <div class="server-selector">
+                            <label for="verificationServerSelect"><i class="fas fa-server"></i> Select Server:</label>
+                            <select id="verificationServerSelect" class="form-select" onchange="loadVerifications()">
+                                <option value="">Choose a server...</option>
+                            </select>
+                        </div>
+                        
                         <div class="tabs">
                             <div class="tab active" onclick="showVerificationTab('pending')">Pending</div>
                             <div class="tab" onclick="showVerificationTab('verified')">Verified</div>
+                            <div class="tab" onclick="showVerificationTab('restored')">Restored</div>
                             <div class="tab" onclick="showVerificationTab('failed')">Failed</div>
                         </div>
 
@@ -655,6 +743,12 @@
                         <div id="verifiedTab" class="tab-content">
                             <div id="verifiedList" class="members-table">
                                 <!-- Verified users will be loaded here -->
+                            </div>
+                        </div>
+
+                        <div id="restoredTab" class="tab-content">
+                            <div id="restoredList" class="members-table">
+                                <!-- Restored users will be loaded here -->
                             </div>
                         </div>
 
@@ -728,12 +822,20 @@
                     <div id="logsPage" class="page">
                         <h2 style="margin-bottom: 1.5rem;">Activity Logs</h2>
                         
+                        <div class="server-selector">
+                            <label for="logsServerSelect"><i class="fas fa-server"></i> Select Server:</label>
+                            <select id="logsServerSelect" class="form-select" onchange="loadLogs()">
+                                <option value="">Choose a server...</option>
+                            </select>
+                        </div>
+                        
                         <div class="action-buttons">
                             <select id="logType" class="form-select" style="width: 200px;">
                                 <option value="all">All Logs</option>
                                 <option value="verification">Verifications</option>
                                 <option value="restoration">Restorations</option>
                                 <option value="error">Errors</option>
+                                <option value="config">Configuration</option>
                             </select>
                             <button onclick="refreshLogs()" class="btn btn-outline">
                                 <i class="fas fa-sync-alt"></i> Refresh
@@ -754,17 +856,39 @@
         </div>
     </div>
 
-    <!-- Modal for Server Settings -->
-    <div id="serverModal" class="modal">
+    <!-- Verification Link Modal -->
+    <div id="verificationModal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3>Server Configuration</h3>
-                <button onclick="closeModal()" style="background: none; border: none; color: var(--light); font-size: 1.5rem; cursor: pointer;">
+                <h3>Verification Link Generated</h3>
+                <button onclick="closeVerificationModal()" style="background: none; border: none; color: var(--light); font-size: 1.5rem; cursor: pointer;">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div id="serverModalContent">
-                <!-- Server settings will be loaded here -->
+            <div style="margin-bottom: 1rem;">
+                <p>Share this link with users who need to verify for:</p>
+                <p style="font-weight: bold; color: var(--primary);" id="modalServerName"></p>
+            </div>
+            <div class="verification-link">
+                <code id="verificationLinkText"></code>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 1.5rem;">
+                <button onclick="copyVerificationLink()" class="copy-btn" style="flex: 1;">
+                    <i class="fas fa-copy"></i> Copy Link
+                </button>
+                <button onclick="shareVerificationLink()" class="btn btn-primary" style="flex: 1;">
+                    <i class="fas fa-share"></i> Share
+                </button>
+            </div>
+            <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(67, 97, 238, 0.1); border-radius: 8px;">
+                <h4 style="margin-bottom: 0.5rem; color: var(--primary);">
+                    <i class="fas fa-info-circle"></i> How to use:
+                </h4>
+                <ol style="padding-left: 1.5rem; color: var(--gray);">
+                    <li>Copy the link above</li>
+                    <li>Share it in your Discord server</li>
+                    <li>Users who click it will verify and join your server</li>
+                </ol>
             </div>
         </div>
     </div>
@@ -781,6 +905,9 @@
         let currentUser = null;
         let currentGuilds = [];
         let botConfig = {};
+        let selectedServerId = null;
+        let selectedServerName = null;
+        let selectedMembers = new Set();
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -790,8 +917,7 @@
         });
         
         function setupEventListeners() {
-            document.getElementById('loginBtn').addEventListener('click', openLogin);
-            document.getElementById('dashboardLoginBtn').addEventListener('click', openLogin);
+            document.getElementById('loginBtn').addEventListener('click', openDashboardLogin);
             
             // Search functionality
             document.getElementById('memberSearch')?.addEventListener('input', searchMembers);
@@ -803,12 +929,24 @@
                     this.classList.add('active');
                 });
             });
+            
+            // Modal close on click outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeVerificationModal();
+                }
+            });
+            
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') closeVerificationModal();
+            });
         }
         
-        // Authentication
-        function openLogin() {
-            const redirectUrl = encodeURIComponent(`${FRONTEND_URL}?action=login`);
-            window.location.href = `${API_BASE_URL}/api/auth/discord?redirect_url=${redirectUrl}`;
+        // ==================== AUTHENTICATION ====================
+        function openDashboardLogin() {
+            // For DASHBOARD login only
+            const redirectUrl = encodeURIComponent(`${FRONTEND_URL}?action=dashboard_login`);
+            window.location.href = `${API_BASE_URL}/api/auth/dashboard?redirect_url=${redirectUrl}`;
         }
         
         function checkAuth() {
@@ -821,24 +959,29 @@
                     if (data.success && data.user) {
                         currentUser = data.user;
                         localStorage.setItem('xotiicsverify_user', JSON.stringify(currentUser));
+                        localStorage.setItem('xotiicsverify_token', data.token);
                         
                         // Clean URL
                         const newUrl = window.location.origin + window.location.pathname;
                         window.history.replaceState({}, document.title, newUrl);
                         
                         showDashboard();
-                        showAlert('success', 'Successfully logged in!');
+                        showAlert('success', 'Successfully logged in to dashboard!');
+                        return;
                     }
                 } catch (error) {
                     console.error('Auth error:', error);
                     showAlert('error', 'Login failed. Please try again.');
                 }
-            } else {
-                const savedUser = localStorage.getItem('xotiicsverify_user');
-                if (savedUser) {
-                    currentUser = JSON.parse(savedUser);
-                    showDashboard();
-                }
+            }
+            
+            // Check for stored session
+            const savedUser = localStorage.getItem('xotiicsverify_user');
+            const savedToken = localStorage.getItem('xotiicsverify_token');
+            
+            if (savedUser && savedToken) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
             }
         }
         
@@ -860,19 +1003,23 @@
                 loadServers();
                 loadStats();
                 loadBotConfig();
+                
+                // Show server selector
+                document.getElementById('serverSelector').style.display = 'flex';
             }
         }
         
         function logout() {
             currentUser = null;
             localStorage.removeItem('xotiicsverify_user');
+            localStorage.removeItem('xotiicsverify_token');
             document.getElementById('loginPrompt').style.display = 'block';
             document.getElementById('dashboardContent').style.display = 'none';
             document.getElementById('userMenu').style.display = 'none';
             showAlert('success', 'Logged out successfully.');
         }
         
-        // Dashboard Pages
+        // ==================== DASHBOARD PAGES ====================
         function showPage(pageId) {
             // Update sidebar
             document.querySelectorAll('.sidebar-item').forEach(item => {
@@ -888,6 +1035,9 @@
             
             // Load page data
             switch(pageId) {
+                case 'servers':
+                    loadServers();
+                    break;
                 case 'members':
                     loadMembers();
                     break;
@@ -907,7 +1057,44 @@
             document.getElementById(`${tabId}Tab`).classList.add('active');
         }
         
-        // Data Loading Functions
+        // ==================== SERVER SELECTION ====================
+        function onServerChange() {
+            const select = document.getElementById('selectedServer');
+            selectedServerId = select.value;
+            selectedServerName = select.options[select.selectedIndex].text;
+            
+            // Enable/disable generate link button
+            document.getElementById('generateLinkBtn').disabled = !selectedServerId;
+            
+            // Update other selectors
+            ['membersServerSelect', 'verificationServerSelect', 'logsServerSelect'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.value = selectedServerId;
+                }
+            });
+        }
+        
+        function selectAllServers() {
+            const checkboxes = document.querySelectorAll('.server-checkbox');
+            const allSelected = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => {
+                cb.checked = !allSelected;
+            });
+            
+            updateBulkButton();
+        }
+        
+        function updateBulkButton() {
+            const checkboxes = document.querySelectorAll('.server-checkbox:checked');
+            document.getElementById('bulkGenerateBtn').disabled = checkboxes.length === 0;
+            document.getElementById('selectAllBtn').innerHTML = checkboxes.length === 0 ? 
+                '<i class="fas fa-check-square"></i> Select All' :
+                '<i class="fas fa-times"></i> Deselect All';
+        }
+        
+        // ==================== DATA LOADING ====================
         async function loadBotStatus() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/bot/status`);
@@ -916,7 +1103,7 @@
                     const statusEl = document.getElementById('botStatus');
                     statusEl.innerHTML = `
                         <div style="width: 10px; height: 10px; border-radius: 50%; background: #4ade80;"></div>
-                        <span>Online - ${data.guilds} servers, ${data.users} users</span>
+                        <span>Online - Version ${data.version}</span>
                     `;
                 }
             } catch (error) {
@@ -934,37 +1121,28 @@
             `;
             
             try {
-                // In a real app, this would call your API
-                // For now, simulate with mock data
-                setTimeout(() => {
-                    const mockServers = [
-                        {
-                            id: '123456789',
-                            name: 'Test Server',
-                            icon: 'https://cdn.discordapp.com/icons/123456789/abc123.png',
-                            memberCount: 150,
-                            verifiedCount: 45,
-                            isBotAdmin: true
-                        },
-                        {
-                            id: '987654321',
-                            name: 'Another Server',
-                            icon: null,
-                            memberCount: 500,
-                            verifiedCount: 120,
-                            isBotAdmin: true
-                        }
-                    ];
-                    
-                    currentGuilds = mockServers;
-                    renderServers(mockServers);
-                }, 1000);
+                const token = localStorage.getItem('xotiicsverify_token');
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/servers`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
                 
+                if (response.ok) {
+                    const data = await response.json();
+                    currentGuilds = data.servers || [];
+                    renderServers(currentGuilds);
+                    
+                    // Populate server selectors
+                    populateServerSelectors(currentGuilds);
+                } else {
+                    throw new Error('Failed to load servers');
+                }
             } catch (error) {
+                console.error('Failed to load servers:', error);
                 serversList.innerHTML = `
                     <div style="text-align: center; padding: 3rem; grid-column: 1 / -1; color: var(--danger);">
                         <i class="fas fa-exclamation-circle" style="font-size: 2rem;"></i>
                         <p>Failed to load servers</p>
+                        <p style="font-size: 0.9rem; color: var(--gray);">${error.message}</p>
                     </div>
                 `;
             }
@@ -978,41 +1156,67 @@
                     <div style="text-align: center; padding: 3rem; grid-column: 1 / -1;">
                         <i class="fas fa-server" style="font-size: 3rem; color: var(--gray);"></i>
                         <h3>No Servers Found</h3>
-                        <p style="color: var(--gray);">You need administrator permissions in a Discord server where the bot is added.</p>
+                        <p style="color: var(--gray);">The bot needs to be added to your Discord servers.</p>
                     </div>
                 `;
                 return;
             }
             
             serversList.innerHTML = servers.map(server => `
-                <div class="server-card" onclick="openServerConfig('${server.id}')">
-                    <div class="server-header">
-                        <img src="${server.icon || 'https://cdn.discordapp.com/embed/avatars/0.png'}" 
-                             alt="${server.name}" class="server-icon">
-                        <div>
-                            <h3 style="margin-bottom: 0.25rem;">${server.name}</h3>
-                            <p style="color: var(--gray); font-size: 0.9rem;">ID: ${server.id}</p>
+                <div class="server-card" onclick="toggleServerSelection('${server.id}')">
+                    <div style="display: flex; align-items: flex-start; gap: 10px;">
+                        <input type="checkbox" class="server-checkbox" id="server-${server.id}" 
+                               value="${server.id}" onchange="updateBulkButton()">
+                        <div style="flex: 1;">
+                            <div class="server-header">
+                                <img src="${server.icon || 'https://cdn.discordapp.com/embed/avatars/0.png'}" 
+                                     alt="${server.name}" class="server-icon">
+                                <div>
+                                    <h3 style="margin-bottom: 0.25rem;">${server.name}</h3>
+                                    <p style="color: var(--gray); font-size: 0.9rem;">ID: ${server.id}</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--gray);">Members</div>
+                                    <div style="font-weight: bold;">${server.member_count || 0}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--gray);">Verified</div>
+                                    <div style="font-weight: bold; color: var(--success);">${server.verified_count || 0}</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <button onclick="event.stopPropagation(); generateSingleVerificationLink('${server.id}', '${server.name}')" 
+                                        class="btn btn-outline btn-sm" style="width: 100%;">
+                                    <i class="fas fa-link"></i> Get Verification Link
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
-                        <div>
-                            <div style="font-size: 0.8rem; color: var(--gray);">Members</div>
-                            <div style="font-weight: bold;">${server.memberCount}</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.8rem; color: var(--gray);">Verified</div>
-                            <div style="font-weight: bold; color: var(--success);">${server.verifiedCount}</div>
-                        </div>
-                    </div>
-                    ${server.isBotAdmin ? 
-                        '<div style="margin-top: 1rem; padding: 0.5rem; background: rgba(67, 97, 238, 0.1); border-radius: var(--radius); font-size: 0.9rem;">Bot Administrator</div>' : 
-                        ''
-                    }
                 </div>
             `).join('');
         }
         
+        function populateServerSelectors(servers) {
+            const selectors = ['selectedServer', 'membersServerSelect', 'verificationServerSelect', 'logsServerSelect'];
+            
+            selectors.forEach(selectorId => {
+                const select = document.getElementById(selectorId);
+                if (select) {
+                    select.innerHTML = '<option value="">Choose a server...</option>' +
+                        servers.map(server => `<option value="${server.id}">${server.name}</option>`).join('');
+                }
+            });
+        }
+        
         async function loadMembers() {
+            const serverId = document.getElementById('membersServerSelect').value;
+            if (!serverId) {
+                showAlert('warning', 'Please select a server first');
+                return;
+            }
+            
             const membersTable = document.getElementById('membersTableBody');
             membersTable.innerHTML = `
                 <div class="table-row" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
@@ -1021,16 +1225,27 @@
                 </div>
             `;
             
-            // Simulate loading
-            setTimeout(() => {
-                const mockMembers = [
-                    { id: '1', username: 'User1#0001', avatar: null, status: 'verified', verifiedAt: '2024-01-15', lastActive: 'Today', server: 'Test Server' },
-                    { id: '2', username: 'User2#0002', avatar: null, status: 'pending', verifiedAt: null, lastActive: '2 days ago', server: 'Test Server' },
-                    { id: '3', username: 'User3#0003', avatar: null, status: 'verified', verifiedAt: '2024-01-14', lastActive: 'Yesterday', server: 'Another Server' }
-                ];
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/server/${serverId}/members`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
                 
-                renderMembers(mockMembers);
-            }, 1000);
+                if (response.ok) {
+                    const data = await response.json();
+                    renderMembers(data.members || []);
+                } else {
+                    throw new Error('Failed to load members');
+                }
+            } catch (error) {
+                console.error('Failed to load members:', error);
+                membersTable.innerHTML = `
+                    <div class="table-row" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--danger);">
+                        <i class="fas fa-exclamation-circle" style="font-size: 2rem;"></i>
+                        <p>Failed to load members</p>
+                    </div>
+                `;
+            }
         }
         
         function renderMembers(members) {
@@ -1046,25 +1261,28 @@
                 return;
             }
             
+            selectedMembers.clear();
             membersTable.innerHTML = members.map(member => `
                 <div class="table-row">
                     <div>
-                        <img src="${member.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" 
-                             alt="${member.username}" class="avatar-small">
+                        <input type="checkbox" class="member-checkbox" value="${member.discord_id}" 
+                               onchange="toggleMemberSelection('${member.discord_id}')">
                     </div>
                     <div>
                         <div style="font-weight: bold;">${member.username}</div>
-                        <div style="font-size: 0.8rem; color: var(--gray);">${member.server}</div>
+                        <div style="font-size: 0.8rem; color: var(--gray);">ID: ${member.discord_id}</div>
                     </div>
                     <div>
-                        <span class="status-badge ${member.status === 'verified' ? 'status-verified' : 'status-pending'}">
-                            ${member.status === 'verified' ? 'Verified' : 'Pending'}
+                        <span class="status-badge ${member.status === 'verified' ? 'status-verified' : 
+                                                    member.status === 'restored' ? 'status-restored' : 'status-pending'}">
+                            ${member.status === 'verified' ? 'Verified' : 
+                              member.status === 'restored' ? 'Restored' : 'Pending'}
                         </span>
                     </div>
-                    <div>${member.verifiedAt || 'Not verified'}</div>
-                    <div>${member.lastActive}</div>
+                    <div>${member.verified_at ? new Date(member.verified_at).toLocaleDateString() : 'Not verified'}</div>
+                    <div>${member.restored_at ? new Date(member.restored_at).toLocaleDateString() : 'Not restored'}</div>
                     <div>
-                        <button onclick="manageMember('${member.id}')" class="btn btn-outline btn-sm" style="padding: 4px 8px;">
+                        <button onclick="manageMember('${member.discord_id}', '${member.username}')" class="btn btn-outline btn-sm" style="padding: 4px 8px;">
                             <i class="fas fa-cog"></i>
                         </button>
                     </div>
@@ -1073,71 +1291,123 @@
         }
         
         async function loadStats() {
-            // Simulate API calls
-            setTimeout(() => {
-                document.getElementById('totalServers').textContent = '3';
-                document.getElementById('totalMembers').textContent = '750';
-                document.getElementById('verifiedToday').textContent = '15';
-                document.getElementById('pendingVerifications').textContent = '8';
-            }, 500);
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/servers`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const servers = data.servers || [];
+                    
+                    let totalMembers = 0;
+                    let verifiedToday = 0;
+                    
+                    // Load stats for each server
+                    for (const server of servers.slice(0, 3)) { // Limit to first 3 servers
+                        const statsResponse = await fetch(`${API_BASE_URL}/api/dashboard/server/${server.id}/stats`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        
+                        if (statsResponse.ok) {
+                            const stats = await statsResponse.json();
+                            totalMembers += stats.stats.total_verified || 0;
+                            verifiedToday += stats.stats.verified_today || 0;
+                        }
+                    }
+                    
+                    document.getElementById('totalServers').textContent = servers.length;
+                    document.getElementById('totalMembers').textContent = totalMembers;
+                    document.getElementById('verifiedToday').textContent = verifiedToday;
+                    document.getElementById('pendingVerifications').textContent = '0'; // Would need actual pending count
+                }
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
         }
         
         async function loadBotConfig() {
-            // Load saved configuration
-            const savedConfig = localStorage.getItem('bot_config');
-            if (savedConfig) {
-                botConfig = JSON.parse(savedConfig);
-                applyBotConfig();
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/bot/config`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    botConfig = data.config || {};
+                    applyBotConfig();
+                }
+            } catch (error) {
+                console.error('Failed to load bot config:', error);
             }
         }
         
         function applyBotConfig() {
-            // Apply config to form fields
-            document.getElementById('defaultRole').value = botConfig.defaultRole || '';
-            document.getElementById('autoAssignRole').checked = botConfig.autoAssignRole !== false;
-            document.getElementById('sendWelcomeDM').checked = botConfig.sendWelcomeDM || false;
-            document.getElementById('minAccountAge').value = botConfig.minAccountAge || 7;
-            document.getElementById('verificationTimeout').value = botConfig.verificationTimeout || 15;
-            document.getElementById('requireEmail').checked = botConfig.requireEmail !== false;
+            if (botConfig) {
+                document.getElementById('defaultRole').value = botConfig.default_role || '';
+                document.getElementById('autoAssignRole').checked = botConfig.auto_assign_role !== false;
+                document.getElementById('sendWelcomeDM').checked = botConfig.send_welcome_dm || false;
+                document.getElementById('minAccountAge').value = botConfig.min_account_age || 7;
+                document.getElementById('verificationTimeout').value = botConfig.verification_timeout || 15;
+                document.getElementById('requireEmail').checked = botConfig.require_email !== false;
+            }
         }
         
         async function loadVerifications() {
+            const serverId = document.getElementById('verificationServerSelect').value;
+            if (!serverId) return;
+            
             // This would load verification data from API
-            // For now, show loading state
-            document.getElementById('pendingVerificationsList').innerHTML = '<p style="padding: 2rem; text-align: center; color: var(--gray);">Loading verifications...</p>';
+            showAlert('info', `Loading verifications for server...`);
         }
         
         async function loadLogs() {
-            // This would load logs from API
-            // For now, show mock logs
-            setTimeout(() => {
-                const logs = [
-                    { time: '2024-01-15 10:30:00', type: 'verification', message: 'User User1#0001 verified successfully' },
-                    { time: '2024-01-15 10:25:00', type: 'restoration', message: 'Restored 5 users to Test Server' },
-                    { time: '2024-01-15 10:20:00', type: 'error', message: 'Failed to add user to guild: Missing permissions' }
-                ];
+            const serverId = document.getElementById('logsServerSelect').value;
+            if (!serverId) return;
+            
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const logType = document.getElementById('logType').value;
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/server/${serverId}/logs?log_type=${logType}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
                 
-                renderLogs(logs);
-            }, 500);
+                if (response.ok) {
+                    const data = await response.json();
+                    renderLogs(data.logs || []);
+                }
+            } catch (error) {
+                console.error('Failed to load logs:', error);
+            }
         }
         
         function renderLogs(logs) {
             const logsContainer = document.getElementById('logsContainer');
+            
+            if (logs.length === 0) {
+                logsContainer.innerHTML = '<p style="padding: 2rem; text-align: center; color: var(--gray);">No logs found</p>';
+                return;
+            }
+            
             logsContainer.innerHTML = logs.map(log => `
                 <div style="padding: 0.5rem; border-bottom: 1px solid var(--border);">
-                    <span style="color: var(--gray);">[${log.time}]</span>
+                    <span style="color: var(--gray);">[${new Date(log.created_at).toLocaleString()}]</span>
                     <span style="margin-left: 1rem; color: ${
                         log.type === 'error' ? 'var(--danger)' : 
-                        log.type === 'verification' ? 'var(--success)' : 'var(--warning)'
+                        log.type === 'verification' ? 'var(--success)' : 
+                        log.type === 'restoration' ? '#4ade80' : 'var(--warning)'
                     };">
                         ${log.type.toUpperCase()}
                     </span>
                     <span style="margin-left: 1rem;">${log.message}</span>
+                    ${log.user_id ? `<span style="margin-left: 1rem; color: var(--gray);">(User: ${log.user_id})</span>` : ''}
                 </div>
             `).join('');
         }
         
-        // Actions
+        // ==================== ACTIONS ====================
         function refreshServers() {
             showAlert('info', 'Refreshing servers...');
             loadServers();
@@ -1150,51 +1420,273 @@
         
         function searchMembers() {
             const searchTerm = document.getElementById('memberSearch').value.toLowerCase();
-            // In real app, this would filter or search via API
+            const rows = document.querySelectorAll('.table-row:not(:first-child)');
+            
+            rows.forEach(row => {
+                const username = row.querySelector('div:nth-child(2) div:first-child').textContent.toLowerCase();
+                row.style.display = username.includes(searchTerm) ? '' : 'none';
+            });
         }
         
-        function restoreAllMembers() {
-            if (confirm('Are you sure you want to restore all pending members? This may take a while.')) {
+        function toggleAllMembers() {
+            const selectAll = document.getElementById('selectAllMembers').checked;
+            const checkboxes = document.querySelectorAll('.member-checkbox');
+            
+            checkboxes.forEach(cb => {
+                cb.checked = selectAll;
+                const memberId = cb.value;
+                if (selectAll) {
+                    selectedMembers.add(memberId);
+                } else {
+                    selectedMembers.delete(memberId);
+                }
+            });
+        }
+        
+        function toggleMemberSelection(memberId) {
+            if (selectedMembers.has(memberId)) {
+                selectedMembers.delete(memberId);
+            } else {
+                selectedMembers.add(memberId);
+            }
+        }
+        
+        function toggleServerSelection(serverId) {
+            const checkbox = document.getElementById(`server-${serverId}`);
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                updateBulkButton();
+            }
+        }
+        
+        async function restoreSelectedMembers() {
+            const serverId = document.getElementById('membersServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
+            if (selectedMembers.size === 0) {
+                showAlert('warning', 'Please select members to restore');
+                return;
+            }
+            
+            if (confirm(`Restore ${selectedMembers.size} selected members to the server?`)) {
+                try {
+                    const token = localStorage.getItem('xotiicsverify_token');
+                    const response = await fetch(`${API_BASE_URL}/api/dashboard/server/${serverId}/restore`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            member_ids: Array.from(selectedMembers)
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        showAlert('success', data.message);
+                        loadMembers();
+                    } else {
+                        throw new Error('Failed to restore members');
+                    }
+                } catch (error) {
+                    console.error('Failed to restore members:', error);
+                    showAlert('error', 'Failed to restore members');
+                }
+            }
+        }
+        
+        async function restoreAllMembers() {
+            const serverId = document.getElementById('membersServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
+            if (confirm('Restore ALL pending members to the server? This may take a while.')) {
                 showAlert('info', 'Starting member restoration...');
                 // This would call your API
             }
         }
         
-        function sendVerificationEmbed() {
-            showAlert('info', 'Sending verification embed...');
-            // This would call your Discord bot API
+        // ==================== VERIFICATION LINKS ====================
+        async function generateVerificationLink() {
+            if (!selectedServerId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/server/${selectedServerId}/verification-link`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showVerificationModal(data.verification_url, selectedServerName);
+                } else {
+                    throw new Error('Failed to generate verification link');
+                }
+            } catch (error) {
+                console.error('Failed to generate verification link:', error);
+                showAlert('error', 'Failed to generate verification link');
+            }
+        }
+        
+        async function generateSingleVerificationLink(serverId, serverName) {
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/server/${serverId}/verification-link`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showVerificationModal(data.verification_url, serverName);
+                } else {
+                    throw new Error('Failed to generate verification link');
+                }
+            } catch (error) {
+                console.error('Failed to generate verification link:', error);
+                showAlert('error', 'Failed to generate verification link');
+            }
+        }
+        
+        async function generateBulkVerificationLinks() {
+            const checkboxes = document.querySelectorAll('.server-checkbox:checked');
+            const serverIds = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (serverIds.length === 0) {
+                showAlert('warning', 'Please select servers first');
+                return;
+            }
+            
+            showAlert('info', `Generating ${serverIds.length} verification links...`);
+            
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const links = [];
+                
+                for (const serverId of serverIds) {
+                    const response = await fetch(`${API_BASE_URL}/api/dashboard/server/${serverId}/verification-link`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        links.push({
+                            serverId,
+                            serverName: document.querySelector(`#server-${serverId}`)?.closest('.server-card').querySelector('h3').textContent || serverId,
+                            url: data.verification_url
+                        });
+                    }
+                }
+                
+                // Show all links
+                if (links.length > 0) {
+                    const linksText = links.map(link => `${link.serverName}:\n${link.url}`).join('\n\n');
+                    navigator.clipboard.writeText(linksText);
+                    showAlert('success', `Copied ${links.length} verification links to clipboard!`);
+                }
+            } catch (error) {
+                console.error('Failed to generate bulk links:', error);
+                showAlert('error', 'Failed to generate verification links');
+            }
+        }
+        
+        function showVerificationModal(link, serverName) {
+            document.getElementById('verificationLinkText').textContent = link;
+            document.getElementById('modalServerName').textContent = serverName;
+            document.getElementById('verificationModal').style.display = 'flex';
+        }
+        
+        function closeVerificationModal() {
+            document.getElementById('verificationModal').style.display = 'none';
+        }
+        
+        function copyVerificationLink() {
+            const link = document.getElementById('verificationLinkText').textContent;
+            navigator.clipboard.writeText(link);
+            showAlert('success', 'Verification link copied to clipboard!');
+        }
+        
+        function shareVerificationLink() {
+            const link = document.getElementById('verificationLinkText').textContent;
+            const serverName = document.getElementById('modalServerName').textContent;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `Verification Link for ${serverName}`,
+                    text: `Use this link to verify and join ${serverName}:`,
+                    url: link
+                });
+            } else {
+                copyVerificationLink();
+            }
         }
         
         function processPendingVerifications() {
+            const serverId = document.getElementById('verificationServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
             showAlert('info', 'Processing pending verifications...');
             // This would call your API
         }
         
         function sendVerificationReminder() {
+            const serverId = document.getElementById('verificationServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
             showAlert('info', 'Sending verification reminders...');
             // This would call your API
         }
         
-        function saveBotConfig() {
-            // Collect config from form
-            botConfig = {
-                defaultRole: document.getElementById('defaultRole').value,
-                autoAssignRole: document.getElementById('autoAssignRole').checked,
-                sendWelcomeDM: document.getElementById('sendWelcomeDM').checked,
-                minAccountAge: parseInt(document.getElementById('minAccountAge').value),
-                verificationTimeout: parseInt(document.getElementById('verificationTimeout').value),
-                requireEmail: document.getElementById('requireEmail').checked
-            };
-            
-            // Save to localStorage (in real app, save to your API)
-            localStorage.setItem('bot_config', JSON.stringify(botConfig));
-            
-            showAlert('success', 'Configuration saved successfully!');
+        // ==================== CONFIGURATION ====================
+        async function saveBotConfig() {
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const config = {
+                    default_role: document.getElementById('defaultRole').value,
+                    auto_assign_role: document.getElementById('autoAssignRole').checked,
+                    send_welcome_dm: document.getElementById('sendWelcomeDM').checked,
+                    min_account_age: parseInt(document.getElementById('minAccountAge').value),
+                    verification_timeout: parseInt(document.getElementById('verificationTimeout').value),
+                    require_email: document.getElementById('requireEmail').checked
+                };
+                
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/bot/config`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+                
+                if (response.ok) {
+                    botConfig = config;
+                    showAlert('success', 'Configuration saved successfully!');
+                } else {
+                    throw new Error('Failed to save configuration');
+                }
+            } catch (error) {
+                console.error('Failed to save bot config:', error);
+                showAlert('error', 'Failed to save configuration');
+            }
         }
         
         function resetBotConfig() {
             if (confirm('Reset all configuration to defaults?')) {
-                localStorage.removeItem('bot_config');
                 botConfig = {};
                 applyBotConfig();
                 showAlert('success', 'Configuration reset to defaults');
@@ -1202,119 +1694,44 @@
         }
         
         function refreshLogs() {
+            const serverId = document.getElementById('logsServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
             showAlert('info', 'Refreshing logs...');
             loadLogs();
         }
         
         function clearLogs() {
-            if (confirm('Clear all logs?')) {
+            const serverId = document.getElementById('logsServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
+            if (confirm('Clear all logs for this server?')) {
                 document.getElementById('logsContainer').innerHTML = '<p style="padding: 2rem; text-align: center; color: var(--gray);">Logs cleared</p>';
                 showAlert('success', 'Logs cleared');
             }
         }
         
-        function openServerConfig(serverId) {
-            const server = currentGuilds.find(s => s.id === serverId);
-            if (!server) return;
-            
-            const modalContent = document.getElementById('serverModalContent');
-            modalContent.innerHTML = `
-                <div class="form-group">
-                    <label class="form-label">Server Name</label>
-                    <input type="text" class="form-input" value="${server.name}" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Verification Channel</label>
-                    <select class="form-select">
-                        <option value="">Select channel</option>
-                        <option value="general">#general</option>
-                        <option value="welcome">#welcome</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Verification Role</label>
-                    <select class="form-select">
-                        <option value="">No role</option>
-                        <option value="member">Member</option>
-                        <option value="verified">Verified</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label style="display: flex; align-items: center; gap: 10px;">
-                        <input type="checkbox" checked>
-                        <span>Enable auto-verification</span>
-                    </label>
-                </div>
-                
-                <div class="form-group">
-                    <label style="display: flex; align-items: center; gap: 10px;">
-                        <input type="checkbox">
-                        <span>Require captcha</span>
-                    </label>
-                </div>
-                
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button onclick="saveServerConfig('${serverId}')" class="btn btn-primary" style="flex: 1;">
-                        <i class="fas fa-save"></i> Save Settings
-                    </button>
-                    <button onclick="sendTestVerification('${serverId}')" class="btn btn-outline" style="flex: 1;">
-                        <i class="fas fa-paper-plane"></i> Send Test
-                    </button>
-                    <button onclick="closeModal()" class="btn">
-                        Cancel
-                    </button>
-                </div>
-            `;
-            
-            document.getElementById('serverModal').style.display = 'flex';
-        }
-        
-        function saveServerConfig(serverId) {
-            showAlert('success', 'Server configuration saved!');
-            closeModal();
-        }
-        
-        function sendTestVerification(serverId) {
-            showAlert('info', 'Sending test verification...');
-            closeModal();
-        }
-        
-        function manageMember(memberId) {
-            showAlert('info', `Managing member ${memberId}`);
+        function manageMember(memberId, username) {
+            showAlert('info', `Managing member ${username} (${memberId})`);
             // Open member management modal
         }
         
-        function closeModal() {
-            document.getElementById('serverModal').style.display = 'none';
-        }
-        
-        function initializeDashboard() {
-            // Check for saved theme
-            const theme = localStorage.getItem('theme') || 'dark';
-            document.body.setAttribute('data-theme', theme);
-            
-            // Check for updates
-            checkForUpdates();
-        }
-        
-        function checkForUpdates() {
-            // This would check for bot updates
-            setTimeout(() => {
-                // showAlert('info', 'Bot is up to date');
-            }, 3000);
-        }
-        
-        // Utility Functions
+        // ==================== UTILITIES ====================
         function showAlert(type, message) {
             const container = document.getElementById('alertContainer');
             
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                   type === 'error' ? 'exclamation-circle' : 
+                                   type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
                 <span>${message}</span>
             `;
             
@@ -1323,16 +1740,11 @@
             setTimeout(() => alert.remove(), 5000);
         }
         
-        // Modal handling
-        window.addEventListener('click', function(event) {
-            if (event.target.classList.contains('modal')) {
-                closeModal();
-            }
-        });
-        
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') closeModal();
-        });
+        function initializeDashboard() {
+            // Check for saved theme
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', theme);
+        }
     </script>
 </body>
 </html>
