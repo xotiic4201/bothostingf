@@ -1,5 +1,5 @@
 // Configuration
-const API_BASE_URL = 'https://xotiicsverify-api.onrender.com'; // Replace with your Render URL
+const API_BASE_URL = 'https://bot-hosting-b.onrender.com'; // Replace with your Render URL
 const FRONTEND_URL = window.location.origin;
 
 // State
@@ -464,4 +464,5 @@ document.addEventListener('keydown', (event) => {
         event.preventDefault();
         refreshDashboard();
     }
+
 });
