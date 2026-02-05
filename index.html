@@ -3,10 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xotiicsverify - Discord Verification System</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>xotiicsverify - Discord Verification</title>
     <link rel="icon" href="https://imgur.com/a/PTTtQni.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset & Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --dark: #1a1a2e;
+            --darker: #0f0c29;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Hero */
+        .hero {
+            padding: 100px 0;
+            overflow: hidden;
+        }
+        
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+        
+        /* Features */
+        .section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 80px 0;
+        }
+        
+        .login-prompt {
+            text-align: center;
+            padding: 4rem;
+        }
+        
+        .login-card {
+            max-width: 400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 3rem;
+        }
+        
+        .servers-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .server-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border-left: 4px solid var(--secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .server-card:hover {
+            transform: translateX(10px);
+            border-color: var(--primary);
+        }
+        
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: var(--dark);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 500px;
+            border: 2px solid var(--primary);
+            padding: 2rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero .container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Alerts */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+            z-index: 1002;
+        }
+        
+        .alert-success {
+            background: rgba(76, 201, 240, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+        
+        .alert-error {
+            background: rgba(247, 37, 133, 0.2);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Loading */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -17,33 +320,10 @@
                 <span>xotiicsverify</span>
             </a>
             <div class="nav-links">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#dashboard" class="nav-link">Dashboard</a>
-                <a href="#docs" class="nav-link">Docs</a>
                 <button id="loginBtn" class="btn btn-primary">
                     <i class="fab fa-discord"></i> Login with Discord
                 </button>
-                <div id="userMenu" class="user-menu" style="display: none;">
-                    <button class="btn btn-outline" id="userName">
-                        <i class="fas fa-user"></i> <span id="usernameText">Loading...</span>
-                    </button>
-                    <button onclick="logout()" class="btn btn-danger">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
             </div>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-        <!-- Mobile Menu -->
-        <div class="mobile-menu" id="mobileMenu">
-            <a href="#features" class="mobile-nav-link">Features</a>
-            <a href="#dashboard" class="mobile-nav-link">Dashboard</a>
-            <a href="#docs" class="mobile-nav-link">Docs</a>
-            <button id="mobileLoginBtn" class="btn btn-primary">
-                <i class="fab fa-discord"></i> Login with Discord
-            </button>
         </div>
     </nav>
 
@@ -52,194 +332,335 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">Secure Discord Verification</h1>
-                <p class="hero-subtitle">Protect your Discord server with advanced verification, OAuth2 security, and automated member restoration.</p>
+                <p class="hero-subtitle">Protect your Discord server with advanced OAuth2 verification and automated member restoration.</p>
                 <div class="hero-buttons">
-                    <button onclick="openLogin()" class="btn btn-primary btn-lg">
-                        <i class="fas fa-rocket"></i> Get Started Free
+                    <button onclick="window.location.href='#dashboard'" class="btn btn-primary btn-lg">
+                        <i class="fas fa-rocket"></i> Get Started
                     </button>
-                    <a href="#features" class="btn btn-outline btn-lg">
-                        <i class="fas fa-info-circle"></i> Learn More
-                    </a>
+                    <button onclick="showAlert('info', 'Use /verify in your Discord server')" class="btn btn-outline btn-lg">
+                        <i class="fas fa-info-circle"></i> How it Works
+                    </button>
                 </div>
             </div>
             <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1633265486064-086b219458ec?auto=format&fit=crop&w=800&q=80" alt="Discord Verification">
+                <div style="background: var(--card-bg); padding: 2rem; border-radius: var(--radius);">
+                    <h3><i class="fas fa-bolt"></i> Quick Setup</h3>
+                    <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li style="margin-bottom: 0.5rem;">Invite bot to your server</li>
+                        <li style="margin-bottom: 0.5rem;">Use <code>/verify</code> command</li>
+                        <li style="margin-bottom: 0.5rem;">Users click verification link</li>
+                        <li>Manage via dashboard</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Features -->
-    <section id="features" class="section">
+    <section class="section">
         <div class="container">
             <h2 class="section-title">✨ Powerful Features</h2>
-            <p class="section-subtitle">Everything you need to secure your Discord community</p>
-            
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">
+                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;">
                         <i class="fas fa-shield-alt"></i>
                     </div>
                     <h3>OAuth2 Verification</h3>
-                    <p>Secure user verification using Discord's official OAuth2 system with identity and guild join permissions.</p>
+                    <p>Secure user verification using Discord's official OAuth2 system.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">
+                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;">
                         <i class="fas fa-sync-alt"></i>
                     </div>
                     <h3>Automated Restoration</h3>
-                    <p>Automatically restore verified users to your server with a single click or Discord command.</p>
+                    <p>Automatically restore verified users with a single command.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">
+                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;">
                         <i class="fas fa-chart-bar"></i>
                     </div>
                     <h3>Real-time Analytics</h3>
-                    <p>Monitor verification statistics, user activity, and restoration progress in real-time.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <h3>Easy Configuration</h3>
-                    <p>Customize welcome messages, verification roles, and settings through an intuitive dashboard.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <h3>Secure Storage</h3>
-                    <p>User tokens are encrypted and stored securely with automatic expiration and cleanup.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fab fa-discord"></i>
-                    </div>
-                    <h3>Bot Integration</h3>
-                    <p>Full integration with Discord slash commands for seamless server management.</p>
+                    <p>Monitor verification statistics and user activity.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Dashboard -->
-    <section id="dashboard" class="section section-dark">
+    <section id="dashboard" class="dashboard">
         <div class="container">
             <h2 class="section-title">📋 Dashboard</h2>
-            <p class="section-subtitle">Manage your servers and verification settings</p>
             
-            <!-- Loading State -->
-            <div id="loadingState" class="loading-state">
-                <div class="spinner"></div>
-                <p>Loading dashboard...</p>
-            </div>
-            
-            <!-- Not Logged In -->
-            <div id="notLoggedIn" class="login-prompt" style="display: none;">
+            <!-- Login Prompt -->
+            <div id="loginPrompt" class="login-prompt">
                 <div class="login-card">
-                    <i class="fas fa-lock login-icon"></i>
+                    <div style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;">
+                        <i class="fas fa-lock"></i>
+                    </div>
                     <h3>Login Required</h3>
-                    <p>Please login with Discord to access your servers and manage verification settings.</p>
-                    <button onclick="openLogin()" class="btn btn-primary">
+                    <p style="margin: 1rem 0; color: var(--gray);">Login with Discord to manage your servers.</p>
+                    <button id="dashboardLoginBtn" class="btn btn-primary" style="width: 100%;">
                         <i class="fab fa-discord"></i> Login with Discord
                     </button>
                 </div>
             </div>
             
-            <!-- Logged In Dashboard -->
+            <!-- Dashboard Content -->
             <div id="dashboardContent" style="display: none;">
-                <!-- Welcome Card -->
-                <div class="welcome-card">
-                    <div>
-                        <h3 id="welcomeMessage">Welcome back!</h3>
-                        <p>Manage your Discord servers and verification settings below.</p>
-                    </div>
-                    <button onclick="refreshDashboard()" class="btn btn-outline">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                </div>
-                
-                <!-- Stats Overview -->
-                <div id="statsOverview" style="display: none;">
-                    <h3 class="dashboard-subtitle">📈 Overview</h3>
-                    <div class="stats-grid" id="statsGrid">
-                        <!-- Stats populated by JS -->
+                <div style="background: var(--card-bg); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <h3 id="welcomeMessage">Welcome!</h3>
+                            <p style="color: var(--gray);">Manage your Discord servers below.</p>
+                        </div>
+                        <button onclick="loadServers()" class="btn btn-outline">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
                     </div>
                 </div>
                 
-                <!-- Servers List -->
-                <div class="dashboard-section">
-                    <div class="section-header">
-                        <h3 class="dashboard-subtitle">
-                            <i class="fas fa-server"></i> Your Servers
-                        </h3>
-                        <button onclick="refreshServers()" class="btn btn-sm btn-outline">
-                            <i class="fas fa-redo"></i>
-                        </button>
+                <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-server"></i> Your Servers</h3>
+                <div id="serversList" class="servers-list">
+                    <!-- Servers will load here -->
+                </div>
+                
+                <div id="noServers" style="text-align: center; padding: 3rem; display: none;">
+                    <div style="font-size: 3rem; color: var(--gray); margin-bottom: 1rem;">
+                        <i class="fas fa-server"></i>
                     </div>
-                    
-                    <div id="serversList" class="servers-list">
-                        <!-- Servers populated by JS -->
-                    </div>
-                    
-                    <div id="noServers" class="empty-state" style="display: none;">
-                        <i class="fas fa-server empty-icon"></i>
-                        <h3>No Servers Found</h3>
-                        <p>You don't have administrator permissions in any servers. Make sure you're logged in with a Discord account that owns or administrates servers.</p>
-                        <button onclick="openLogin()" class="btn btn-primary">
-                            <i class="fab fa-discord"></i> Try Different Account
-                        </button>
-                    </div>
+                    <h3>No Servers Found</h3>
+                    <p style="color: var(--gray); margin: 1rem 0;">You need administrator permissions in a Discord server.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <a href="/" class="logo">
-                        <img src="https://imgur.com/a/PTTtQni.png" alt="Logo">
-                        <span>xotiicsverify</span>
-                    </a>
-                    <p>Secure Discord verification system built with FastAPI & Discord.py</p>
-                </div>
-                <div class="footer-links">
-                    <a href="#features">Features</a>
-                    <a href="#dashboard">Dashboard</a>
-                    <a href="#docs">Documentation</a>
-                    <a href="https://discord.com/developers/applications" target="_blank">Discord Developer</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2024 xotiicsverify. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Modals -->
+    <!-- Server Modal -->
     <div id="serverModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Server Settings</h3>
-                <button class="modal-close" onclick="closeModal()">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Server Settings</h3>
+                <button onclick="closeModal()" style="background: none; border: none; color: var(--light); font-size: 1.5rem; cursor: pointer;">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body" id="modalContent">
-                <!-- Content populated by JS -->
+            <div id="modalContent">
+                <!-- Content loaded here -->
             </div>
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div style="margin-bottom: 2rem;">
+                <a href="/" class="logo" style="justify-content: center;">
+                    <img src="https://imgur.com/a/PTTtQni.png" alt="Logo">
+                    <span>xotiicsverify</span>
+                </a>
+                <p style="color: var(--gray); margin-top: 1rem;">Secure Discord verification system</p>
+            </div>
+            <div style="border-top: 1px solid var(--border); padding-top: 2rem;">
+                <p style="color: var(--gray);">© 2024 xotiicsverify. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Alert Container -->
     <div id="alertContainer"></div>
 
-    <script src="/script.js"></script>
+    <script>
+        // Configuration - UPDATE THESE URLs
+        const API_BASE_URL = 'https://bot-hosting-b.onrender.com';  // Your Render URL
+        const FRONTEND_URL = 'https://bothostingf.vercel.app';      // Your Vercel URL
+        
+        // State
+        let currentUser = null;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup login buttons
+            document.getElementById('loginBtn').addEventListener('click', openLogin);
+            document.getElementById('dashboardLoginBtn').addEventListener('click', openLogin);
+            
+            // Check for auth callback
+            checkAuthCallback();
+        });
+        
+        // Authentication
+        function openLogin() {
+            const redirectUrl = encodeURIComponent(FRONTEND_URL);
+            window.location.href = `${API_BASE_URL}/api/auth/discord?redirect_url=${redirectUrl}`;
+        }
+        
+        function checkAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authData = urlParams.get('auth_data');
+            
+            if (authData) {
+                try {
+                    const data = JSON.parse(decodeURIComponent(authData));
+                    if (data.success && data.user) {
+                        currentUser = data.user;
+                        localStorage.setItem('xotiicsverify_user', JSON.stringify(currentUser));
+                        showDashboard();
+                        showAlert('success', 'Successfully logged in!');
+                        
+                        // Clean URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                } catch (error) {
+                    console.error('Auth error:', error);
+                    showAlert('error', 'Login failed. Please try again.');
+                }
+            } else {
+                // Check localStorage
+                const savedUser = localStorage.getItem('xotiicsverify_user');
+                if (savedUser) {
+                    currentUser = JSON.parse(savedUser);
+                    showDashboard();
+                }
+            }
+        }
+        
+        function showDashboard() {
+            if (currentUser) {
+                document.getElementById('loginPrompt').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                document.getElementById('welcomeMessage').textContent = `Welcome, ${currentUser.username}!`;
+                loadServers();
+            }
+        }
+        
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('xotiicsverify_user');
+            document.getElementById('loginPrompt').style.display = 'block';
+            document.getElementById('dashboardContent').style.display = 'none';
+            showAlert('success', 'Logged out successfully.');
+        }
+        
+        // Server Management
+        async function loadServers() {
+            const serversList = document.getElementById('serversList');
+            const noServers = document.getElementById('noServers');
+            
+            serversList.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 1rem; color: var(--gray);">Loading servers...</p>
+                </div>
+            `;
+            
+            // Simulate loading (in real app, call API)
+            setTimeout(() => {
+                // Example servers - replace with API call
+                const exampleServers = [
+                    { guild_id: '123456789', verified_count: 15, settings: {} },
+                    { guild_id: '987654321', verified_count: 8, settings: {} }
+                ];
+                
+                if (exampleServers.length > 0) {
+                    serversList.innerHTML = '';
+                    exampleServers.forEach(server => {
+                        const serverCard = document.createElement('div');
+                        serverCard.className = 'server-card';
+                        serverCard.onclick = () => openServerModal(server);
+                        
+                        serverCard.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <div style="font-family: monospace; color: var(--primary);">Server: ${server.guild_id}</div>
+                                <span style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.9rem;">
+                                    ${server.verified_count} verified
+                                </span>
+                            </div>
+                            <div style="color: var(--gray); font-size: 0.9rem;">
+                                <i class="fas fa-cog"></i> ${Object.keys(server.settings || {}).length} settings
+                            </div>
+                        `;
+                        
+                        serversList.appendChild(serverCard);
+                    });
+                    noServers.style.display = 'none';
+                } else {
+                    serversList.innerHTML = '';
+                    noServers.style.display = 'block';
+                }
+            }, 1000);
+        }
+        
+        function openServerModal(server) {
+            const modal = document.getElementById('serverModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalContent.innerHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--light); font-weight: 500;">Server ID</label>
+                    <input type="text" value="${server.guild_id}" readonly 
+                           style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: var(--radius); color: var(--light);">
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--light); font-weight: 500;">Verified Users</label>
+                    <input type="text" value="${server.verified_count}" readonly 
+                           style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: var(--radius); color: var(--light);">
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button onclick="showAlert('success', 'Settings saved!')" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button onclick="showAlert('info', 'Restoration started!')" class="btn" style="flex: 1; background: var(--success); color: var(--dark);">
+                        <i class="fas fa-sync-alt"></i> Restore Users
+                    </button>
+                    <button onclick="closeModal()" class="btn btn-outline">
+                        Cancel
+                    </button>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('serverModal').style.display = 'none';
+        }
+        
+        // Utility Functions
+        function showAlert(type, message) {
+            const container = document.getElementById('alertContainer');
+            
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(alert);
+            
+            // Auto remove
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+        
+        // Close modal on outside click
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('serverModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Escape key closes modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
