@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xotiicsverify - Bot Configuration Dashboard</title>
-    <link rel="icon" href="https://imgur.com/a/PTTtQni.png" type="image/png">
+    <title>xotiicsverify - Complete Dashboard</title>
+    <link rel="icon" href="https://imgur.com/a/X5CpFIh" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -200,6 +200,11 @@
             color: white;
         }
         
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -212,26 +217,9 @@
             font-size: 0.9rem;
         }
         
-        /* Login Prompt */
-        .login-prompt {
-            text-align: center;
-            padding: 100px 0;
-        }
-        
-        .login-card {
-            max-width: 400px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 3rem 2rem;
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-        }
-        
-        .login-icon {
-            font-size: 3rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
+        .btn-xs {
+            padding: 4px 8px;
+            font-size: 0.8rem;
         }
         
         /* Dashboard Layout */
@@ -360,6 +348,42 @@
             object-fit: cover;
         }
         
+        /* Tables */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 50px 1fr 120px 120px 120px 100px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--gray-light);
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 50px 1fr 120px 120px 120px 100px;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .table-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
         /* Forms */
         .form-group {
             margin-bottom: 1.5rem;
@@ -415,10 +439,10 @@
             background: var(--dark);
             border-radius: var(--radius);
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             border: 2px solid var(--primary);
             padding: 2rem;
-            max-height: 80vh;
+            max-height: 90vh;
             overflow-y: auto;
             animation: modalSlideIn 0.3s ease;
         }
@@ -432,6 +456,35 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+        
+        /* Transfer Modal */
+        .transfer-config {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .transfer-source, .transfer-target {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
         }
         
         /* Alerts */
@@ -490,30 +543,135 @@
             }
         }
         
-        /* Verification Link Display */
-        .verification-link-display {
-            background: rgba(67, 97, 238, 0.1);
-            padding: 1rem;
-            border-radius: var(--radius-sm);
-            margin: 1rem 0;
-            word-break: break-all;
-            border: 1px solid var(--primary);
-            font-family: monospace;
-            font-size: 0.9rem;
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
         }
         
-        .qr-code-container {
-            text-align: center;
-            margin: 1.5rem 0;
+        .status-verified {
+            background: rgba(76, 201, 240, 0.2);
+            color: var(--success);
         }
         
-        .qr-code {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-            background: white;
-            padding: 10px;
+        .status-pending {
+            background: rgba(248, 150, 30, 0.2);
+            color: var(--warning);
+        }
+        
+        .status-restored {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Search Box */
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
             border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            color: var(--light);
+            width: 100%;
+            margin-bottom: 1.5rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+        
+        /* Config Sections */
+        .config-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+        
+        .config-section h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            color: var(--gray-light);
+            font-weight: 500;
+        }
+        
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Checkboxes */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        /* Page Transitions */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         /* Utility Classes */
@@ -532,17 +690,86 @@
         .w-100 { width: 100%; }
         .d-none { display: none; }
         .d-flex { display: flex; }
+        .d-grid { display: grid; }
         .align-center { align-items: center; }
         .justify-between { justify-content: space-between; }
-        .flex-1 { flex: 1; }
-        .ml-2 { margin-left: 0.5rem; }
-        .pl-4 { padding-left: 1rem; }
-        .font-bold { font-weight: 600; }
-        .border-top { border-top: 1px solid var(--border); }
-        .border-bottom { border-bottom: 1px solid var(--border); }
-        .rounded { border-radius: var(--radius-sm); }
-        .bg-primary-light { background: rgba(67, 97, 238, 0.1); }
-        .text-primary { color: var(--primary); }
+        .flex-wrap { flex-wrap: wrap; }
+        .gap-1 { gap: 0.5rem; }
+        .gap-2 { gap: 1rem; }
+        .gap-3 { gap: 1.5rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .table-header, .table-row {
+                grid-template-columns: 30px 1fr 100px;
+                font-size: 0.9rem;
+            }
+            
+            .server-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .transfer-config {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .user-menu {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+            
+            .tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+            }
+        }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
@@ -562,45 +789,6 @@
         
         ::-webkit-scrollbar-thumb:hover {
             background: var(--primary-dark);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                display: none;
-            }
-            
-            .server-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .navbar .container {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .login-card {
-                padding: 2rem 1rem;
-            }
-            
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
@@ -645,17 +833,11 @@
                 <div class="login-icon">
                     <i class="fas fa-robot"></i>
                 </div>
-                <h3 class="mb-2">Bot Configuration Dashboard</h3>
-                <p class="text-muted mb-3">Login with Discord to configure your bot and manage verified members.</p>
+                <h3 class="mb-2">Complete Bot Dashboard</h3>
+                <p class="text-muted mb-3">Login with Discord to manage your bot, verified members, and server transfers.</p>
                 <button onclick="openDashboardLogin()" class="btn btn-primary w-100">
                     <i class="fab fa-discord"></i> Login with Discord
                 </button>
-                <div class="mt-3 pt-2 border-top">
-                    <p class="text-muted" style="font-size: 0.9rem;">
-                        <i class="fas fa-info-circle"></i> 
-                        For user verification, use the bot commands in your Discord server.
-                    </p>
-                </div>
             </div>
         </div>
 
@@ -677,9 +859,21 @@
                             <i class="fas fa-users"></i>
                             <span>Members</span>
                         </a>
+                        <a href="javascript:void(0)" class="sidebar-item" onclick="showPage('transfers')">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>Transfers</span>
+                        </a>
+                        <a href="javascript:void(0)" class="sidebar-item" onclick="showPage('botControl')">
+                            <i class="fas fa-gamepad"></i>
+                            <span>Bot Control</span>
+                        </a>
                         <a href="javascript:void(0)" class="sidebar-item" onclick="showPage('configuration')">
                             <i class="fas fa-cog"></i>
                             <span>Configuration</span>
+                        </a>
+                        <a href="javascript:void(0)" class="sidebar-item" onclick="showPage('logs')">
+                            <i class="fas fa-history"></i>
+                            <span>Logs</span>
                         </a>
                     </div>
                     
@@ -687,8 +881,11 @@
                         <h4 class="text-muted mb-2">Bot Status</h4>
                         <div id="botStatus" class="d-flex align-center gap-2">
                             <div style="width: 10px; height: 10px; border-radius: 50%; background: gray;"></div>
-                            <span>Checking status...</span>
+                            <span>Checking...</span>
                         </div>
+                        <button onclick="refreshBotStatus()" class="btn btn-xs btn-outline w-100 mt-2">
+                            <i class="fas fa-sync-alt"></i> Refresh Status
+                        </button>
                     </div>
                 </div>
 
@@ -719,26 +916,29 @@
                         </div>
 
                         <!-- Quick Actions -->
-                        <div class="stat-card">
+                        <div class="config-section">
                             <h3 class="mb-2">Quick Actions</h3>
-                            <div class="server-selector mb-3" id="serverSelector" style="display: none;">
-                                <label for="selectedServer" class="form-label mb-1">
-                                    <i class="fas fa-server"></i> Select Server:
-                                </label>
-                                <select id="selectedServer" class="form-select" onchange="onServerChange()" style="max-width: 300px;">
-                                    <option value="">Choose a server...</option>
-                                </select>
-                            </div>
-                            <div class="d-flex gap-2 flex-wrap">
+                            <div class="action-buttons">
                                 <button onclick="showPage('servers')" class="btn btn-primary">
-                                    <i class="fas fa-server"></i> View Servers
+                                    <i class="fas fa-server"></i> View All Servers
                                 </button>
-                                <button onclick="generateVerificationLink()" class="btn btn-success" id="generateLinkBtn" disabled>
-                                    <i class="fas fa-link"></i> Generate Link
+                                <button onclick="openTransferModal()" class="btn btn-success">
+                                    <i class="fas fa-exchange-alt"></i> Start Transfer
+                                </button>
+                                <button onclick="showPage('botControl')" class="btn btn-warning">
+                                    <i class="fas fa-gamepad"></i> Bot Control Panel
                                 </button>
                                 <button onclick="showPage('configuration')" class="btn btn-outline">
                                     <i class="fas fa-wrench"></i> Settings
                                 </button>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="config-section">
+                            <h3 class="mb-2">Recent Activity</h3>
+                            <div id="recentActivity" class="text-muted">
+                                <p>No recent activity</p>
                             </div>
                         </div>
                     </div>
@@ -752,6 +952,10 @@
                             </button>
                         </div>
                         
+                        <div class="action-buttons mb-3">
+                            <input type="text" id="serverSearch" class="search-box" placeholder="Search servers...">
+                        </div>
+                        
                         <div id="serversList">
                             <div style="text-align: center; padding: 3rem;">
                                 <div class="loading-spinner"></div>
@@ -763,11 +967,175 @@
                     <!-- Members Page -->
                     <div id="membersPage" class="page">
                         <h2 class="mb-3">Member Management</h2>
-                        <div class="stat-card">
-                            <p class="text-muted">Select a server from the Overview page to manage members.</p>
-                            <button onclick="showPage('overview')" class="btn btn-primary mt-2">
-                                <i class="fas fa-arrow-left"></i> Back to Overview
+                        
+                        <div class="server-selector mb-3">
+                            <label for="membersServerSelect" class="form-label">
+                                <i class="fas fa-server"></i> Select Server:
+                            </label>
+                            <select id="membersServerSelect" class="form-select" onchange="loadMembers()" style="max-width: 300px;">
+                                <option value="">Choose a server...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <input type="text" id="memberSearch" class="search-box" placeholder="Search members...">
+                            <button onclick="refreshMembers()" class="btn btn-outline">
+                                <i class="fas fa-sync-alt"></i> Refresh
                             </button>
+                            <button onclick="restoreSelectedMembers()" class="btn btn-primary" id="restoreBtn" disabled>
+                                <i class="fas fa-user-plus"></i> Restore Selected
+                            </button>
+                            <button onclick="exportMembers()" class="btn btn-success">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+
+                        <div class="table-container">
+                            <div class="table-header">
+                                <div><input type="checkbox" id="selectAllMembers" onchange="toggleAllMembers()"></div>
+                                <div>Username</div>
+                                <div>Status</div>
+                                <div>Verified</div>
+                                <div>Last Active</div>
+                                <div>Actions</div>
+                            </div>
+                            <div id="membersTableBody">
+                                <div class="table-row" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                                    <p class="text-muted">Select a server to load members</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-between align-center mt-3">
+                            <div class="text-muted" id="memberCount">0 members</div>
+                            <div class="d-flex gap-2">
+                                <button onclick="previousPage()" class="btn btn-outline btn-sm" id="prevBtn" disabled>
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </button>
+                                <button onclick="nextPage()" class="btn btn-outline btn-sm" id="nextBtn" disabled>
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transfers Page -->
+                    <div id="transfersPage" class="page">
+                        <h2 class="mb-3">Server Transfers</h2>
+                        
+                        <div class="config-section">
+                            <h3 class="mb-2">Transfer Configuration</h3>
+                            <div class="grid-2">
+                                <div>
+                                    <label class="form-label">Source Server</label>
+                                    <select id="sourceServer" class="form-select">
+                                        <option value="">Select source server...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label">Target Server</label>
+                                    <select id="targetServer" class="form-select">
+                                        <option value="">Select target server...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="grid-2 mt-3">
+                                <div>
+                                    <label class="form-label">Limit Users</label>
+                                    <input type="number" id="transferLimit" class="form-input" placeholder="0 for all" min="0" max="1000">
+                                </div>
+                                <div>
+                                    <label class="form-label">Assign Role (Optional)</label>
+                                    <input type="text" id="transferRole" class="form-input" placeholder="Role ID">
+                                </div>
+                            </div>
+                            
+                            <div class="checkbox-container mt-3">
+                                <input type="checkbox" id="removeFromSource">
+                                <label>Remove users from source server after transfer</label>
+                            </div>
+                            
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="transferAll">
+                                <label>Transfer all verified users</label>
+                            </div>
+                            
+                            <div class="action-buttons mt-3">
+                                <button onclick="previewTransfer()" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> Preview Transfer
+                                </button>
+                                <button onclick="startTransfer()" class="btn btn-success" id="startTransferBtn" disabled>
+                                    <i class="fas fa-play"></i> Start Transfer
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Active Transfers -->
+                        <div class="config-section">
+                            <h3 class="mb-2">Active Transfers</h3>
+                            <div id="activeTransfers">
+                                <p class="text-muted">No active transfers</p>
+                            </div>
+                        </div>
+
+                        <!-- Transfer History -->
+                        <div class="config-section">
+                            <h3 class="mb-2">Transfer History</h3>
+                            <div id="transferHistory">
+                                <p class="text-muted">No transfer history</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bot Control Page -->
+                    <div id="botControlPage" class="page">
+                        <h2 class="mb-3">Bot Control Panel</h2>
+                        
+                        <div class="config-section">
+                            <h3 class="mb-2">Bot Commands</h3>
+                            <div class="action-buttons">
+                                <button onclick="sendBotCommand('sync')" class="btn btn-primary">
+                                    <i class="fas fa-sync-alt"></i> Sync Commands
+                                </button>
+                                <button onclick="sendBotCommand('restart')" class="btn btn-warning">
+                                    <i class="fas fa-redo"></i> Soft Restart
+                                </button>
+                                <button onclick="sendBotCommand('status')" class="btn btn-outline">
+                                    <i class="fas fa-info-circle"></i> Check Status
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="config-section">
+                            <h3 class="mb-2">Server Actions</h3>
+                            <div class="server-selector mb-3">
+                                <label for="botServerSelect" class="form-label">
+                                    <i class="fas fa-server"></i> Select Server:
+                                </label>
+                                <select id="botServerSelect" class="form-select" style="max-width: 300px;">
+                                    <option value="">Choose a server...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button onclick="sendServerCommand('send_verification')" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Send Verification Embed
+                                </button>
+                                <button onclick="sendServerCommand('restore_all')" class="btn btn-success">
+                                    <i class="fas fa-user-plus"></i> Restore All Members
+                                </button>
+                                <button onclick="sendServerCommand('update_config')" class="btn btn-outline">
+                                    <i class="fas fa-save"></i> Update Config
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="config-section">
+                            <h3 class="mb-2">Bot Statistics</h3>
+                            <div id="botStats" class="text-muted">
+                                <p>Loading bot statistics...</p>
+                            </div>
                         </div>
                     </div>
 
@@ -775,27 +1143,272 @@
                     <div id="configurationPage" class="page">
                         <h2 class="mb-3">Bot Configuration</h2>
                         
-                        <div class="stat-card">
-                            <h3 class="mb-2">Bot Settings</h3>
-                            <p class="text-muted mb-3">Configure your verification bot settings here.</p>
-                            
-                            <div class="form-group">
-                                <label class="form-label">API Base URL</label>
-                                <input type="text" class="form-input" value="https://bot-hosting-b.onrender.com" readonly>
+                        <div class="tabs">
+                            <div class="tab active" onclick="showConfigTab('general')">General</div>
+                            <div class="tab" onclick="showConfigTab('verification')">Verification</div>
+                            <div class="tab" onclick="showConfigTab('transfer')">Transfer</div>
+                            <div class="tab" onclick="showConfigTab('security')">Security</div>
+                        </div>
+
+                        <!-- General Tab -->
+                        <div id="generalTab" class="tab-content active">
+                            <div class="config-section">
+                                <div class="form-group">
+                                    <label class="form-label">Bot Prefix</label>
+                                    <input type="text" id="botPrefix" class="form-input" value="!" placeholder="Bot command prefix">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Default Activity</label>
+                                    <input type="text" id="botActivity" class="form-input" value="for /verify commands" placeholder="Bot status message">
+                                </div>
+                                
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="autoSync" checked>
+                                    <label>Auto-sync commands on startup</label>
+                                </div>
                             </div>
-                            
-                            <div class="d-flex gap-2 mt-3">
-                                <button onclick="saveBotConfig()" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Save Settings
-                                </button>
-                                <button onclick="resetBotConfig()" class="btn btn-outline">
-                                    <i class="fas fa-undo"></i> Reset
-                                </button>
+                        </div>
+
+                        <!-- Verification Tab -->
+                        <div id="verificationTab" class="tab-content">
+                            <div class="config-section">
+                                <div class="form-group">
+                                    <label class="form-label">Default Verification Role</label>
+                                    <input type="text" id="verificationRole" class="form-input" placeholder="Role ID for verified users">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Verification Channel</label>
+                                    <input type="text" id="verificationChannel" class="form-input" placeholder="Channel ID for verification">
+                                </div>
+                                
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="autoAssignRole" checked>
+                                    <label>Auto-assign role after verification</label>
+                                </div>
+                                
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="sendWelcomeDM">
+                                    <label>Send welcome DM after verification</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transfer Tab -->
+                        <div id="transferTab" class="tab-content">
+                            <div class="config-section">
+                                <div class="form-group">
+                                    <label class="form-label">Max Transfer Users</label>
+                                    <input type="number" id="maxTransferUsers" class="form-input" value="1000" min="1" max="5000">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Transfer Batch Size</label>
+                                    <input type="number" id="transferBatchSize" class="form-input" value="50" min="1" max="100">
+                                </div>
+                                
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="allowUserTransfers" checked>
+                                    <label>Allow user-initiated transfers</label>
+                                </div>
+                                
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="autoApproveTransfers">
+                                    <label>Auto-approve transfer requests</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Tab -->
+                        <div id="securityTab" class="tab-content">
+                            <div class="config-section">
+                                <div class="form-group">
+                                    <label class="form-label">Minimum Account Age (days)</label>
+                                    <input type="number" id="minAccountAge" class="form-input" value="7" min="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Verification Timeout (minutes)</label>
+                                    <input type="number" id="verificationTimeout" class="form-input" value="15" min="1" max="60">
+                                </div>
+                                
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="requireEmail" checked>
+                                    <label>Require verified email</label>
+                                </div>
+                                
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="enableCaptcha">
+                                    <label>Enable CAPTCHA verification</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons mt-3">
+                            <button onclick="saveConfiguration()" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save All Configuration
+                            </button>
+                            <button onclick="resetConfiguration()" class="btn btn-outline">
+                                <i class="fas fa-undo"></i> Reset to Defaults
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Logs Page -->
+                    <div id="logsPage" class="page">
+                        <h2 class="mb-3">Activity Logs</h2>
+                        
+                        <div class="server-selector mb-3">
+                            <label for="logsServerSelect" class="form-label">
+                                <i class="fas fa-server"></i> Select Server:
+                            </label>
+                            <select id="logsServerSelect" class="form-select" onchange="loadLogs()" style="max-width: 300px;">
+                                <option value="">All Servers</option>
+                            </select>
+                        </div>
+                        
+                        <div class="action-buttons mb-3">
+                            <select id="logType" class="form-select" style="max-width: 200px;">
+                                <option value="all">All Logs</option>
+                                <option value="verification">Verifications</option>
+                                <option value="transfer">Transfers</option>
+                                <option value="restoration">Restorations</option>
+                                <option value="error">Errors</option>
+                            </select>
+                            <button onclick="refreshLogs()" class="btn btn-outline">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button onclick="clearLogs()" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Clear Logs
+                            </button>
+                        </div>
+
+                        <div class="config-section">
+                            <div id="logsContainer" style="max-height: 500px; overflow-y: auto;">
+                                <div class="text-center p-3 text-muted">
+                                    <p>No logs available</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="modal">
+        <div class="modal-content">
+            <div class="d-flex justify-between align-center mb-3">
+                <h3>Transfer Configuration</h3>
+                <button onclick="closeTransferModal()" class="btn btn-outline btn-sm">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="transfer-config">
+                <div class="transfer-source">
+                    <h4 class="mb-2">Source Server</h4>
+                    <select id="modalSourceServer" class="form-select mb-2" onchange="updateTransferPreview()">
+                        <option value="">Select source...</option>
+                    </select>
+                    <div id="sourceServerInfo" class="text-muted">
+                        <p>Select a source server</p>
+                    </div>
+                </div>
+                
+                <div class="transfer-target">
+                    <h4 class="mb-2">Target Server</h4>
+                    <select id="modalTargetServer" class="form-select mb-2" onchange="updateTransferPreview()">
+                        <option value="">Select target...</option>
+                    </select>
+                    <div id="targetServerInfo" class="text-muted">
+                        <p>Select a target server</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="config-section mt-3">
+                <h4 class="mb-2">Transfer Settings</h4>
+                <div class="grid-2">
+                    <div>
+                        <label class="form-label">User Limit (0 = all)</label>
+                        <input type="number" id="modalTransferLimit" class="form-input" value="0" min="0" max="1000" onchange="updateTransferPreview()">
+                    </div>
+                    <div>
+                        <label class="form-label">Assign Role ID (optional)</label>
+                        <input type="text" id="modalTransferRole" class="form-input" placeholder="Role ID">
+                    </div>
+                </div>
+                
+                <div class="checkbox-container mt-2">
+                    <input type="checkbox" id="modalRemoveFromSource" onchange="updateTransferPreview()">
+                    <label>Remove users from source after transfer</label>
+                </div>
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="modalTransferAll" checked onchange="updateTransferPreview()">
+                    <label>Transfer all verified users</label>
+                </div>
+            </div>
+            
+            <div id="transferPreview" class="config-section mt-3" style="display: none;">
+                <h4 class="mb-2">Transfer Preview</h4>
+                <div id="previewContent">
+                    <p class="text-muted">Loading preview...</p>
+                </div>
+            </div>
+            
+            <div class="d-flex gap-2 mt-3">
+                <button onclick="executeTransfer()" class="btn btn-success flex-1" id="executeTransferBtn" disabled>
+                    <i class="fas fa-play"></i> Execute Transfer
+                </button>
+                <button onclick="closeTransferModal()" class="btn btn-outline flex-1">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div id="progressModal" class="modal">
+        <div class="modal-content">
+            <div class="d-flex justify-between align-center mb-3">
+                <h3>Transfer Progress</h3>
+                <div id="progressPercentage">0%</div>
+            </div>
+            
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            
+            <div class="mt-3">
+                <div class="d-flex justify-between mb-2">
+                    <span>Processed:</span>
+                    <span id="processedCount">0</span>
+                </div>
+                <div class="d-flex justify-between mb-2">
+                    <span>Transferred:</span>
+                    <span id="transferredCount">0</span>
+                </div>
+                <div class="d-flex justify-between mb-2">
+                    <span>Failed:</span>
+                    <span id="failedCount">0</span>
+                </div>
+                <div class="d-flex justify-between mb-2">
+                    <span>Total:</span>
+                    <span id="totalCount">0</span>
+                </div>
+            </div>
+            
+            <div id="transferLog" class="mt-3" style="max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.8rem;">
+                <!-- Transfer logs will appear here -->
+            </div>
+            
+            <button onclick="closeProgressModal()" class="btn btn-outline w-100 mt-3" id="closeProgressBtn" disabled>
+                <i class="fas fa-times"></i> Close
+            </button>
         </div>
     </div>
 
@@ -831,18 +1444,6 @@
                     <i class="fas fa-external-link-alt"></i> Test Link
                 </button>
             </div>
-            
-            <div class="mt-3 p-2 bg-primary-light rounded">
-                <h4 class="text-primary mb-2">
-                    <i class="fas fa-info-circle"></i> How to use:
-                </h4>
-                <ol class="text-muted pl-4">
-                    <li>Copy the verification link above</li>
-                    <li>Share it in your Discord server or with users</li>
-                    <li>Users who click it will verify and join your server</li>
-                    <li>The link expires in 10 minutes for security</li>
-                </ol>
-            </div>
         </div>
     </div>
 
@@ -855,6 +1456,11 @@
         let currentGuilds = [];
         let selectedServerId = null;
         let selectedServerName = null;
+        let selectedMembers = new Set();
+        let currentPage = 1;
+        let pageSize = 50;
+        let totalMembers = 0;
+        let activeTransfer = null;
         
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
@@ -867,19 +1473,73 @@
             checkAuth();
             
             // Setup event listeners
+            setupEventListeners();
+            
+            // Setup search functionality
+            setupSearch();
+        });
+        
+        function setupEventListeners() {
             document.getElementById('loginBtn').addEventListener('click', openDashboardLogin);
             
-            // Setup modal close handlers
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') closeVerificationModal();
-            });
+            // Server search
+            const serverSearch = document.getElementById('serverSearch');
+            if (serverSearch) {
+                serverSearch.addEventListener('input', debounce(searchServers, 300));
+            }
             
-            window.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal')) {
-                    closeVerificationModal();
+            // Member search
+            const memberSearch = document.getElementById('memberSearch');
+            if (memberSearch) {
+                memberSearch.addEventListener('input', debounce(searchMembers, 300));
+            }
+            
+            // Modal close handlers
+            window.addEventListener('click', (event) => {
+                if (event.target.classList.contains('modal')) {
+                    if (document.getElementById('transferModal').style.display === 'flex') {
+                        closeTransferModal();
+                    } else if (document.getElementById('verificationModal').style.display === 'flex') {
+                        closeVerificationModal();
+                    } else if (document.getElementById('progressModal').style.display === 'flex') {
+                        // Don't close progress modal during transfer
+                        if (!activeTransfer) {
+                            closeProgressModal();
+                        }
+                    }
                 }
             });
-        });
+            
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeTransferModal();
+                    closeVerificationModal();
+                    if (!activeTransfer) {
+                        closeProgressModal();
+                    }
+                }
+            });
+        }
+        
+        function setupSearch() {
+            // Server search
+            const serverSearch = document.getElementById('serverSearch');
+            if (serverSearch) {
+                serverSearch.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const serverCards = document.querySelectorAll('.server-card');
+                    
+                    serverCards.forEach(card => {
+                        const serverName = card.querySelector('h3').textContent.toLowerCase();
+                        if (serverName.includes(searchTerm)) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        }
         
         // ==================== AUTHENTICATION ====================
         async function checkAuth() {
@@ -890,17 +1550,14 @@
                 
                 if (token) {
                     console.log('Found token in URL');
-                    // Save token and clean URL
                     localStorage.setItem('xotiicsverify_token', token);
                     const cleanUrl = window.location.origin + window.location.pathname;
                     window.history.replaceState({}, document.title, cleanUrl);
-                    
-                    // Get user info with new token
                     await getUserInfo();
                     return;
                 }
                 
-                // Check localStorage for existing token
+                // Check localStorage
                 const savedToken = localStorage.getItem('xotiicsverify_token');
                 if (savedToken) {
                     console.log('Found token in localStorage');
@@ -908,7 +1565,7 @@
                     return;
                 }
                 
-                // No token found, show login
+                // No token found
                 console.log('No token found, showing login');
                 showLogin();
                 
@@ -922,9 +1579,7 @@
         async function getUserInfo(token = null) {
             try {
                 const authToken = token || localStorage.getItem('xotiicsverify_token');
-                if (!authToken) {
-                    throw new Error('No authentication token');
-                }
+                if (!authToken) throw new Error('No authentication token');
                 
                 console.log('Getting user info with token');
                 
@@ -948,7 +1603,7 @@
                     }
                 } else if (response.status === 401) {
                     // Token expired
-                    console.log('Token expired, clearing localStorage');
+                    console.log('Token expired');
                     localStorage.removeItem('xotiicsverify_token');
                     localStorage.removeItem('xotiicsverify_user');
                     showAlert('warning', 'Session expired, please login again');
@@ -997,13 +1652,8 @@
                 document.getElementById('userEmail').textContent = currentUser.email;
             }
             
-            // Load bot status
-            loadBotStatus();
-            
-            // Load servers
-            setTimeout(() => {
-                loadServers();
-            }, 500);
+            // Load initial data
+            loadInitialData();
         }
         
         function openDashboardLogin() {
@@ -1018,6 +1668,62 @@
             currentGuilds = [];
             showLogin();
             showAlert('success', 'Logged out successfully');
+        }
+        
+        // ==================== DASHBOARD NAVIGATION ====================
+        function showPage(pageId) {
+            // Update sidebar
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.sidebar-item[onclick*="${pageId}"]`).classList.add('active');
+            
+            // Show page
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(`${pageId}Page`).classList.add('active');
+            
+            // Load page-specific data
+            switch(pageId) {
+                case 'servers':
+                    loadServers();
+                    break;
+                case 'members':
+                    loadMembers();
+                    break;
+                case 'transfers':
+                    loadTransfers();
+                    break;
+                case 'botControl':
+                    loadBotControl();
+                    break;
+                case 'logs':
+                    loadLogs();
+                    break;
+            }
+        }
+        
+        function showConfigTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`.tab[onclick*="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId}Tab`).classList.add('active');
+        }
+        
+        // ==================== INITIAL DATA LOADING ====================
+        async function loadInitialData() {
+            try {
+                await Promise.all([
+                    loadBotStatus(),
+                    loadServers(),
+                    loadStats()
+                ]);
+            } catch (error) {
+                console.error('Initial data loading error:', error);
+                showAlert('error', 'Failed to load dashboard data');
+            }
         }
         
         // ==================== SERVER MANAGEMENT ====================
@@ -1054,15 +1760,10 @@
                     if (data.success && data.servers) {
                         currentGuilds = data.servers;
                         renderServers(currentGuilds);
+                        populateServerSelectors(currentGuilds);
                         
                         // Update stats
                         updateStats(currentGuilds);
-                        
-                        // Show server selector if we have servers
-                        if (currentGuilds.length > 0) {
-                            document.getElementById('serverSelector').style.display = 'block';
-                            populateServerSelectors(currentGuilds);
-                        }
                     } else {
                         renderNoServers();
                     }
@@ -1104,10 +1805,14 @@
                             <div class="font-bold text-success">${server.verified_count ? server.verified_count.toLocaleString() : '0'}</div>
                         </div>
                     </div>
-                    <div class="mt-3">
+                    <div class="d-flex gap-2 mt-3">
                         <button onclick="generateVerificationLink('${server.id}', '${escapeHtml(server.name)}')" 
-                                class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-link"></i> Generate Verification Link
+                                class="btn btn-primary btn-sm flex-1">
+                            <i class="fas fa-link"></i> Get Link
+                        </button>
+                        <button onclick="viewServerMembers('${server.id}', '${escapeHtml(server.name)}')" 
+                                class="btn btn-outline btn-sm flex-1">
+                            <i class="fas fa-users"></i> View Members
                         </button>
                     </div>
                 </div>
@@ -1144,25 +1849,588 @@
         }
         
         function populateServerSelectors(servers) {
-            const select = document.getElementById('selectedServer');
-            if (select) {
-                select.innerHTML = '<option value="">Choose a server...</option>' +
-                    servers.map(server => `<option value="${server.id}">${server.name}</option>`).join('');
-            }
-        }
-        
-        function onServerChange() {
-            const select = document.getElementById('selectedServer');
-            selectedServerId = select.value;
-            selectedServerName = select.options[select.selectedIndex].text;
+            // Main server selectors
+            const selectors = [
+                'membersServerSelect', 
+                'sourceServer', 
+                'targetServer',
+                'botServerSelect',
+                'logsServerSelect'
+            ];
             
-            // Enable/disable generate link button
-            document.getElementById('generateLinkBtn').disabled = !selectedServerId;
+            selectors.forEach(selectorId => {
+                const select = document.getElementById(selectorId);
+                if (select) {
+                    select.innerHTML = '<option value="">Choose a server...</option>' +
+                        servers.map(server => `<option value="${server.id}">${server.name}</option>`).join('');
+                }
+            });
+            
+            // Modal selectors
+            const modalSelectors = ['modalSourceServer', 'modalTargetServer'];
+            modalSelectors.forEach(selectorId => {
+                const select = document.getElementById(selectorId);
+                if (select) {
+                    select.innerHTML = '<option value="">Select server...</option>' +
+                        servers.map(server => `<option value="${server.id}">${server.name}</option>`).join('');
+                }
+            });
         }
         
         function refreshServers() {
             showAlert('info', 'Refreshing servers...');
             loadServers();
+        }
+        
+        function searchServers() {
+            const searchTerm = document.getElementById('serverSearch').value.toLowerCase();
+            const serverCards = document.querySelectorAll('.server-card');
+            
+            serverCards.forEach(card => {
+                const serverName = card.querySelector('h3').textContent.toLowerCase();
+                if (serverName.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        function viewServerMembers(serverId, serverName) {
+            showPage('members');
+            document.getElementById('membersServerSelect').value = serverId;
+            loadMembers();
+        }
+        
+        // ==================== MEMBER MANAGEMENT ====================
+        async function loadMembers() {
+            const serverId = document.getElementById('membersServerSelect').value;
+            if (!serverId) {
+                document.getElementById('membersTableBody').innerHTML = `
+                    <div class="table-row" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <p class="text-muted">Select a server to load members</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                if (!token) {
+                    showAlert('error', 'Please login first');
+                    return;
+                }
+                
+                document.getElementById('membersTableBody').innerHTML = `
+                    <div class="table-row" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <div class="loading-spinner"></div>
+                        <p class="text-muted mt-2">Loading members...</p>
+                    </div>
+                `;
+                
+                const offset = (currentPage - 1) * pageSize;
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/server/${serverId}/members?limit=${pageSize}&offset=${offset}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        totalMembers = data.pagination?.total || data.members?.length || 0;
+                        renderMembers(data.members || []);
+                        updatePagination();
+                    } else {
+                        throw new Error('Failed to load members');
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Load members error:', error);
+                document.getElementById('membersTableBody').innerHTML = `
+                    <div class="table-row" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--danger);">
+                        <i class="fas fa-exclamation-circle" style="font-size: 2rem;"></i>
+                        <p>Failed to load members</p>
+                        <button onclick="loadMembers()" class="btn btn-outline btn-sm mt-2">Retry</button>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderMembers(members) {
+            const membersTable = document.getElementById('membersTableBody');
+            
+            if (!members || members.length === 0) {
+                membersTable.innerHTML = `
+                    <div class="table-row" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <i class="fas fa-users" style="font-size: 2rem; color: var(--gray);"></i>
+                        <p class="mt-2">No members found</p>
+                    </div>
+                `;
+                document.getElementById('memberCount').textContent = '0 members';
+                return;
+            }
+            
+            selectedMembers.clear();
+            document.getElementById('selectAllMembers').checked = false;
+            document.getElementById('restoreBtn').disabled = true;
+            
+            membersTable.innerHTML = members.map(member => `
+                <div class="table-row">
+                    <div>
+                        <input type="checkbox" class="member-checkbox" value="${member.discord_id}" 
+                               onchange="toggleMemberSelection('${member.discord_id}')">
+                    </div>
+                    <div>
+                        <div class="font-bold">${escapeHtml(member.username)}</div>
+                        <div class="text-muted" style="font-size: 0.8rem;">ID: ${member.discord_id}</div>
+                    </div>
+                    <div>
+                        <span class="status-badge ${member.status === 'verified' ? 'status-verified' : 
+                                                    member.status === 'restored' ? 'status-restored' : 'status-pending'}">
+                            ${member.status === 'verified' ? 'Verified' : 
+                              member.status === 'restored' ? 'Restored' : 'Pending'}
+                        </span>
+                    </div>
+                    <div>${member.verified_at ? formatDate(member.verified_at) : 'Not verified'}</div>
+                    <div>${member.restored_at ? formatDate(member.restored_at) : 'Not restored'}</div>
+                    <div>
+                        <button onclick="manageMember('${member.discord_id}', '${escapeHtml(member.username)}')" 
+                                class="btn btn-outline btn-xs">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('memberCount').textContent = `${totalMembers.toLocaleString()} members`;
+        }
+        
+        function searchMembers() {
+            const searchTerm = document.getElementById('memberSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#membersTableBody .table-row');
+            
+            rows.forEach(row => {
+                if (row.querySelector('.font-bold')) {
+                    const username = row.querySelector('.font-bold').textContent.toLowerCase();
+                    row.style.display = username.includes(searchTerm) ? '' : 'none';
+                }
+            });
+        }
+        
+        function toggleAllMembers() {
+            const selectAll = document.getElementById('selectAllMembers').checked;
+            const checkboxes = document.querySelectorAll('.member-checkbox');
+            
+            checkboxes.forEach(cb => {
+                cb.checked = selectAll;
+                const memberId = cb.value;
+                if (selectAll) {
+                    selectedMembers.add(memberId);
+                } else {
+                    selectedMembers.delete(memberId);
+                }
+            });
+            
+            document.getElementById('restoreBtn').disabled = selectedMembers.size === 0;
+        }
+        
+        function toggleMemberSelection(memberId) {
+            if (selectedMembers.has(memberId)) {
+                selectedMembers.delete(memberId);
+            } else {
+                selectedMembers.add(memberId);
+            }
+            
+            document.getElementById('restoreBtn').disabled = selectedMembers.size === 0;
+            
+            // Update select all checkbox
+            const totalCheckboxes = document.querySelectorAll('.member-checkbox').length;
+            const checkedCheckboxes = document.querySelectorAll('.member-checkbox:checked').length;
+            document.getElementById('selectAllMembers').checked = totalCheckboxes > 0 && checkedCheckboxes === totalCheckboxes;
+        }
+        
+        async function restoreSelectedMembers() {
+            const serverId = document.getElementById('membersServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
+            if (selectedMembers.size === 0) {
+                showAlert('warning', 'Please select members to restore');
+                return;
+            }
+            
+            if (confirm(`Restore ${selectedMembers.size} selected members to the server?`)) {
+                try {
+                    const token = localStorage.getItem('xotiicsverify_token');
+                    const response = await fetch(`${API_BASE_URL}/api/dashboard/server/${serverId}/restore`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            member_ids: Array.from(selectedMembers)
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            showAlert('success', data.message);
+                            loadMembers();
+                        }
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    console.error('Restore members error:', error);
+                    showAlert('error', 'Failed to restore members');
+                }
+            }
+        }
+        
+        function exportMembers() {
+            const serverId = document.getElementById('membersServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
+            showAlert('info', 'Export feature coming soon!');
+        }
+        
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                loadMembers();
+            }
+        }
+        
+        function nextPage() {
+            const maxPage = Math.ceil(totalMembers / pageSize);
+            if (currentPage < maxPage) {
+                currentPage++;
+                loadMembers();
+            }
+        }
+        
+        function updatePagination() {
+            const maxPage = Math.ceil(totalMembers / pageSize);
+            document.getElementById('prevBtn').disabled = currentPage <= 1;
+            document.getElementById('nextBtn').disabled = currentPage >= maxPage;
+        }
+        
+        function refreshMembers() {
+            currentPage = 1;
+            loadMembers();
+        }
+        
+        // ==================== TRANSFER MANAGEMENT ====================
+        function openTransferModal() {
+            document.getElementById('transferModal').style.display = 'flex';
+        }
+        
+        function closeTransferModal() {
+            document.getElementById('transferModal').style.display = 'none';
+        }
+        
+        async function updateTransferPreview() {
+            const sourceId = document.getElementById('modalSourceServer').value;
+            const targetId = document.getElementById('modalTargetServer').value;
+            
+            if (!sourceId || !targetId || sourceId === targetId) {
+                document.getElementById('transferPreview').style.display = 'none';
+                document.getElementById('executeTransferBtn').disabled = true;
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const limit = document.getElementById('modalTransferLimit').value || 0;
+                
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/transfer/preview`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        source_guild_id: sourceId,
+                        target_guild_id: targetId,
+                        limit: parseInt(limit) || 0,
+                        transfer_all: document.getElementById('modalTransferAll').checked
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        const preview = data.preview;
+                        document.getElementById('previewContent').innerHTML = `
+                            <div class="grid-2">
+                                <div>
+                                    <strong>Source:</strong> ${preview.source_guild.name}<br>
+                                    <strong>Users:</strong> ${preview.total_users.toLocaleString()}
+                                </div>
+                                <div>
+                                    <strong>Target:</strong> ${preview.target_guild.name}<br>
+                                    <strong>Time:</strong> ${preview.estimated_time}
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <strong>Sample Users:</strong>
+                                <div style="max-height: 100px; overflow-y: auto; margin-top: 0.5rem;">
+                                    ${preview.users.map(user => `<div>• ${escapeHtml(user.username)}</div>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                        document.getElementById('transferPreview').style.display = 'block';
+                        document.getElementById('executeTransferBtn').disabled = false;
+                    }
+                }
+            } catch (error) {
+                console.error('Update preview error:', error);
+                document.getElementById('transferPreview').style.display = 'none';
+                document.getElementById('executeTransferBtn').disabled = true;
+            }
+        }
+        
+        async function executeTransfer() {
+            const sourceId = document.getElementById('modalSourceServer').value;
+            const targetId = document.getElementById('modalTargetServer').value;
+            const limit = document.getElementById('modalTransferLimit').value || 0;
+            const roleId = document.getElementById('modalTransferRole').value;
+            const removeFromSource = document.getElementById('modalRemoveFromSource').checked;
+            const transferAll = document.getElementById('modalTransferAll').checked;
+            
+            if (!sourceId || !targetId || sourceId === targetId) {
+                showAlert('error', 'Please select valid source and target servers');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/transfer/execute`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        source_guild_id: sourceId,
+                        target_guild_id: targetId,
+                        limit: parseInt(limit) || 0,
+                        assign_role_id: roleId || null,
+                        remove_from_source: removeFromSource,
+                        transfer_all: transferAll
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        showAlert('success', `Transfer started! Job ID: ${data.job_id}`);
+                        closeTransferModal();
+                        showProgressModal(data.job_id);
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Execute transfer error:', error);
+                showAlert('error', 'Failed to start transfer');
+            }
+        }
+        
+        function showProgressModal(jobId) {
+            activeTransfer = {
+                jobId: jobId,
+                interval: null
+            };
+            
+            document.getElementById('progressModal').style.display = 'flex';
+            document.getElementById('closeProgressBtn').disabled = true;
+            
+            // Start polling for progress
+            activeTransfer.interval = setInterval(() => {
+                checkTransferProgress(jobId);
+            }, 2000);
+        }
+        
+        async function checkTransferProgress(jobId) {
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/transfer/job/${jobId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        const job = data.job;
+                        
+                        // Update progress bar
+                        const total = job.total_users || 1;
+                        const processed = job.processed_users || 0;
+                        const percentage = Math.min(100, Math.round((processed / total) * 100));
+                        
+                        document.getElementById('progressBar').style.width = `${percentage}%`;
+                        document.getElementById('progressPercentage').textContent = `${percentage}%`;
+                        
+                        // Update counts
+                        document.getElementById('processedCount').textContent = processed;
+                        document.getElementById('transferredCount').textContent = job.transferred_users || 0;
+                        document.getElementById('failedCount').textContent = job.failed_users || 0;
+                        document.getElementById('totalCount').textContent = total;
+                        
+                        // Update logs
+                        const logContainer = document.getElementById('transferLog');
+                        if (job.status === 'completed' || job.status === 'failed') {
+                            clearInterval(activeTransfer.interval);
+                            activeTransfer = null;
+                            document.getElementById('closeProgressBtn').disabled = false;
+                            
+                            if (job.status === 'completed') {
+                                logContainer.innerHTML += `<div style="color: #4ade80;">✅ Transfer completed successfully!</div>`;
+                                showAlert('success', 'Transfer completed!');
+                            } else {
+                                logContainer.innerHTML += `<div style="color: var(--danger);">❌ Transfer failed: ${job.result?.error || 'Unknown error'}</div>`;
+                                showAlert('error', 'Transfer failed');
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Check progress error:', error);
+            }
+        }
+        
+        function closeProgressModal() {
+            if (activeTransfer && activeTransfer.interval) {
+                clearInterval(activeTransfer.interval);
+                activeTransfer = null;
+            }
+            document.getElementById('progressModal').style.display = 'none';
+        }
+        
+        function loadTransfers() {
+            // Load transfer history
+            showAlert('info', 'Loading transfers...');
+        }
+        
+        function previewTransfer() {
+            showAlert('info', 'Preview feature coming soon!');
+        }
+        
+        function startTransfer() {
+            openTransferModal();
+        }
+        
+        // ==================== BOT CONTROL ====================
+        function loadBotControl() {
+            // Load bot control data
+            loadBotStatus();
+        }
+        
+        async function sendBotCommand(command) {
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                let endpoint, method, body;
+                
+                switch(command) {
+                    case 'sync':
+                        endpoint = `${API_BASE_URL}/api/bot/sync`;
+                        method = 'POST';
+                        break;
+                    case 'restart':
+                        endpoint = `${API_BASE_URL}/api/bot/restart`;
+                        method = 'POST';
+                        break;
+                    case 'status':
+                        endpoint = `${API_BASE_URL}/api/bot/status`;
+                        method = 'GET';
+                        break;
+                    default:
+                        throw new Error('Unknown command');
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: body ? JSON.stringify(body) : undefined
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showAlert('success', `Command executed: ${command}`);
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Bot command error:', error);
+                showAlert('error', `Failed to execute command: ${command}`);
+            }
+        }
+        
+        async function sendServerCommand(command) {
+            const serverId = document.getElementById('botServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                let endpoint, method, body;
+                
+                switch(command) {
+                    case 'send_verification':
+                        endpoint = `${API_BASE_URL}/api/bot/guild/${serverId}/send-verification`;
+                        method = 'POST';
+                        break;
+                    case 'restore_all':
+                        endpoint = `${API_BASE_URL}/api/bot/guild/${serverId}/restore-all`;
+                        method = 'POST';
+                        break;
+                    case 'update_config':
+                        endpoint = `${API_BASE_URL}/api/dashboard/server/${serverId}/config`;
+                        method = 'POST';
+                        body = { /* config data */ };
+                        break;
+                    default:
+                        throw new Error('Unknown command');
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: body ? JSON.stringify(body) : undefined
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showAlert('success', `Server command executed: ${command}`);
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Server command error:', error);
+                showAlert('error', `Failed to execute server command: ${command}`);
+            }
         }
         
         // ==================== STATISTICS ====================
@@ -1189,26 +2457,52 @@
             document.getElementById('pendingVerifications').textContent = '0'; // Would need actual pending count
         }
         
+        // ==================== BOT STATUS ====================
+        async function loadBotStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bot/status`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const statusEl = document.getElementById('botStatus');
+                    
+                    if (data.status === 'online') {
+                        statusEl.innerHTML = `
+                            <div style="width: 10px; height: 10px; border-radius: 50%; background: #4ade80;"></div>
+                            <span>Online - Version ${data.version || '1.0.0'}</span>
+                        `;
+                    } else {
+                        statusEl.innerHTML = `
+                            <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--warning);"></div>
+                            <span>Offline</span>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error('Load bot status error:', error);
+                document.getElementById('botStatus').innerHTML = `
+                    <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--danger);"></div>
+                    <span>Connection Error</span>
+                `;
+            }
+        }
+        
+        function refreshBotStatus() {
+            loadBotStatus();
+        }
+        
         // ==================== VERIFICATION LINKS ====================
         async function generateVerificationLink(serverId = null, serverName = null) {
+            const targetServerId = serverId || selectedServerId;
+            const targetServerName = serverName || selectedServerName;
+            
+            if (!targetServerId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
             try {
-                const targetServerId = serverId || selectedServerId;
-                const targetServerName = serverName || selectedServerName;
-                
-                if (!targetServerId) {
-                    showAlert('error', 'Please select a server first');
-                    return;
-                }
-                
                 const token = localStorage.getItem('xotiicsverify_token');
-                if (!token) {
-                    showAlert('error', 'Please login first');
-                    return;
-                }
-                
                 showAlert('info', 'Generating verification link...');
-                
-                console.log(`Generating link for server: ${targetServerId}`);
                 
                 const response = await fetch(`${API_BASE_URL}/api/verify/${targetServerId}`, {
                     headers: {
@@ -1219,8 +2513,6 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('Verification link response:', data);
-                    
                     if (data.success) {
                         showVerificationModal(data.verification_url, targetServerName, data.qr_code_url);
                         showAlert('success', 'Verification link generated!');
@@ -1228,9 +2520,7 @@
                         throw new Error(data.detail || 'Failed to generate link');
                     }
                 } else {
-                    const errorText = await response.text();
-                    console.error('API error:', response.status, errorText);
-                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                    throw new Error(`HTTP ${response.status}`);
                 }
             } catch (error) {
                 console.error('Generate link error:', error);
@@ -1246,7 +2536,6 @@
             if (qrCodeUrl) {
                 qrCodeDiv.innerHTML = `<img src="${qrCodeUrl}" alt="QR Code" style="width: 100%; height: 100%;">`;
             } else {
-                // Generate QR code client-side
                 const encodedLink = encodeURIComponent(link);
                 const qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedLink}`;
                 qrCodeDiv.innerHTML = `<img src="${qrCode}" alt="QR Code" style="width: 100%; height: 100%;">`;
@@ -1275,53 +2564,86 @@
             window.open(link, '_blank');
         }
         
-        // ==================== BOT STATUS ====================
-        async function loadBotStatus() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/bot/status`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const statusEl = document.getElementById('botStatus');
-                    
-                    if (data.status === 'online') {
-                        statusEl.innerHTML = `
-                            <div style="width: 10px; height: 10px; border-radius: 50%; background: #4ade80;"></div>
-                            <span>Online - Version ${data.version || '1.0.0'}</span>
-                        `;
-                    } else {
-                        statusEl.innerHTML = `
-                            <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--warning);"></div>
-                            <span>Offline</span>
-                        `;
-                    }
-                } else {
-                    document.getElementById('botStatus').innerHTML = `
-                        <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--danger);"></div>
-                        <span>API Error</span>
-                    `;
-                }
-            } catch (error) {
-                console.error('Load bot status error:', error);
-                document.getElementById('botStatus').innerHTML = `
-                    <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--danger);"></div>
-                    <span>Connection Error</span>
-                `;
+        // ==================== CONFIGURATION ====================
+        function saveConfiguration() {
+            showAlert('success', 'Configuration saved successfully!');
+        }
+        
+        function resetConfiguration() {
+            if (confirm('Reset all configuration to defaults?')) {
+                showAlert('success', 'Configuration reset to defaults');
             }
         }
         
-        // ==================== DASHBOARD NAVIGATION ====================
-        function showPage(pageId) {
-            // Update sidebar
-            document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector(`.sidebar-item[onclick*="${pageId}"]`).classList.add('active');
+        // ==================== LOGS ====================
+        async function loadLogs() {
+            const serverId = document.getElementById('logsServerSelect').value;
+            const logType = document.getElementById('logType').value;
             
-            // Show page
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(`${pageId}Page`).classList.add('active');
+            try {
+                const token = localStorage.getItem('xotiicsverify_token');
+                let url = `${API_BASE_URL}/api/dashboard/server/${serverId}/logs`;
+                if (logType !== 'all') {
+                    url += `?log_type=${logType}`;
+                }
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        renderLogs(data.logs || []);
+                    }
+                }
+            } catch (error) {
+                console.error('Load logs error:', error);
+                showAlert('error', 'Failed to load logs');
+            }
+        }
+        
+        function renderLogs(logs) {
+            const container = document.getElementById('logsContainer');
+            
+            if (!logs || logs.length === 0) {
+                container.innerHTML = '<div class="text-center p-3 text-muted">No logs found</div>';
+                return;
+            }
+            
+            container.innerHTML = logs.map(log => `
+                <div class="p-2 border-bottom">
+                    <span class="text-muted">[${formatDateTime(log.created_at)}]</span>
+                    <span class="ml-2" style="color: ${
+                        log.type === 'error' ? 'var(--danger)' : 
+                        log.type === 'verification' ? 'var(--success)' : 
+                        log.type === 'restoration' ? '#4ade80' : 'var(--warning)'
+                    };">
+                        ${log.type.toUpperCase()}
+                    </span>
+                    <span class="ml-2">${escapeHtml(log.message)}</span>
+                    ${log.user_id ? `<span class="ml-2 text-muted">(User: ${log.user_id})</span>` : ''}
+                </div>
+            `).join('');
+        }
+        
+        function refreshLogs() {
+            loadLogs();
+        }
+        
+        function clearLogs() {
+            const serverId = document.getElementById('logsServerSelect').value;
+            if (!serverId) {
+                showAlert('error', 'Please select a server first');
+                return;
+            }
+            
+            if (confirm('Clear all logs for this server?')) {
+                document.getElementById('logsContainer').innerHTML = '<div class="text-center p-3 text-muted">Logs cleared</div>';
+                showAlert('success', 'Logs cleared');
+            }
         }
         
         // ==================== UTILITY FUNCTIONS ====================
@@ -1345,21 +2667,39 @@
             }, 5000);
         }
         
+        function formatDate(dateString) {
+            if (!dateString) return 'Never';
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        }
+        
+        function formatDateTime(dateString) {
+            if (!dateString) return 'Never';
+            const date = new Date(dateString);
+            return date.toLocaleString();
+        }
+        
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
         
-        // ==================== CONFIGURATION ====================
-        function saveBotConfig() {
-            showAlert('success', 'Settings saved successfully!');
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
         
-        function resetBotConfig() {
-            if (confirm('Reset all settings to defaults?')) {
-                showAlert('success', 'Settings reset to defaults');
-            }
+        // Placeholder functions
+        function manageMember(memberId, username) {
+            showAlert('info', `Managing member: ${username} (${memberId})`);
         }
     </script>
 </body>
