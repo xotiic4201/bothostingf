@@ -1197,13 +1197,13 @@
 
     <script>
         // ==================== Configuration ====================
-        const API_URL = window.location.hostname === 'localhost' 
+        const API_URL = window.location.hostname === 'https://bot-hosting-b-ga04.onrender.com' 
             ? 'http://localhost:8000' 
-            : 'https://your-backend.onrender.com';
+            : 'https://bot-hosting-b-ga04.onrender.com';
         
         const WS_URL = window.location.hostname === 'localhost'
             ? 'ws://localhost:8000'
-            : 'wss://your-backend.onrender.com';
+            : 'wss://bot-hosting-b-ga04.onrender.com';
 
         let socket = null;
         let currentUser = null;
@@ -2235,3 +2235,4 @@
     </script>
 </body>
 </html>
+
