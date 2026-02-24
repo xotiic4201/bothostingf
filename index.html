@@ -1459,6 +1459,21 @@
                 case 'party_invite':
                     handlePartyInvite(data);
                     break;
+                case 'announcement':
+                    addNotification(`📢 ${data.message}`, 'info');
+                    break;
+                case 'boss_spawn':
+                    addNotification(`🔥 BOSS SPAWNED: ${data.boss} at ${data.location}!`, 'warning');
+                    break;
+                case 'global_event':
+                    addNotification(`🎉 EVENT: ${data.event} - ${data.description}`, 'success');
+                    break;
+                case 'reward':
+                    addNotification(`🎁 ${data.message}`, 'success');
+                    break;
+                case 'cheat':
+                    addNotification(`💫 ${data.message}`, 'info');
+                    break;
             }
         }
 
@@ -2235,4 +2250,5 @@
     </script>
 </body>
 </html>
+
 
