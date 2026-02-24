@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2D Pixel RPG - Epic Adventure</title>
     <style>
-        /* Copy all your existing CSS here - it's perfect as is */
         * {
             margin: 0;
             padding: 0;
@@ -37,6 +36,7 @@
             border: 4px solid #4a4f55;
             image-rendering: pixelated;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            display: none;
         }
 
         #ui-overlay {
@@ -989,7 +989,7 @@
                 <input type="text" id="char-name" class="login-input" placeholder="Character Name">
                 
                 <div class="class-selector" id="class-selector">
-                    <div class="class-card" data-class="warrior">
+                    <div class="class-card selected" data-class="warrior">
                         <h3>WARRIOR</h3>
                         <p>High HP & Strength. Masters of melee combat.</p>
                     </div>
@@ -1160,7 +1160,6 @@
 
     <script>
         // ==================== Configuration ====================
-        // FIXED: Using port 8000 (not 8080) to match the backend
         const API_URL = 'http://localhost:8000';
         const WS_URL = 'ws://localhost:8000';
 
@@ -1172,6 +1171,7 @@
         let activeTrade = null;
         let activePvP = null;
         let gameLoop = null;
+        let selectedClass = 'warrior';
 
         // ==================== Authentication ====================
 
@@ -1283,6 +1283,7 @@
                 });
 
                 const characters = await response.json();
+                console.log('Characters:', characters);
 
                 if (characters.length > 0) {
                     currentCharacter = characters[0];
@@ -1301,8 +1302,6 @@
         }
 
         // ==================== Character Creation ====================
-
-        let selectedClass = 'warrior';
 
         document.querySelectorAll('.class-card').forEach(card => {
             card.addEventListener('click', () => {
@@ -1536,9 +1535,9 @@
             document.getElementById('lobby-screen').style.display = 'block';
             
             if (currentCharacter) {
-                document.getElementById('char-level').textContent = currentCharacter.level;
-                document.getElementById('char-gold').textContent = currentCharacter.gold;
-                document.getElementById('character-name').textContent = currentCharacter.name;
+                document.getElementById('char-level').textContent = currentCharacter.level || 1;
+                document.getElementById('char-gold').textContent = currentCharacter.gold || 100;
+                document.getElementById('character-name').textContent = currentCharacter.name || 'Hero';
             }
             
             loadOnlinePlayers();
@@ -2171,9 +2170,10 @@
             }
             
             document.getElementById('lobby-screen').style.display = 'none';
+            document.getElementById('game-canvas').style.display = 'none';
             document.getElementById('login-screen').style.display = 'flex';
-            document.getElementById('login-username').value = '';
-            document.getElementById('login-password').value = '';
+            document.getElementById('login-username').value = 'xotiic_40671';
+            document.getElementById('login-password').value = 'owner123';
         }
 
         function showLoading(show) {
@@ -2290,12 +2290,6 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // Pre-fill owner credentials for demo
-            if (!localStorage.getItem('token')) {
-                document.getElementById('login-username').value = 'xotiic_40671';
-                document.getElementById('login-password').value = 'owner123';
-            }
-            
             if (token) {
                 loadCharacters();
             }
