@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel RPG · Enhanced Edition</title>
+    <title>PIXEL RPG · COMPLETE EDITION</title>
     <style>
+        /* ===== RESET & GLOBAL ===== */
         * {
             margin: 0;
             padding: 0;
@@ -14,549 +15,267 @@
             image-rendering: crisp-edges;
         }
 
-        :root {
-            --gold: #ffd700;
-            --dark-gold: #b8860b;
-            --bg-deep: #0a0c0e;
-            --bg-dark: #1a1d21;
-            --bg-panel: #2a2a35;
-            --bg-item: #1e1e28;
-            --border-brown: #6b4f3c;
-            --border-gold: #8b7a5a;
-            --text-light: #e0d3b0;
-            --text-muted: #a0a0b0;
-            --hp-red: #ff4444;
-            --mana-blue: #4444ff;
-            --exp-green: #44ff44;
-        }
-
-        /* ===== GLOBAL ===== */
         body {
-            background: var(--bg-deep);
+            background: #0a0c0e;
             color: #fff;
             overflow: hidden;
             width: 100vw;
             height: 100vh;
         }
 
-        /* ===== LOADING SCREEN ===== */
-        #loading-screen {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-deep);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        #loading-screen h1 {
-            color: var(--gold);
-            font-size: 48px;
-            text-shadow: 0 0 20px var(--gold);
-            margin-bottom: 20px;
-            letter-spacing: 6px;
-        }
-        .loading-bar-wrap {
-            width: 300px;
-            height: 8px;
-            background: #2a2a35;
-            border: 1px solid var(--border-brown);
-        }
-        .loading-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--dark-gold), var(--gold));
-            width: 0%;
-            transition: width 0.3s;
-        }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-brown);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-top: 20px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ===== LOGIN SCREEN ===== */
-        #login-screen {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, #0d1117 0%, #1a1230 50%, #0d1117 100%);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        #login-screen.active { display: flex; }
-        .login-stars { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle var(--dur) infinite;
-            opacity: 0;
-        }
-        @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op)} }
-        .login-box {
-            position: relative;
-            background: rgba(20,20,35,0.97);
-            border: 2px solid var(--border-gold);
-            padding: 50px 40px;
-            width: 440px;
-            text-align: center;
-            box-shadow: 0 0 60px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.3);
-        }
-        .login-box::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 20px;
-            right: 20px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
-        .login-logo {
-            font-size: 52px;
-            color: var(--gold);
-            text-shadow: 0 0 30px var(--gold), 3px 3px 0 #4a2a00;
-            letter-spacing: 4px;
-            margin-bottom: 5px;
-        }
-        .login-subtitle {
-            color: #c0b080;
-            font-size: 13px;
-            letter-spacing: 5px;
-            margin-bottom: 35px;
-            opacity: 0.8;
-        }
-        .form-group { position: relative; margin: 12px 0; }
-        .form-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 16px;
-            pointer-events: none;
-        }
-        .login-input {
-            width: 100%;
-            padding: 13px 13px 13px 38px;
-            background: #12121e;
-            border: 1px solid #3a3a50;
-            color: var(--text-light);
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .login-input:focus { border-color: var(--dark-gold); box-shadow: 0 0 8px rgba(184,134,11,0.3); }
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            margin: 8px 0;
-            font-size: 16px;
-            cursor: pointer;
-            border: 1px solid;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .login-btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.05);
-            transition: left 0.3s;
-        }
-        .login-btn:hover::after { left: 100%; }
-        .btn-login { background: #3a2a1a; border-color: #b88a5a; color: #fff0d0; }
-        .btn-login:hover { background: #5a3a2a; border-color: var(--gold); }
-        .btn-register { background: #1a2a3a; border-color: #5a8ab8; color: #d0e8ff; }
-        .btn-register:hover { background: #2a3a5a; border-color: #88aadd; }
-        .error-box {
-            background: rgba(180,30,30,0.15);
-            border-left: 3px solid #ff4444;
-            padding: 10px 12px;
-            margin: 10px 0;
-            font-size: 12px;
-            color: #ff9999;
-            text-align: left;
-            display: none;
-        }
-        .error-box.show { display: block; }
-        .server-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 15px;
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #555;
-        }
-        .status-dot.online { background: #44ff44; box-shadow: 0 0 6px #44ff44; }
-        .status-dot.offline { background: #ff4444; }
-        .status-dot.checking { background: #ffaa00; animation: pulse-dot 1s infinite; }
-        @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-        /* ===== CHARACTER CREATION ===== */
-        #char-create-screen {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-dark);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 900;
-            overflow-y: auto;
-        }
-        #char-create-screen.active { display: flex; }
-        .char-create-box {
-            background: var(--bg-panel);
-            border: 2px solid var(--border-gold);
-            padding: 35px;
-            width: 640px;
-            max-width: 95vw;
-        }
-        .char-create-box h2 {
-            color: var(--gold);
-            text-align: center;
-            font-size: 26px;
-            margin-bottom: 25px;
-            letter-spacing: 3px;
-        }
-        .class-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin: 18px 0;
-        }
-        .class-card {
-            background: var(--bg-item);
-            border: 2px solid #3a3a50;
-            padding: 14px 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-        .class-card:hover { border-color: var(--dark-gold); background: #2a2a40; }
-        .class-card.selected { border-color: var(--gold); background: #2a2840; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
-        .pixel-class-icon {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 8px;
+        /* ===== PIXEL SPRITES (CSS) ===== */
+        .sprite {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
             background-size: cover;
-            image-rendering: pixelated;
         }
-        /* Sprite icons for each class (we'll use simple colored squares as placeholders) */
-        .sprite-warrior { background: #c44; }
+        .sprite-warrior { background: #c44; }  /* replace with actual pixel art */
         .sprite-mage { background: #46c; }
         .sprite-rogue { background: #6a6; }
         .sprite-archer { background: #c84; }
         .sprite-paladin { background: #ec4; }
         .sprite-necro { background: #868; }
 
+        /* ===== LOADING SCREEN ===== */
+        #loading-screen {
+            position: fixed; inset: 0; background: #0a0c0e;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
+        }
+        #loading-screen h1 { color: #ffd700; font-size: 48px; margin-bottom: 20px; letter-spacing: 6px; }
+        .loading-bar-wrap { width: 300px; height: 8px; background: #2a2a35; border: 1px solid #6b4f3c; }
+        .loading-bar-fill { height: 100%; background: linear-gradient(90deg, #b8860b, #ffd700); width: 0%; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #6b4f3c; border-top-color: #ffd700; border-radius: 50%; animation: spin 0.8s linear infinite; margin-top: 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== LOGIN SCREEN ===== */
+        #login-screen {
+            position: fixed; inset: 0; background: linear-gradient(135deg, #0d1117, #1a1230);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .login-box {
+            background: rgba(20,20,35,0.97); border: 2px solid #8b7a5a; padding: 50px 40px; width: 440px; text-align: center;
+            box-shadow: 0 0 60px rgba(0,0,0,0.8);
+        }
+        .login-logo { font-size: 52px; color: #ffd700; text-shadow: 0 0 30px #ffd700; margin-bottom: 5px; }
+        .login-subtitle { color: #c0b080; font-size: 13px; letter-spacing: 5px; margin-bottom: 35px; }
+        .form-group { margin: 12px 0; }
+        .login-input {
+            width: 100%; padding: 13px; background: #12121e; border: 1px solid #3a3a50; color: #e0d3b0;
+            font-size: 15px; outline: none;
+        }
+        .login-input:focus { border-color: #b8860b; }
+        .login-btn {
+            width: 100%; padding: 14px; margin: 8px 0; font-size: 16px; cursor: pointer;
+            background: #3a2a1a; border: 1px solid #b88a5a; color: #fff0d0; letter-spacing: 2px;
+            transition: all 0.2s;
+        }
+        .login-btn:hover { background: #5a3a2a; border-color: #ffd700; }
+        .error-box { background: rgba(180,30,30,0.15); border-left: 3px solid #ff4444; padding: 10px; margin: 10px 0; color: #ff9999; display: none; }
+        .error-box.show { display: block; }
+
+        /* ===== CHARACTER CREATION ===== */
+        #char-create-screen {
+            position: fixed; inset: 0; background: #1a1d21; display: none; justify-content: center; align-items: center; z-index: 900;
+        }
+        #char-create-screen.active { display: flex; }
+        .char-create-box {
+            background: #2a2a35; border: 2px solid #8b7a5a; padding: 35px; width: 640px;
+        }
+        .char-create-box h2 { color: #ffd700; text-align: center; font-size: 26px; margin-bottom: 25px; }
+        .class-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0;
+        }
+        .class-card {
+            background: #1e1e28; border: 2px solid #3a3a50; padding: 14px 10px;
+            cursor: pointer; transition: all 0.2s; text-align: center;
+        }
+        .class-card:hover { border-color: #b8860b; background: #2a2a40; }
+        .class-card.selected { border-color: #ffd700; background: #2a2840; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
+
         /* ===== LOBBY SCREEN ===== */
         #lobby-screen {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-dark);
-            display: none;
-            z-index: 800;
+            position: fixed; inset: 0; background: #1a1d21; display: none; z-index: 800;
         }
         #lobby-screen.active { display: block; }
-        .lobby-bg {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 50% 0%, #1a1a3a 0%, var(--bg-dark) 70%);
-        }
-        .lobby-wrap {
-            position: relative;
-            z-index: 1;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
         .lobby-topbar {
-            height: 56px;
-            background: rgba(20,20,30,0.95);
-            border-bottom: 1px solid var(--border-brown);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            gap: 20px;
-            flex-shrink: 0;
+            height: 56px; background: rgba(20,20,30,0.95); border-bottom: 1px solid #6b4f3c;
+            display: flex; align-items: center; padding: 0 20px; gap: 20px;
         }
-        .lobby-title {
-            color: var(--gold);
-            font-size: 22px;
-            letter-spacing: 3px;
-            margin-right: auto;
-        }
-        .topbar-stat {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--text-light);
-        }
-        .topbar-stat span { color: var(--gold); }
-        .lobby-body {
-            flex: 1;
-            display: flex;
-            gap: 0;
-            overflow: hidden;
-        }
+        .lobby-title { color: #ffd700; font-size: 22px; margin-right: auto; }
+        .topbar-stat { display: flex; align-items: center; gap: 6px; color: #e0d3b0; }
+        .topbar-stat span { color: #ffd700; }
+        .lobby-body { flex: 1; display: flex; overflow: hidden; }
         .lobby-sidebar {
-            width: 200px;
-            background: rgba(15,15,25,0.6);
-            border-right: 1px solid #2a2a3a;
-            padding: 15px 0;
-            flex-shrink: 0;
+            width: 200px; background: rgba(15,15,25,0.6); border-right: 1px solid #2a2a3a; padding: 15px 0;
         }
         .sidebar-item {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 13px;
-            color: var(--text-muted);
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            padding: 10px 20px; cursor: pointer; color: #a0a0b0; transition: all 0.15s;
             border-left: 3px solid transparent;
         }
-        .sidebar-item:hover {
-            background: rgba(255,255,255,0.04);
-            color: var(--text-light);
-            border-left-color: var(--border-brown);
-        }
-        .sidebar-item.active {
-            background: rgba(255,215,0,0.06);
-            color: var(--gold);
-            border-left-color: var(--gold);
-        }
-        .sidebar-section {
-            padding: 8px 20px 4px;
-            font-size: 10px;
-            color: #555;
-            letter-spacing: 2px;
-            margin-top: 10px;
-        }
-        .lobby-main {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
+        .sidebar-item:hover { background: rgba(255,255,255,0.04); color: #e0d3b0; border-left-color: #6b4f3c; }
+        .sidebar-item.active { background: rgba(255,215,0,0.06); color: #ffd700; border-left-color: #ffd700; }
+        .sidebar-section { padding: 8px 20px; color: #555; letter-spacing: 2px; }
+        .lobby-main { flex: 1; overflow-y: auto; padding: 20px; }
         .lobby-right {
-            width: 280px;
-            background: rgba(15,15,25,0.6);
-            border-left: 1px solid #2a2a3a;
-            padding: 15px;
-            flex-shrink: 0;
-            overflow-y: auto;
+            width: 280px; background: rgba(15,15,25,0.6); border-left: 1px solid #2a2a3a; padding: 15px; overflow-y: auto;
         }
-        .panel-title {
-            color: var(--gold);
-            font-size: 14px;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #2a2a3a;
-        }
+        .panel-title { color: #ffd700; font-size: 14px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #2a2a3a; }
 
         /* ===== GAME SCREEN ===== */
         #game-screen {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-deep);
-            display: none;
-            z-index: 700;
+            position: fixed; inset: 0; background: #0a0c0e; display: none; z-index: 700;
         }
         #game-screen.active { display: block; }
-        #game-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
+        #game-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
 
-        /* ===== HUD (unchanged, but keep IDs) ===== */
+        /* ===== HUD ===== */
         .hud-elem { position: absolute; pointer-events: all; }
-        #hud-char { top: 15px; left: 15px; width: 280px; background: rgba(10,12,18,0.92); border: 1px solid var(--border-brown); padding: 12px; z-index: 200; }
-        .hud-name { color: var(--gold); font-size: 15px; font-weight: bold; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        #hud-char {
+            top: 15px; left: 15px; width: 280px; background: rgba(10,12,18,0.92);
+            border: 1px solid #6b4f3c; padding: 12px; z-index: 200;
+        }
+        .hud-name { color: #ffd700; font-size: 15px; margin-bottom: 8px; display: flex; justify-content: space-between; }
         .hud-role { font-size: 10px; color: #aaa; }
         .bar-wrap { margin: 4px 0; }
-        .bar-label { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; display: flex; justify-content: space-between; }
+        .bar-label { font-size: 10px; color: #a0a0b0; display: flex; justify-content: space-between; }
         .bar { height: 14px; background: #1a1a2a; border: 1px solid #3a3a4a; position: relative; }
-        .bar-fill { height: 100%; transition: width 0.4s ease; }
+        .bar-fill { height: 100%; transition: width 0.4s; }
         .bar-fill.hp { background: linear-gradient(90deg, #aa2222, #ff5555); }
         .bar-fill.mp { background: linear-gradient(90deg, #2222aa, #5555ff); }
         .bar-fill.xp { background: linear-gradient(90deg, #226622, #55cc55); }
-        .hud-stats { display: flex; gap: 10px; margin-top: 8px; font-size: 11px; color: var(--text-muted); }
-        .hud-stats span { color: var(--text-light); }
 
-        #hud-minimap { bottom: 170px; right: 15px; width: 150px; height: 150px; background: rgba(10,12,18,0.9); border: 1px solid var(--border-brown); z-index: 200; }
-        #minimap-canvas { width: 150px; height: 150px; }
-
-        #hud-skills { bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 200; }
-        .skill-slot {
-            width: 52px; height: 52px; background: rgba(10,12,18,0.92); border: 1px solid var(--border-brown);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: border-color 0.15s;
+        #hud-actions {
+            top: 15px; left: 300px; display: flex; gap: 5px; z-index: 200;
         }
-        .skill-slot:hover { border-color: var(--gold); }
-        .skill-icon { font-size: 22px; }
-
-        #hud-quests { top: 15px; right: 15px; width: 240px; background: rgba(10,12,18,0.92); border: 1px solid var(--border-brown); padding: 12px; z-index: 200; max-height: 300px; overflow-y: auto; }
-        .quest-entry { margin: 8px 0; padding: 8px; background: rgba(255,255,255,0.03); border-left: 2px solid var(--border-brown); }
-        .quest-entry.active-quest { border-left-color: var(--gold); }
-        .quest-name { color: var(--gold); font-size: 12px; font-weight: bold; }
+        .hud-btn {
+            background: rgba(10,12,18,0.9); border: 1px solid #6b4f3c; color: #e0d3b0;
+            padding: 6px 12px; font-size: 11px; cursor: pointer;
+        }
+        .hud-btn:hover { border-color: #ffd700; color: #ffd700; }
 
         #hud-chat {
             bottom: 10px; left: 10px; width: 400px; height: 220px;
-            background: rgba(10,12,18,0.92); border: 1px solid var(--border-brown);
+            background: rgba(10,12,18,0.92); border: 1px solid #6b4f3c;
             display: flex; flex-direction: column; z-index: 200;
         }
-        .chat-tabs { display: flex; border-bottom: 1px solid #2a2a3a; flex-shrink: 0; }
-        .chat-tab { padding: 5px 10px; font-size: 11px; cursor: pointer; color: var(--text-muted); border-right: 1px solid #2a2a3a; }
-        .chat-tab:hover { color: var(--text-light); }
-        .chat-tab.active { color: var(--gold); background: rgba(255,215,0,0.06); }
+        .chat-tabs { display: flex; border-bottom: 1px solid #2a2a3a; }
+        .chat-tab {
+            padding: 5px 10px; font-size: 11px; cursor: pointer; color: #a0a0b0;
+            border-right: 1px solid #2a2a3a;
+        }
+        .chat-tab:hover { color: #e0d3b0; }
+        .chat-tab.active { color: #ffd700; background: rgba(255,215,0,0.06); }
         .chat-msgs { flex: 1; overflow-y: auto; padding: 8px; font-size: 11px; }
-        .chat-msg { margin: 3px 0; line-height: 1.4; }
+        .chat-msg { margin: 3px 0; }
         .chat-msg .ts { color: #555; margin-right: 4px; }
         .chat-msg .who { font-weight: bold; margin-right: 4px; }
-        .chat-input-row { display: flex; border-top: 1px solid #2a2a3a; flex-shrink: 0; }
-        #chat-input { flex: 1; background: transparent; border: none; color: var(--text-light); padding: 6px 8px; font-size: 12px; outline: none; }
-        #chat-send-btn { background: none; border: none; border-left: 1px solid #2a2a3a; color: var(--text-muted); padding: 0 10px; cursor: pointer; font-size: 14px; }
+        .chat-input-row { display: flex; border-top: 1px solid #2a2a3a; }
+        #chat-input { flex: 1; background: transparent; border: none; color: #e0d3b0; padding: 6px 8px; outline: none; }
+        #chat-send { background: none; border: none; border-left: 1px solid #2a2a3a; color: #a0a0b0; padding: 0 10px; cursor: pointer; }
 
-        #hud-actions { top: 15px; left: 300px; display: flex; gap: 5px; z-index: 200; }
-        .hud-btn {
-            background: rgba(10,12,18,0.9); border: 1px solid var(--border-brown); color: var(--text-light);
-            padding: 6px 12px; font-size: 11px; cursor: pointer; font-family: 'Courier New', monospace;
-            transition: all 0.15s; white-space: nowrap;
-        }
-        .hud-btn:hover { border-color: var(--gold); color: var(--gold); }
-
-        /* ===== NPC DIALOGUE POPUP ===== */
+        /* ===== NPC DIALOGUE ===== */
         .npc-dialogue-popup {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px;
-            background: var(--bg-panel);
-            border: 2px solid var(--border-gold);
-            padding: 20px;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            width: 400px; background: #2a2a35; border: 2px solid #8b7a5a; padding: 20px;
+            z-index: 1000; display: none;
         }
         .npc-dialogue-popup.active { display: block; }
-        .npc-name { color: var(--gold); font-size: 18px; margin-bottom: 10px; }
-        .npc-dialogue-text { color: var(--text-light); margin-bottom: 20px; line-height: 1.5; white-space: pre-wrap; }
+        .npc-name { color: #ffd700; font-size: 18px; margin-bottom: 10px; }
+        .npc-dialogue-text { color: #e0d3b0; margin-bottom: 20px; white-space: pre-wrap; }
         .dialogue-choices { display: flex; flex-direction: column; gap: 5px; }
         .dialogue-choice {
-            background: var(--bg-item);
-            border: 1px solid var(--border-brown);
-            padding: 8px 12px;
-            cursor: pointer;
-            color: var(--text-light);
-            transition: background 0.15s;
-            text-align: left;
+            background: #1e1e28; border: 1px solid #6b4f3c; padding: 8px 12px; cursor: pointer; color: #e0d3b0;
         }
-        .dialogue-choice:hover { background: var(--border-brown); border-color: var(--gold); }
+        .dialogue-choice:hover { background: #6b4f3c; }
 
-        /* ===== POPUP PANELS (unchanged) ===== */
+        /* ===== POPUP PANELS (common) ===== */
         .popup-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 500;
-            display: none;
-            justify-content: center;
-            align-items: center;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 500;
+            display: none; justify-content: center; align-items: center;
         }
         .popup-overlay.show { display: flex; }
         .popup-box {
-            background: var(--bg-panel);
-            border: 2px solid var(--border-gold);
-            padding: 25px;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
+            background: #2a2a35; border: 2px solid #8b7a5a; padding: 25px;
+            max-height: 90vh; overflow-y: auto; min-width: 300px;
         }
-        .popup-title {
-            color: var(--gold);
-            font-size: 18px;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .popup-title { color: #ffd700; font-size: 18px; margin-bottom: 20px; display: flex; justify-content: space-between; }
         .popup-close {
-            background: none;
-            border: 1px solid #662222;
-            color: #aa4444;
-            width: 26px;
-            height: 26px;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: none; border: 1px solid #662222; color: #aa4444; width: 26px; height: 26px; cursor: pointer;
         }
         .popup-close:hover { background: #662222; color: white; }
         .action-btn {
-            background: var(--border-brown);
-            border: 1px solid #b88a5a;
-            color: #fff0d0;
-            padding: 8px 18px;
-            cursor: pointer;
-            font-size: 13px;
-            font-family: 'Courier New', monospace;
-            transition: all 0.15s;
+            background: #6b4f3c; border: 1px solid #b88a5a; color: #fff0d0;
+            padding: 8px 18px; cursor: pointer; font-size: 13px;
         }
-        .action-btn:hover { background: #8b6f5c; border-color: var(--gold); }
+        .action-btn:hover { background: #8b6f5c; border-color: #ffd700; }
 
-        /* Inventory, skills, etc. grids (unchanged) */
-        #inv-popup .popup-box { width: 620px; }
+        /* Inventory grid */
         .inv-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 15px 0; }
-        .inv-slot { aspect-ratio: 1; background: var(--bg-item); border: 1px solid #3a3a50; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 22px; }
-        .inv-slot:hover { border-color: var(--gold); }
-        /* ... other popup styles from original (omitted for brevity, but should be kept) ... */
+        .inv-slot { aspect-ratio: 1; background: #1e1e28; border: 1px solid #3a3a50; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 22px; }
+        .inv-slot:hover { border-color: #ffd700; }
 
-        /* ===== NOTIFICATIONS ===== */
+        /* Skill tree */
+        .skill-tree-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .skill-tier-box { background: #1e1e28; border: 1px solid #3a3a50; padding: 12px; }
+        .skill-tier-label { color: #ffd700; font-size: 11px; text-align: center; margin-bottom: 10px; }
+        .skill-node { padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid #3a3a50; margin: 6px 0; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .skill-node:hover { border-color: #ffd700; }
+        .skill-node.learned { border-color: #44aa44; }
+
+        /* Guild */
+        .guild-header-box { background: #1e1e28; border: 1px solid #3a3a50; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
+        .guild-emblem { width: 56px; height: 56px; background: #2a2a40; border: 2px solid #8b7a5a; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+
+        /* Auction */
+        .auction-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-height: 360px; overflow-y: auto; }
+        .auction-card { background: #1e1e28; border: 1px solid #3a3a50; padding: 12px; cursor: pointer; }
+        .auction-card:hover { border-color: #ffd700; }
+
+        /* Trade */
+        .trade-layout { display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: start; }
+        .trade-pane { background: #1e1e28; border: 1px solid #3a3a50; padding: 12px; min-height: 200px; }
+
+        /* PvP */
+        .pvp-arena-layout { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; margin: 20px 0; }
+        .pvp-fighter { text-align: center; background: #1e1e28; border: 1px solid #3a3a50; padding: 20px; }
+        .pvp-vs-badge { font-size: 48px; color: #8b0000; }
+        .pvp-countdown { font-size: 64px; color: #ffd700; text-align: center; }
+
+        /* Leaderboard */
+        .lb-table { width: 100%; border-collapse: collapse; }
+        .lb-table th { padding: 8px; text-align: left; color: #a0a0b0; border-bottom: 1px solid #2a2a3a; }
+        .lb-table td { padding: 9px; border-bottom: 1px solid #1a1a2a; }
+
+        /* Quest log */
+        .quest-log-layout { display: grid; grid-template-columns: 200px 1fr; gap: 15px; }
+        .quest-list-panel { background: #1e1e28; border: 1px solid #2a2a3a; padding: 8px; max-height: 420px; overflow-y: auto; }
+        .quest-list-item { padding: 8px 10px; cursor: pointer; border-left: 3px solid transparent; color: #a0a0b0; }
+        .quest-list-item:hover { background: rgba(255,255,255,0.03); }
+        .quest-list-item.selected { background: rgba(255,215,0,0.06); color: #ffd700; border-left-color: #ffd700; }
+
+        /* Cheat */
+        .cheat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .cheat-btn { background: #2a1a0a; border: 1px solid #6a4a2a; color: #ffcc88; padding: 12px; cursor: pointer; text-align: left; }
+        .cheat-btn:hover { background: #3a2a1a; border-color: #ffd700; }
+
+        /* Mod */
+        .admin-player-row { display: flex; align-items: center; padding: 8px 10px; background: #1e1e28; margin: 3px 0; gap: 10px; }
+        .admin-actions { display: flex; gap: 5px; margin-left: auto; }
+        .mod-btn { padding: 4px 8px; cursor: pointer; background: transparent; border: 1px solid #6b4f3c; color: #e0d3b0; }
+
+        /* Combat */
+        .combat-versus { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .combatant-box { flex: 1; background: #1e1e28; padding: 12px; text-align: center; border: 1px solid #3a3a50; }
+
+        /* Notifications */
         #notif-area {
-            position: fixed;
-            top: 15px;
-            right: 260px;
-            width: 280px;
-            z-index: 9000;
-            pointer-events: none;
+            position: fixed; top: 15px; right: 260px; width: 280px; z-index: 9000; pointer-events: none;
         }
         .notif {
-            background: rgba(10,12,18,0.97);
-            border-left: 3px solid var(--gold);
-            padding: 10px 14px;
-            margin-bottom: 8px;
-            animation: notif-in 0.3s ease;
-            font-size: 12px;
-            color: var(--text-light);
+            background: rgba(10,12,18,0.97); border-left: 3px solid #ffd700;
+            padding: 10px 14px; margin-bottom: 8px; animation: notif-in 0.3s;
+            font-size: 12px; color: #e0d3b0;
         }
         @keyframes notif-in {
             from { opacity: 0; transform: translateX(30px); }
@@ -569,32 +288,25 @@
 <!-- ===== LOADING ===== -->
 <div id="loading-screen">
     <h1>PIXEL RPG</h1>
-    <p>EPIC ADVENTURE</p>
+    <p>COMPLETE EDITION</p>
     <div class="loading-bar-wrap"><div class="loading-bar-fill" id="load-bar"></div></div>
     <div class="spinner"></div>
 </div>
 
 <!-- ===== LOGIN ===== -->
-<div id="login-screen" class="active">
-    <div class="login-stars" id="login-stars"></div>
+<div id="login-screen">
     <div class="login-box">
         <div class="login-logo">PIXEL RPG</div>
         <div class="login-subtitle">EPIC ADVENTURE</div>
         <div class="form-group">
-            <span class="form-icon">👤</span>
             <input type="text" id="login-username" class="login-input" placeholder="Username" value="xotiic">
         </div>
         <div class="form-group">
-            <span class="form-icon">🔒</span>
             <input type="password" id="login-password" class="login-input" placeholder="Password" value="owner123">
         </div>
         <div class="error-box" id="login-error"></div>
-        <button class="login-btn btn-login" onclick="handleLogin()">▶ LOGIN</button>
-        <button class="login-btn btn-register" onclick="handleRegister()">+ REGISTER</button>
-        <div class="server-badge">
-            <div class="status-dot checking" id="status-dot"></div>
-            <span id="status-text">Checking server...</span>
-        </div>
+        <button class="login-btn" onclick="handleLogin()">▶ LOGIN</button>
+        <button class="login-btn" onclick="handleRegister()">+ REGISTER</button>
     </div>
 </div>
 
@@ -607,50 +319,44 @@
         </div>
         <div class="class-grid" id="class-grid"></div>
         <div class="error-box" id="char-create-error"></div>
-        <button class="login-btn btn-login" onclick="submitCreateCharacter()">⚔ CREATE CHARACTER</button>
+        <button class="login-btn" onclick="submitCreateCharacter()">⚔ CREATE CHARACTER</button>
     </div>
 </div>
 
 <!-- ===== LOBBY ===== -->
 <div id="lobby-screen">
-    <div class="lobby-bg"></div>
-    <div class="lobby-wrap">
-        <div class="lobby-topbar">
-            <div class="lobby-title">PIXEL RPG</div>
-            <div class="topbar-stat">👤 <span id="lb-username">xotiic</span></div>
-            <div class="topbar-stat">🏅 <span id="lb-role">Player</span></div>
-            <div class="topbar-stat">⚔ <span id="lb-charname">PixelHero</span></div>
-            <div class="topbar-stat">⭐ Lv.<span id="lb-level">1</span></div>
-            <div class="topbar-stat">💰 <span id="lb-gold">100</span>g</div>
-            <button class="action-btn" onclick="startGame()" style="margin-left:auto">▶ ENTER WORLD</button>
-            <button class="action-btn" onclick="logout()">LOGOUT</button>
+    <div class="lobby-topbar">
+        <div class="lobby-title">PIXEL RPG</div>
+        <div class="topbar-stat">👤 <span id="lb-username">xotiic</span></div>
+        <div class="topbar-stat">🏅 <span id="lb-role">Player</span></div>
+        <div class="topbar-stat">⚔ <span id="lb-charname">PixelHero</span></div>
+        <div class="topbar-stat">⭐ Lv.<span id="lb-level">1</span></div>
+        <div class="topbar-stat">💰 <span id="lb-gold">100</span>g</div>
+        <button class="action-btn" onclick="startGame()" style="margin-left:auto">▶ ENTER WORLD</button>
+        <button class="action-btn" onclick="logout()">LOGOUT</button>
+    </div>
+    <div class="lobby-body">
+        <div class="lobby-sidebar">
+            <div class="sidebar-section">NAVIGATE</div>
+            <div class="sidebar-item active" data-tab="characters" onclick="lobbyTab(this,'characters')">🗡 Characters</div>
+            <div class="sidebar-item" data-tab="leaderboard" onclick="lobbyTab(this,'leaderboard')">🏆 Leaderboard</div>
+            <div class="sidebar-item" data-tab="guilds" onclick="lobbyTab(this,'guilds')">⚔ Guilds</div>
+            <div class="sidebar-item" data-tab="quests" onclick="lobbyTab(this,'quests')">📜 Quests</div>
+            <div class="sidebar-section">SOCIAL</div>
+            <div class="sidebar-item" data-tab="party" onclick="lobbyTab(this,'party')">👥 Party</div>
+            <div class="sidebar-item" data-tab="friends" onclick="lobbyTab(this,'friends')">💬 Friends</div>
         </div>
-        <div class="lobby-body">
-            <div class="lobby-sidebar">
-                <div class="sidebar-section">NAVIGATE</div>
-                <div class="sidebar-item active" data-tab="characters" onclick="lobbyTab(this,'characters')">🗡 Characters</div>
-                <div class="sidebar-item" data-tab="leaderboard" onclick="lobbyTab(this,'leaderboard')">🏆 Leaderboard</div>
-                <div class="sidebar-item" data-tab="guilds" onclick="lobbyTab(this,'guilds')">⚔ Guilds</div>
-                <div class="sidebar-item" data-tab="quests" onclick="lobbyTab(this,'quests')">📜 Quests</div>
-                <div class="sidebar-section">SOCIAL</div>
-                <div class="sidebar-item" data-tab="party" onclick="lobbyTab(this,'party')">👥 Party</div>
-                <div class="sidebar-item" data-tab="friends" onclick="lobbyTab(this,'friends')">💬 Friends</div>
-                <div class="sidebar-section">SYSTEM</div>
-                <div class="sidebar-item" data-tab="settings" onclick="lobbyTab(this,'settings')">⚙ Settings</div>
+        <div class="lobby-main" id="lobby-main-content"></div>
+        <div class="lobby-right">
+            <div class="panel-title">YOUR CHARACTER</div>
+            <div id="lobby-char-card"></div>
+            <div class="panel-title" style="margin-top:15px">SERVER INFO</div>
+            <div id="lobby-server-info" style="font-size:12px;color:#a0a0b0;">
+                <div>Status: <span style="color:#44ff44">Online</span></div>
+                <div>Players: <span id="lobby-online-cnt" style="color:#ffd700">12</span></div>
             </div>
-            <div class="lobby-main" id="lobby-main-content"></div>
-            <div class="lobby-right">
-                <div class="panel-title">YOUR CHARACTER</div>
-                <div id="lobby-char-card"></div>
-                <div class="panel-title" style="margin-top:15px">SERVER INFO</div>
-                <div id="lobby-server-info" style="font-size:12px;color:var(--text-muted);">
-                    <div>Status: <span style="color:#44ff44">Online</span></div>
-                    <div>Players: <span id="lobby-online-cnt" style="color:var(--gold)">12</span></div>
-                    <div>Version: <span style="color:var(--text-light)">2.0.0</span></div>
-                </div>
-                <div class="panel-title" style="margin-top:15px">RECENT ACTIVITY</div>
-                <div id="lobby-activity" style="font-size:11px;color:var(--text-muted);"></div>
-            </div>
+            <div class="panel-title" style="margin-top:15px">RECENT ACTIVITY</div>
+            <div id="lobby-activity" style="font-size:11px;color:#a0a0b0;"></div>
         </div>
     </div>
 </div>
@@ -661,7 +367,10 @@
 
     <!-- HUD -->
     <div class="hud-elem" id="hud-char">
-        <div class="hud-name"><span id="hud-char-name">PixelHero</span><span class="hud-role" id="hud-role-badge">Player</span></div>
+        <div class="hud-name">
+            <span id="hud-char-name">PixelHero</span>
+            <span class="hud-role" id="hud-role-badge">Player</span>
+        </div>
         <div class="bar-wrap"><div class="bar-label"><span>HP</span><span id="hud-hp-txt">100/100</span></div><div class="bar"><div class="bar-fill hp" id="hud-hp-bar" style="width:100%"></div></div></div>
         <div class="bar-wrap"><div class="bar-label"><span>MP</span><span id="hud-mp-txt">50/50</span></div><div class="bar"><div class="bar-fill mp" id="hud-mp-bar" style="width:100%"></div></div></div>
         <div class="bar-wrap"><div class="bar-label"><span>XP</span><span id="hud-xp-txt">0%</span></div><div class="bar" style="height:8px"><div class="bar-fill xp" id="hud-xp-bar" style="width:0%"></div></div></div>
@@ -674,7 +383,7 @@
         <button class="hud-btn" onclick="openQuestLog()">📜 Quests (J)</button>
         <button class="hud-btn" onclick="openGuild()">⚔ Guild (G)</button>
         <button class="hud-btn" onclick="openAuction()">🏪 AH (H)</button>
-        <button class="hud-btn" onclick="openCheat()" style="border-color:var(--gold);color:var(--gold)">👑 CHEAT</button>
+        <button class="hud-btn" onclick="openCheat()" style="border-color:#ffd700;color:#ffd700">👑 CHEAT</button>
         <button class="hud-btn" onclick="openMod()" style="border-color:#88aaff;color:#88aaff">🛡 MOD</button>
         <button class="hud-btn" onclick="returnToLobby()">🏠 Lobby</button>
     </div>
@@ -684,14 +393,8 @@
         <div id="hud-quest-list"></div>
     </div>
 
-    <div class="hud-elem" id="hud-minimap">
-        <canvas id="minimap-canvas" width="150" height="150"></canvas>
-    </div>
-
-    <div class="hud-elem" id="hud-skills"></div>
-
     <div class="hud-elem" id="hud-chat">
-        <div class="chat-tabs" id="chat-tabs-row">
+        <div class="chat-tabs">
             <div class="chat-tab active" onclick="switchChatTab(this,'global')">Global</div>
             <div class="chat-tab" onclick="switchChatTab(this,'guild')">Guild</div>
             <div class="chat-tab" onclick="switchChatTab(this,'party')">Party</div>
@@ -699,7 +402,7 @@
         <div class="chat-msgs" id="chat-msgs"></div>
         <div class="chat-input-row">
             <input type="text" id="chat-input" placeholder="Type a message...">
-            <button id="chat-send-btn" onclick="sendChat()">➤</button>
+            <button id="chat-send" onclick="sendChat()">➤</button>
         </div>
     </div>
 
@@ -711,30 +414,26 @@
     </div>
 </div>
 
-<!-- ===== POPUPS (keep all from original) ===== -->
-<!-- Inventory, Skills, Guild, Auction, Trade, PvP, Leaderboard, Questlog, Cheat, Mod, Combat -->
-<div class="popup-overlay" id="inv-popup"><div class="popup-box"><div class="popup-title">🎒 INVENTORY <button class="popup-close" onclick="closePopup('inv-popup')">×</button></div><div class="inv-grid" id="inv-grid"></div><div class="inv-footer">💰 <span id="inv-gold">0</span> Gold <button class="action-btn" onclick="closePopup('inv-popup')">Close</button></div></div></div>
-<div class="popup-overlay" id="skills-popup"><div class="popup-box"><div class="popup-title">⚡ SKILL TREE <button class="popup-close" onclick="closePopup('skills-popup')">×</button></div><div class="skill-points-display">Skill Points: <span id="skill-pts">0</span></div><div class="skill-tree-grid" id="skill-tree-grid"></div></div></div>
+<!-- ===== POPUP PANELS ===== -->
+<div class="popup-overlay" id="inv-popup"><div class="popup-box"><div class="popup-title">🎒 INVENTORY <button class="popup-close" onclick="closePopup('inv-popup')">×</button></div><div class="inv-grid" id="inv-grid"></div><div>💰 <span id="inv-gold">0</span> Gold</div></div></div>
+<div class="popup-overlay" id="skills-popup"><div class="popup-box"><div class="popup-title">⚡ SKILL TREE <button class="popup-close" onclick="closePopup('skills-popup')">×</button></div><div>Skill Points: <span id="skill-pts">0</span></div><div class="skill-tree-grid" id="skill-tree-grid"></div></div></div>
 <div class="popup-overlay" id="guild-popup"><div class="popup-box"><div class="popup-title">⚔ GUILD <button class="popup-close" onclick="closePopup('guild-popup')">×</button></div><div id="guild-content"></div></div></div>
-<div class="popup-overlay" id="auction-popup"><div class="popup-box"><div class="popup-title">🏪 AUCTION HOUSE <button class="popup-close" onclick="closePopup('auction-popup')">×</button></div><div class="auction-tabs"><div class="auction-tab active" onclick="auctionTab(this,'browse')">Browse</div><div class="auction-tab" onclick="auctionTab(this,'mylistings')">My Listings</div></div><div class="auction-search"><input type="text" id="auction-search-input" placeholder="Search..."><select id="auction-sort"><option>Sort...</option></select><button class="action-btn" onclick="refreshAuctions()">🔄 Refresh</button></div><div class="auction-grid" id="auction-grid"></div></div></div>
-<div class="popup-overlay" id="trade-popup"><div class="popup-box"><div class="popup-title">🔄 TRADE <button class="popup-close" onclick="closeTrade()">×</button></div><div class="trade-layout"><div class="trade-pane"><h4>YOUR OFFER</h4><div class="trade-items-area" id="trade-your-items"></div><div class="trade-gold-row">💰 <input type="number" id="trade-your-gold" value="0" min="0" onchange="updateTradeOffer()"> gold</div></div><div class="trade-divider"><div class="trade-vs">VS</div></div><div class="trade-pane"><h4 id="trade-partner-name">PARTNER'S OFFER</h4><div class="trade-items-area" id="trade-their-items"></div><div class="trade-gold-row">💰 <span id="trade-their-gold">0</span> gold</div></div></div><div class="trade-status-bar pending" id="trade-status-bar">⏳ Waiting...</div><div class="trade-actions"><button class="action-btn success" onclick="acceptTrade()" id="trade-accept-btn">✓ Accept</button><button class="action-btn danger" onclick="cancelTrade()">✗ Cancel</button></div></div></div>
-<div class="popup-overlay" id="pvp-popup"><div class="popup-box"><div class="popup-title">⚔ PVP ARENA <button class="popup-close" onclick="closePvP()">×</button></div><div class="pvp-arena-layout"><div class="pvp-fighter"><h3 id="pvp-p1-name">Player 1</h3><div class="bar-wrap"><div class="bar"><div class="bar-fill hp" id="pvp-p1-hp" style="width:100%"></div></div></div></div><div><div class="pvp-vs-badge">VS</div><div class="pvp-countdown" id="pvp-countdown"></div></div><div class="pvp-fighter"><h3 id="pvp-p2-name">Player 2</h3><div class="bar-wrap"><div class="bar"><div class="bar-fill hp" id="pvp-p2-hp" style="width:100%"></div></div></div></div></div><div class="pvp-combat-log" id="pvp-combat-log"></div><div style="display:flex;justify-content:center;gap:10px;margin-top:15px" id="pvp-btns"><button class="action-btn success" onclick="acceptPvP()">⚔ Accept</button><button class="action-btn danger" onclick="closePvP()">✗ Decline</button></div></div></div>
-<div class="popup-overlay" id="leaderboard-popup"><div class="popup-box"><div class="popup-title">🏆 LEADERBOARD <button class="popup-close" onclick="closePopup('leaderboard-popup')">×</button></div><div class="lb-tabs"><div class="lb-tab active" onclick="lbTab(this,'level')">Level</div><div class="lb-tab" onclick="lbTab(this,'gold')">Gold</div><div class="lb-tab" onclick="lbTab(this,'pvp')">PvP</div></div><table class="lb-table"><thead><tr><th>#</th><th>Character</th><th>Class</th><th style="text-align:right">Score</th></tr></thead><tbody id="lb-tbody"></tbody></table></div></div>
-<div class="popup-overlay" id="questlog-popup"><div class="popup-box"><div class="popup-title">📜 QUEST LOG <button class="popup-close" onclick="closePopup('questlog-popup')">×</button></div><div class="quest-log-layout"><div class="quest-list-panel" id="quest-log-list"></div><div class="quest-detail-panel" id="quest-log-detail"><div style="color:var(--text-muted);text-align:center;padding:20px">Select a quest</div></div></div></div></div>
-<div class="popup-overlay" id="cheat-popup"><div class="popup-box"><div class="popup-title">👑 OWNER CHEAT MENU <button class="popup-close" onclick="closePopup('cheat-popup')">×</button></div><div class="cheat-input-row"><input type="text" class="cheat-input" id="cheat-target" placeholder="Target"><input type="number" class="cheat-input" id="cheat-amount" placeholder="Amount"><input type="text" class="cheat-input" id="cheat-item-id" placeholder="Item ID"></div><div class="cheat-grid"><button class="cheat-btn" onclick="cheatCmd('give_gold')">💰 Give Gold</button><button class="cheat-btn" onclick="cheatCmd('set_level')">⭐ Set Level</button><button class="cheat-btn" onclick="cheatCmd('spawn_item')">🎁 Spawn Item</button><button class="cheat-btn" onclick="cheatCmd('god_mode')">🛡 God Mode</button><button class="cheat-btn" onclick="cheatCmd('heal')">💚 Full Heal</button><button class="cheat-btn" onclick="cheatCmd('kill')">💀 Kill</button><button class="cheat-btn" onclick="gameEventCmd('spawn_boss')">🔥 Spawn Boss</button><button class="cheat-btn" onclick="gameEventCmd('announce')">📢 Announce</button><button class="cheat-btn" onclick="gameEventCmd('give_rewards')">🎉 Give Rewards</button><button class="cheat-btn" onclick="openPromoteMenu()">⚡ Promote</button></div><div id="cheat-result" style="background:var(--bg-item);padding:10px;font-size:12px;min-height:40px;"></div></div></div>
-<div class="popup-overlay" id="mod-popup"><div class="popup-box"><div class="popup-title">🛡 MOD PANEL <button class="popup-close" onclick="closePopup('mod-popup')">×</button></div><div><span>Online: <span id="mod-online-cnt">0</span></span><button class="action-btn" onclick="refreshModPanel()">🔄 Refresh</button></div><div class="player-admin-list" id="mod-player-list"></div><div class="mod-log-area" id="mod-log-area"></div></div></div>
-<div class="popup-overlay" id="combat-popup"><div class="popup-box"><div class="popup-title">⚔ COMBAT <button class="popup-close" onclick="closePopup('combat-popup')">×</button></div><div class="combat-versus"><div class="combatant-box"><h4 id="combat-player-name">You</h4><div class="bar-wrap"><div class="bar"><div class="bar-fill hp" id="combat-player-hp" style="width:100%"></div></div></div><div id="combat-player-hptxt" style="font-size:11px;text-align:center;margin-top:3px">100/100</div></div><div style="font-size:28px;color:#8b0000">⚔</div><div class="combatant-box"><h4 id="combat-enemy-name">Enemy</h4><div class="bar-wrap"><div class="bar"><div class="bar-fill hp" id="combat-enemy-hp" style="width:100%"></div></div></div><div id="combat-enemy-hptxt" style="font-size:11px;text-align:center;margin-top:3px">50/50</div></div></div><div class="combat-log-box" id="combat-log-box"></div><div style="display:flex;gap:8px;flex-wrap:wrap" id="combat-skill-btns"></div></div></div>
+<div class="popup-overlay" id="auction-popup"><div class="popup-box"><div class="popup-title">🏪 AUCTION HOUSE <button class="popup-close" onclick="closePopup('auction-popup')">×</button></div><div class="auction-grid" id="auction-grid"></div></div></div>
+<div class="popup-overlay" id="trade-popup"><div class="popup-box"><div class="popup-title">🔄 TRADE <button class="popup-close" onclick="closeTrade()">×</button></div><div class="trade-layout"><div class="trade-pane"><h4>YOUR OFFER</h4><div id="trade-your-items"></div><input type="number" id="trade-your-gold" value="0"></div><div class="trade-pane"><h4>PARTNER</h4><div id="trade-their-items"></div><span id="trade-their-gold">0</span></div></div><div id="trade-status-bar">⏳ Waiting...</div><div><button class="action-btn" onclick="acceptTrade()">✓ Accept</button><button class="action-btn" onclick="cancelTrade()">✗ Cancel</button></div></div></div>
+<div class="popup-overlay" id="pvp-popup"><div class="popup-box"><div class="popup-title">⚔ PVP ARENA <button class="popup-close" onclick="closePvP()">×</button></div><div class="pvp-arena-layout"><div class="pvp-fighter"><h3 id="pvp-p1-name">Player 1</h3></div><div><div class="pvp-vs-badge">VS</div><div class="pvp-countdown" id="pvp-countdown"></div></div><div class="pvp-fighter"><h3 id="pvp-p2-name">Player 2</h3></div></div><div class="pvp-combat-log" id="pvp-combat-log"></div><div id="pvp-btns"><button class="action-btn" onclick="acceptPvP()">⚔ Accept</button><button class="action-btn" onclick="closePvP()">✗ Decline</button></div></div></div>
+<div class="popup-overlay" id="leaderboard-popup"><div class="popup-box"><div class="popup-title">🏆 LEADERBOARD <button class="popup-close" onclick="closePopup('leaderboard-popup')">×</button></div><table class="lb-table"><thead><tr><th>#</th><th>Character</th><th>Class</th><th>Score</th></tr></thead><tbody id="lb-tbody"></tbody></table></div></div>
+<div class="popup-overlay" id="questlog-popup"><div class="popup-box"><div class="popup-title">📜 QUEST LOG <button class="popup-close" onclick="closePopup('questlog-popup')">×</button></div><div class="quest-log-layout"><div class="quest-list-panel" id="quest-log-list"></div><div class="quest-detail-panel" id="quest-log-detail">Select a quest</div></div></div></div>
+<div class="popup-overlay" id="cheat-popup"><div class="popup-box"><div class="popup-title">👑 OWNER CHEAT MENU <button class="popup-close" onclick="closePopup('cheat-popup')">×</button></div><div class="cheat-grid"><button class="cheat-btn" onclick="cheatCmd('give_gold')">💰 Give Gold</button><button class="cheat-btn" onclick="cheatCmd('set_level')">⭐ Set Level</button><button class="cheat-btn" onclick="cheatCmd('spawn_item')">🎁 Spawn Item</button><button class="cheat-btn" onclick="cheatCmd('god_mode')">🛡 God Mode</button><button class="cheat-btn" onclick="cheatCmd('heal')">💚 Full Heal</button><button class="cheat-btn" onclick="cheatCmd('kill')">💀 Kill</button><button class="cheat-btn" onclick="gameEventCmd('spawn_boss')">🔥 Spawn Boss</button><button class="cheat-btn" onclick="gameEventCmd('announce')">📢 Announce</button><button class="cheat-btn" onclick="gameEventCmd('give_rewards')">🎉 Give Rewards</button><button class="cheat-btn" onclick="openPromoteMenu()">⚡ Promote</button></div><div id="cheat-result" style="background:#1e1e28;padding:10px;"></div></div></div>
+<div class="popup-overlay" id="mod-popup"><div class="popup-box"><div class="popup-title">🛡 MOD PANEL <button class="popup-close" onclick="closePopup('mod-popup')">×</button></div><div>Online: <span id="mod-online-cnt">0</span> <button class="action-btn" onclick="refreshModPanel()">🔄 Refresh</button></div><div id="mod-player-list"></div></div></div>
+<div class="popup-overlay" id="combat-popup"><div class="popup-box"><div class="popup-title">⚔ COMBAT <button class="popup-close" onclick="closePopup('combat-popup')">×</button></div><div class="combat-versus"><div class="combatant-box"><h4>You</h4><div id="combat-player-hp">100/100</div></div><div style="font-size:28px;">⚔</div><div class="combatant-box"><h4>Enemy</h4><div id="combat-enemy-hp">50/50</div></div></div><div class="combat-log-box" id="combat-log-box"></div></div></div>
 
-<!-- Notifications Area -->
+<!-- Notifications -->
 <div id="notif-area"></div>
 
-<!-- Tooltip (optional) -->
-<div id="tooltip" style="display:none; position:fixed; background:rgba(8,8,14,0.98); border:1px solid var(--border-gold); padding:12px; max-width:220px; font-size:12px; z-index:9999;"></div>
-
 <script>
-// ==================== CONFIG ====================
-const API = 'https://bot-hosting-b-ga04.onrender.com'; // Replace with your actual backend URL
-const WSS = 'wss://bot-hosting-b-ga04.onrender.com';
+// ==================== CONFIGURATION ====================
+const API_URL = 'https://bot-hosting-b-ga04.onrender.com';
+const WS_URL = 'wss://bot-hosting-b-ga04.onrender.com';
 
 // ==================== STATE ====================
 let token = localStorage.getItem('rpg_token');
@@ -748,43 +447,34 @@ let activePvP = null;
 let pvpCountdownTimer = null;
 let learnedSkills = new Set();
 let skillPoints = 3;
-let auctionsData = [];
-let modLog = [];
-let activeQuests = new Set(['q1_1']);
-let questProgress = { q1_1: 0 };
-
-// Mock fallback
-const MOCK_USER = { username: 'xotiic', role: 'player', is_owner: true };
-const MOCK_CHAR = {
-    id: 1, name: 'PixelHero', class_name: 'warrior', level: 1, exp: 0,
-    hp: 100, max_hp: 100, mana: 50, max_mana: 50, gold: 100,
-    strength: 12, agility: 8, intelligence: 5, vitality: 10
-};
+let activeQuests = new Set();
+let questProgress = {};
+let currentNPC = null;
+let renderer = null;
 
 // ==================== UTILITIES ====================
 const $ = id => document.getElementById(id);
-const esc = s => { const d = document.createElement('div'); d.textContent = String(s||''); return d.innerHTML; };
 
-function showNotif(msg, type='info', duration=3000) {
+function showNotif(msg, type = 'info') {
     const area = $('notif-area');
     const el = document.createElement('div');
     el.className = `notif ${type}`;
     el.textContent = msg;
     area.appendChild(el);
-    setTimeout(() => el.remove(), duration);
+    setTimeout(() => el.remove(), 3000);
 }
 
 function showLoadingBar(pct) { $('load-bar').style.width = pct + '%'; }
 
-async function apiFetch(path, opts={}) {
-    const headers = { 'Content-Type': 'application/json', ...(opts.headers||{}) };
+async function apiFetch(path, opts = {}) {
+    const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
     if (token) headers['Authorization'] = `Bearer ${token}`;
     try {
-        const res = await fetch(API + path, { ...opts, headers, signal: AbortSignal.timeout(opts.timeout || 10000) });
+        const res = await fetch(API_URL + path, { ...opts, headers, signal: AbortSignal.timeout(opts.timeout || 10000) });
         const txt = await res.text();
         try { return { ok: res.ok, status: res.status, data: JSON.parse(txt) }; }
         catch { return { ok: false, status: res.status, data: { detail: txt } }; }
-    } catch(e) {
+    } catch (e) {
         return { ok: false, data: { detail: e.message } };
     }
 }
@@ -795,27 +485,27 @@ function closePopup(id) { $(id).classList.remove('show'); }
 function updateHUD() {
     if (!currentChar) return;
     $('hud-char-name').textContent = currentChar.name;
-    $('hud-hp-bar').style.width = (currentChar.hp/currentChar.max_hp*100)+'%';
-    $('hud-mp-bar').style.width = (currentChar.mana/currentChar.max_mana*100)+'%';
-    $('hud-xp-bar').style.width = Math.min(100, (currentChar.exp / (currentChar.level*100))*100)+'%';
+    $('hud-hp-bar').style.width = (currentChar.hp / currentChar.max_hp * 100) + '%';
+    $('hud-mp-bar').style.width = (currentChar.mana / currentChar.max_mana * 100) + '%';
+    $('hud-xp-bar').style.width = Math.min(100, (currentChar.exp / (currentChar.level * 100)) * 100) + '%';
     $('hud-hp-txt').textContent = `${currentChar.hp}/${currentChar.max_hp}`;
     $('hud-mp-txt').textContent = `${currentChar.mana}/${currentChar.max_mana}`;
-    $('hud-xp-txt').textContent = Math.round((currentChar.exp / (currentChar.level*100))*100)+'%';
+    $('hud-xp-txt').textContent = Math.round((currentChar.exp / (currentChar.level * 100)) * 100) + '%';
     $('hud-level').textContent = currentChar.level;
     $('hud-gold').textContent = currentChar.gold;
-    const roleText = currentUser?.is_owner ? '👑 Owner' : currentUser?.role==='admin'?'⚡ Admin':currentUser?.role==='moderator'?'🛡 Mod':'Player';
+    const roleText = currentUser?.is_owner ? '👑 Owner' : currentUser?.role === 'admin' ? '⚡ Admin' : currentUser?.role === 'moderator' ? '🛡 Mod' : 'Player';
     $('hud-role-badge').textContent = roleText;
 }
 
 // ==================== SCREEN TRANSITIONS ====================
 function showScreen(id) {
-    ['login-screen','char-create-screen','lobby-screen','game-screen'].forEach(s => {
+    ['login-screen', 'char-create-screen', 'lobby-screen', 'game-screen'].forEach(s => {
         const el = $(s);
         if (el) { el.style.display = 'none'; el.classList.remove('active'); }
     });
     if (id) {
         const el = $(id);
-        if (el) { el.style.display = (id==='lobby-screen'||id==='game-screen') ? 'block' : 'flex'; el.classList.add('active'); }
+        if (el) { el.style.display = (id === 'lobby-screen' || id === 'game-screen') ? 'block' : 'flex'; el.classList.add('active'); }
     }
     $('loading-screen').style.display = 'none';
 }
@@ -825,7 +515,7 @@ async function handleLogin() {
     const username = $('login-username').value.trim();
     const password = $('login-password').value;
     if (!username || !password) { showNotif('Enter credentials', 'error'); return; }
-    const { ok, data } = await apiFetch('/api/login', { method:'POST', body:JSON.stringify({username,password}) });
+    const { ok, data } = await apiFetch('/api/login', { method: 'POST', body: JSON.stringify({ username, password }) });
     if (ok && data.access_token) {
         token = data.access_token;
         localStorage.setItem('rpg_token', token);
@@ -833,19 +523,16 @@ async function handleLogin() {
         showNotif(`Welcome, ${username}!`, 'success');
         await loadCharacters();
     } else {
-        currentUser = MOCK_USER;
-        currentChar = MOCK_CHAR;
-        showNotif('Using offline mode (mock data)', 'warning');
-        showLobbyScreen();
+        showNotif('Login failed: ' + (data.detail || 'Server error'), 'error');
     }
 }
 
 async function handleRegister() {
     const username = $('login-username').value.trim();
     const password = $('login-password').value;
-    if (!username || username.length<3) { showNotif('Username min 3 chars', 'error'); return; }
-    if (!password || password.length<6) { showNotif('Password min 6 chars', 'error'); return; }
-    const { ok, data } = await apiFetch('/api/register', { method:'POST', body:JSON.stringify({username,password}) });
+    if (!username || username.length < 3) { showNotif('Username min 3 chars', 'error'); return; }
+    if (!password || password.length < 6) { showNotif('Password min 6 chars', 'error'); return; }
+    const { ok, data } = await apiFetch('/api/register', { method: 'POST', body: JSON.stringify({ username, password }) });
     if (ok && data.access_token) {
         token = data.access_token;
         localStorage.setItem('rpg_token', token);
@@ -853,22 +540,20 @@ async function handleRegister() {
         showNotif('Registered!', 'success');
         await loadCharacters();
     } else {
-        currentUser = MOCK_USER;
-        showNotif('Using offline mode (mock data)', 'warning');
-        showCharCreate();
+        showNotif('Registration failed: ' + (data.detail || 'Server error'), 'error');
     }
 }
 
 async function loadCharacters() {
     const { ok, data, status } = await apiFetch('/api/characters');
     if (status === 401) { logout(); return; }
-    if (!ok || !data || data.length === 0) {
-        currentChar = MOCK_CHAR;
+    if (!ok) { showNotif('Failed to load characters', 'error'); return; }
+    if (data && data.length > 0) {
+        currentChar = data[0];
         showLobbyScreen();
-        return;
+    } else {
+        showCharCreate();
     }
-    currentChar = data[0];
-    showLobbyScreen();
 }
 
 function logout() {
@@ -890,20 +575,20 @@ function buildClassGrid() {
     const grid = $('class-grid');
     grid.innerHTML = '';
     const classes = {
-        warrior: { name:'WARRIOR', desc:'High HP & Strength', sprite:'sprite-warrior' },
-        mage: { name:'MAGE', desc:'Powerful spells', sprite:'sprite-mage' },
-        rogue: { name:'ROGUE', desc:'Agile, critical hits', sprite:'sprite-rogue' },
-        archer: { name:'ARCHER', desc:'Ranged precision', sprite:'sprite-archer' },
-        paladin: { name:'PALADIN', desc:'Holy warrior', sprite:'sprite-paladin' },
-        necromancer: { name:'NECROMANCER', desc:'Dark summoner', sprite:'sprite-necro' }
+        warrior: { name: 'WARRIOR', desc: 'High HP & Strength' },
+        mage: { name: 'MAGE', desc: 'Powerful spells' },
+        rogue: { name: 'ROGUE', desc: 'Agile, critical hits' },
+        archer: { name: 'ARCHER', desc: 'Ranged precision' },
+        paladin: { name: 'PALADIN', desc: 'Holy warrior' },
+        necromancer: { name: 'NECROMANCER', desc: 'Dark summoner' }
     };
     Object.entries(classes).forEach(([key, cl]) => {
         const card = document.createElement('div');
-        card.className = 'class-card' + (key===selectedClass?' selected':'');
+        card.className = 'class-card' + (key === selectedClass ? ' selected' : '');
         card.dataset.class = key;
-        card.innerHTML = `<div class="pixel-class-icon ${cl.sprite}"></div><h3>${cl.name}</h3><p>${cl.desc}</p>`;
+        card.innerHTML = `<div class="sprite sprite-${key}" style="width:48px;height:48px;margin:0 auto;"></div><h3>${cl.name}</h3><p>${cl.desc}</p>`;
         card.onclick = () => {
-            document.querySelectorAll('.class-card').forEach(c=>c.classList.remove('selected'));
+            document.querySelectorAll('.class-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             selectedClass = key;
         };
@@ -913,16 +598,14 @@ function buildClassGrid() {
 
 async function submitCreateCharacter() {
     const name = $('char-name-input').value.trim();
-    if (!name || name.length<3) { showNotif('Name 3-20 chars', 'error'); return; }
-    const { ok, data } = await apiFetch('/api/characters', { method:'POST', body:JSON.stringify({ name, class_name: selectedClass }) });
+    if (!name || name.length < 3) { showNotif('Name 3-20 chars', 'error'); return; }
+    const { ok, data } = await apiFetch('/api/characters', { method: 'POST', body: JSON.stringify({ name, class_name: selectedClass }) });
     if (ok) {
         currentChar = data;
         showNotif(`Character ${name} created!`, 'success');
         showLobbyScreen();
     } else {
-        currentChar = { ...MOCK_CHAR, name, class_name: selectedClass };
-        showNotif('Offline mode: character created', 'warning');
-        showLobbyScreen();
+        showNotif('Creation failed: ' + (data.detail || 'Server error'), 'error');
     }
 }
 
@@ -942,52 +625,42 @@ function showLobbyScreen() {
 }
 
 function buildLobbyCharCard() {
-    const c = currentChar;
-    if (!c) return;
-    const spriteMap = {
-        warrior:'sprite-warrior', mage:'sprite-mage', rogue:'sprite-rogue',
-        archer:'sprite-archer', paladin:'sprite-paladin', necromancer:'sprite-necro'
-    };
+    if (!currentChar) return;
     $('lobby-char-card').innerHTML = `
-        <div style="text-align:center;padding:10px;background:var(--bg-item);border:1px solid #3a3a50">
-            <div class="pixel-class-icon ${spriteMap[c.class_name] || 'sprite-warrior'}" style="width:64px;height:64px;margin:0 auto"></div>
-            <div style="color:var(--gold);font-size:16px;font-weight:bold">${esc(c.name)}</div>
-            <div style="color:var(--text-muted);font-size:11px">${(c.class_name||'').toUpperCase()}</div>
+        <div style="text-align:center;padding:10px;background:#1e1e28;border:1px solid #3a3a50">
+            <div class="sprite sprite-${currentChar.class_name}" style="width:64px;height:64px;margin:0 auto;"></div>
+            <div style="color:#ffd700;font-size:16px;">${esc(currentChar.name)}</div>
+            <div style="color:#a0a0b0;">${(currentChar.class_name || '').toUpperCase()}</div>
         </div>
         <div style="font-size:12px;line-height:2;">
-            <div><span style="color:var(--text-muted)">Level:</span> <span style="color:var(--gold)">${c.level}</span></div>
-            <div><span style="color:var(--text-muted)">Gold:</span> <span style="color:var(--gold)">${c.gold}g</span></div>
-            <div><span style="color:var(--text-muted)">HP:</span> ${c.hp}/${c.max_hp}</div>
+            <div>Level: <span style="color:#ffd700">${currentChar.level}</span></div>
+            <div>Gold: <span style="color:#ffd700">${currentChar.gold}g</span></div>
+            <div>HP: ${currentChar.hp}/${currentChar.max_hp}</div>
         </div>`;
 }
 
 function lobbyTab(el, tab) {
-    document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
     if (el) el.classList.add('active');
     const mc = $('lobby-main-content');
     if (tab === 'characters') renderLobbyCharacters();
     else if (tab === 'leaderboard') renderLobbyLeaderboard();
     else if (tab === 'guilds') renderLobbyGuilds();
     else if (tab === 'quests') renderLobbyQuests();
-    else mc.innerHTML = `<div class="panel-title">${tab}</div><div style="color:var(--text-muted)">Use in-game panel for ${tab}.</div>`;
+    else mc.innerHTML = `<div class="panel-title">${tab}</div><div>Coming soon</div>`;
 }
 
 function renderLobbyCharacters() {
-    const c = currentChar;
-    if (!c) return;
-    const spriteMap = {
-        warrior:'sprite-warrior', mage:'sprite-mage', rogue:'sprite-rogue',
-        archer:'sprite-archer', paladin:'sprite-paladin', necromancer:'sprite-necro'
-    };
+    if (!currentChar) return;
     $('lobby-main-content').innerHTML = `
         <div class="panel-title">🗡 YOUR CHARACTER</div>
-        <div style="background:var(--bg-item);border:1px solid #3a3a50;padding:20px">
+        <div style="background:#1e1e28;border:1px solid #3a3a50;padding:20px">
             <div style="display:flex;gap:20px;align-items:center">
-                <div class="pixel-class-icon ${spriteMap[c.class_name]}" style="width:64px;height:64px"></div>
+                <div class="sprite sprite-${currentChar.class_name}" style="width:64px;height:64px;"></div>
                 <div>
-                    <div style="color:var(--gold);font-size:22px;font-weight:bold">${esc(c.name)}</div>
-                    <div style="color:var(--text-muted)">${(c.class_name||'').toUpperCase()} · Level ${c.level}</div>
-                    <div style="color:var(--text-light)">💰 ${c.gold}g</div>
+                    <div style="color:#ffd700;font-size:22px;">${esc(currentChar.name)}</div>
+                    <div style="color:#a0a0b0;">${(currentChar.class_name || '').toUpperCase()} · Level ${currentChar.level}</div>
+                    <div>💰 ${currentChar.gold}g</div>
                 </div>
             </div>
             <div style="margin-top:15px"><button class="action-btn" onclick="startGame()">▶ Enter World</button></div>
@@ -998,85 +671,75 @@ async function renderLobbyLeaderboard() {
     $('lobby-main-content').innerHTML = `<div class="panel-title">🏆 LEADERBOARD</div><div>Loading...</div>`;
     const { data } = await apiFetch('/api/leaderboard/level?limit=10');
     let rows = '';
-    if (Array.isArray(data)) rows = data.map((p,i)=>`<tr><td class="lb-rank">${i+1}</td><td class="lb-name">${esc(p.name)}</td><td class="lb-class">${p.class_name||''}</td><td class="lb-val">${p.level}</td></tr>`).join('');
-    else rows = '<tr><td colspan="4" style="text-align:center">Mock data</td></tr>';
+    if (Array.isArray(data)) {
+        rows = data.map((p, i) => `<tr><td>${i + 1}</td><td>${esc(p.name)}</td><td>${p.class_name || ''}</td><td>${p.level}</td></tr>`).join('');
+    } else {
+        rows = '<tr><td colspan="4">No data</td></tr>';
+    }
     $('lobby-main-content').innerHTML = `<div class="panel-title">🏆 LEADERBOARD</div><table class="lb-table"><thead><tr><th>#</th><th>Character</th><th>Class</th><th>Level</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 function renderLobbyGuilds() {
-    $('lobby-main-content').innerHTML = `<div class="panel-title">⚔ GUILDS</div><div style="padding:10px">Use in-game guild panel (G).</div>`;
+    $('lobby-main-content').innerHTML = `<div class="panel-title">⚔ GUILDS</div><div>Use in-game guild panel (G).</div>`;
 }
 
 function renderLobbyQuests() {
-    let html = `<div class="panel-title">📜 STORY QUESTS</div>`;
-    const quests = {
-        q1_1:{ title:'The Dark Omen', icon:'👺', desc:'Kill 5 goblins', exp:100, gold:50 },
-        q1_2:{ title:'The Goblin Camp', icon:'🏕', desc:'Explore the camp', exp:150, gold:75 },
-        q1_3:{ title:'Goblin Chief', icon:'👹', desc:'Defeat the chief', exp:300, gold:150 }
-    };
-    Object.entries(quests).forEach(([id,q]) => {
-        html += `<div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg-item);margin:3px 0;border-left:3px solid ${activeQuests.has(id)?'var(--gold)':'#2a2a3a'}">
-            <span>${q.icon}</span><div style="flex:1"><div style="color:${activeQuests.has(id)?'var(--gold)':'var(--text-light)'}">${q.title}</div><div style="color:var(--text-muted);font-size:10px">${q.desc}</div></div>
-            <div style="text-align:right;font-size:11px;color:var(--text-muted)">+${q.exp}xp<br>+${q.gold}g</div>
-        </div>`;
-    });
-    $('lobby-main-content').innerHTML = html;
+    $('lobby-main-content').innerHTML = `<div class="panel-title">📜 QUESTS</div><div>Check quest log in game.</div>`;
 }
 
 async function loadLobbyActivity() {
-    const activities = ['⚔ Hero defeated a Goblin', '🏆 New leaderboard entry', '💰 Auction posted'];
-    $('lobby-activity').innerHTML = activities.map(a=>`<div style="padding:4px 0">${a}</div>`).join('');
+    $('lobby-activity').innerHTML = '<div>Loading...</div>';
     try {
         const { data } = await apiFetch('/api/admin/online-players');
         if (data?.online_count !== undefined) $('lobby-online-cnt').textContent = data.online_count;
-    } catch { $('lobby-online-cnt').textContent = '—'; }
+        $('lobby-activity').innerHTML = '<div>⚔ Player activity</div>';
+    } catch { }
 }
 
 // ==================== WEBSOCKET ====================
 function connectWebSocket() {
     if (!token) return;
-    if (ws && (ws.readyState===WebSocket.OPEN||ws.readyState===WebSocket.CONNECTING)) return;
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
     if (wsTimer) clearTimeout(wsTimer);
     try {
-        ws = new WebSocket(`${WSS}/ws?token=${token}`);
+        ws = new WebSocket(`${WS_URL}/ws?token=${token}`);
         ws.onopen = () => addChatMsg('System', 'Connected', 'sys');
-        ws.onmessage = e => { try { handleWS(JSON.parse(e.data)); } catch {} };
-        ws.onclose = () => { addChatMsg('System', 'Disconnected', 'sys'); wsTimer = setTimeout(connectWebSocket,5000); };
-    } catch(e) {}
+        ws.onmessage = e => { try { handleWS(JSON.parse(e.data)); } catch { } };
+        ws.onclose = () => { addChatMsg('System', 'Disconnected', 'sys'); wsTimer = setTimeout(connectWebSocket, 5000); };
+    } catch (e) { }
 }
 
-function wsSend(obj) { if (ws && ws.readyState===WebSocket.OPEN) ws.send(JSON.stringify(obj)); }
+function wsSend(obj) { if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj)); }
 
 function handleWS(d) {
-    switch(d.type) {
-        case 'chat': addChatMsg(d.sender, d.content, d.channel, d.role); break;
-        case 'system': addChatMsg('System', d.message, 'sys'); if(d.message.includes('promoted')) showNotif('⚡ '+d.message,'success'); break;
-        case 'movement': break;
+    switch (d.type) {
+        case 'chat': addChatMsg(d.sender, d.content, d.channel); break;
+        case 'system': addChatMsg('System', d.message, 'sys'); break;
+        case 'announcement': addChatMsg('📢 SERVER', d.message, 'announce'); showNotif('📢 ' + d.message, 'system'); break;
+        case 'boss_spawn': addChatMsg('🔥 BOSS', `${d.boss} at ${d.location}!`, 'announce'); showNotif(`🔥 BOSS: ${d.boss}`, 'warning'); break;
+        case 'reward': showNotif('🎁 ' + d.message, 'success'); if (d.gold && currentChar) { currentChar.gold += d.gold; updateHUD(); } break;
         case 'trade_request': handleTradeRequest(d); break;
         case 'pvp_challenge': handlePvPChallenge(d); break;
         case 'pvp_result': handlePvPResult(d); break;
-        case 'reward': showNotif('🎁 '+d.message,'success'); if(d.gold && currentChar){ currentChar.gold+=d.gold; updateHUD(); } break;
-        case 'announcement': addChatMsg('📢 SERVER', d.message, 'announce'); showNotif('📢 '+d.message,'system',7000); break;
-        case 'boss_spawn': addChatMsg('🔥 BOSS', `${d.boss} at ${d.location}!`, 'announce'); showNotif(`🔥 BOSS: ${d.boss} at ${d.location}!`,'warning',7000); break;
     }
 }
 
 // ==================== CHAT ====================
-function addChatMsg(who, content, channel='global', role='') {
+function addChatMsg(who, content, channel = 'global') {
     const msgs = $('chat-msgs');
     if (!msgs) return;
     const div = document.createElement('div');
-    div.className = 'chat-msg ' + (channel==='sys'?'sys':channel) + (role?' '+role:'');
-    const ts = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    if (channel==='sys') div.innerHTML = `<span class="ts">[${ts}]</span> ${esc(content)}`;
-    else div.innerHTML = `<span class="ts">[${ts}]</span><span class="who">${esc(who)}:</span>${esc(content)}`;
+    div.className = 'chat-msg ' + (channel === 'sys' ? 'system' : channel);
+    const ts = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (channel === 'sys') div.innerHTML = `<span class="ts">[${ts}]</span> ${esc(content)}`;
+    else div.innerHTML = `<span class="ts">[${ts}]</span><span class="who">${esc(who)}:</span> ${esc(content)}`;
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
-    while(msgs.children.length>100) msgs.removeChild(msgs.firstChild);
+    while (msgs.children.length > 100) msgs.removeChild(msgs.firstChild);
 }
 
 function switchChatTab(el, ch) {
-    document.querySelectorAll('.chat-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
     currentChatChannel = ch;
 }
@@ -1091,289 +754,131 @@ function sendChat() {
         const target = parts[0];
         const content = parts.slice(1).join(' ');
         if (target && content) {
-            wsSend({ type:'chat', channel:'whisper', content, target });
-            addChatMsg('→ '+target, content, 'whisper');
+            wsSend({ type: 'chat', channel: 'whisper', content, target });
+            addChatMsg('→ ' + target, content, 'whisper');
         }
     } else {
-        wsSend({ type:'chat', channel:currentChatChannel, content:msg });
+        wsSend({ type: 'chat', channel: currentChatChannel, content: msg });
     }
 }
 
-// ==================== GAME SCREEN & RENDERER ====================
-let renderer = null;
-
-function startGame() {
-    showScreen('game-screen');
-    buildSkillBar();
-    updateHUD();
-    renderHUDQuests();
-    connectWebSocket();
-    initGameCanvas();
-}
-
-function returnToLobby() { showScreen('lobby-screen'); buildLobbyCharCard(); }
-
+// ==================== GAME RENDERER ====================
 class TileRenderer {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.resize();
         this.tileSize = 32;
-        this.cam = { x: 0, y: 0 };
-        this.player = { x: 20, y: 15, tx: 20, ty: 15 }; // start position
-        this.mapWidth = 80;
-        this.mapHeight = 80;
-
-        // Ground tiles: 0=grass, 1=water, 2=path, 3=forest
+        this.player = { x: 20, y: 15 };
+        this.mapWidth = 60;
+        this.mapHeight = 60;
         this.ground = this.generateGround();
-        // Objects: buildings, trees (collidable)
         this.objects = this.generateObjects();
-        // NPCs: array of { id, name, x, y, sprite, dialogueTree }
         this.npcs = [
-            {
-                id: 'elder',
-                name: 'Elder',
-                x: 18,
-                y: 14,
-                sprite: '🧓',
-                dialogue: {
-                    welcome: "Hello traveler! Welcome to our village.",
-                    options: [
-                        { text: "Who are you?", next: "who" },
-                        { text: "Got any quests?", next: "quests" },
-                        { text: "Goodbye.", action: "close" }
-                    ],
-                    who: "I am the village elder. We have a goblin problem.",
-                    quests: "The goblins in the forest have been attacking. Kill 5 of them and I'll reward you.",
-                    acceptQuest: { action: "quest", questId: "q1_1" }
-                }
-            },
-            {
-                id: 'merchant',
-                name: 'Merchant',
-                x: 22,
-                y: 16,
-                sprite: '🧔',
-                dialogue: {
-                    welcome: "Welcome to my shop! I have wares if you have coin.",
-                    options: [
-                        { text: "Show me your wares.", action: "shop" },
-                        { text: "Not interested.", action: "close" }
-                    ]
-                }
-            }
+            { id: 'elder', name: 'Elder', x: 18, y: 14, sprite: '🧓', dialogue: 'Welcome, traveler.' },
+            { id: 'merchant', name: 'Merchant', x: 22, y: 16, sprite: '🧔', dialogue: 'I have wares.' }
         ];
-        this.enemies = [];
-        this.floatingTexts = [];
     }
-
     resize() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
     }
-
     generateGround() {
-        const map = [];
+        let map = [];
         for (let y = 0; y < this.mapHeight; y++) {
-            const row = [];
+            map[y] = [];
             for (let x = 0; x < this.mapWidth; x++) {
-                // Simple procedural: water around edges, path in center, grass elsewhere
-                if (x < 3 || x > this.mapWidth-4 || y < 3 || y > this.mapHeight-4) row.push(1); // water
-                else if (x > 15 && x < 25 && y > 10 && y < 20) row.push(2); // path
-                else if (x > 30 && x < 50 && y > 20 && y < 40) row.push(3); // forest
-                else row.push(0); // grass
+                if (x < 3 || x > this.mapWidth - 4 || y < 3 || y > this.mapHeight - 4) map[y][x] = 1; // water
+                else if (x > 15 && x < 25 && y > 10 && y < 20) map[y][x] = 2; // path
+                else map[y][x] = 0; // grass
             }
-            row[20] = 0; // clear village center
-            row[15] = 2;
-            return row;
         }
         return map;
     }
-
     generateObjects() {
-        const obj = Array(this.mapHeight).fill().map(() => Array(this.mapWidth).fill(0));
-        // Place trees in forest
+        let obj = Array(this.mapHeight).fill().map(() => Array(this.mapWidth).fill(0));
         for (let y = 20; y < 40; y++) {
             for (let x = 30; x < 50; x++) {
                 if (Math.random() < 0.2) obj[y][x] = 1; // tree
             }
         }
-        // Place houses in village
         obj[14][18] = 2; // house
-        obj[14][22] = 2; // house
-        obj[16][20] = 2; // house
         return obj;
     }
-
     render() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.cam.x += (this.player.tx * this.tileSize - this.canvas.width/2 - this.cam.x) * 0.1;
-        this.cam.y += (this.player.ty * this.tileSize - this.canvas.height/2 - this.cam.y) * 0.1;
-
-        const T = this.tileSize;
-        const startX = Math.max(0, Math.floor(this.cam.x / T) - 2);
-        const endX = Math.min(this.mapWidth, Math.ceil((this.cam.x + this.canvas.width) / T) + 2);
-        const startY = Math.max(0, Math.floor(this.cam.y / T) - 2);
-        const endY = Math.min(this.mapHeight, Math.ceil((this.cam.y + this.canvas.height) / T) + 2);
-
-        // Draw ground
-        for (let y = startY; y < endY; y++) {
-            for (let x = startX; x < endX; x++) {
-                const screenX = x * T - this.cam.x;
-                const screenY = y * T - this.cam.y;
-                const tile = this.ground[y][x];
-                // Colors for tiles
-                if (tile === 0) this.ctx.fillStyle = '#3a7734'; // grass
-                else if (tile === 1) this.ctx.fillStyle = '#2a5a8c'; // water
-                else if (tile === 2) this.ctx.fillStyle = '#8b6b4d'; // path
-                else if (tile === 3) this.ctx.fillStyle = '#2d5a27'; // forest floor
-                this.ctx.fillRect(screenX, screenY, T-1, T-1);
-            }
-        }
-
-        // Draw objects
-        for (let y = startY; y < endY; y++) {
-            for (let x = startX; x < endX; x++) {
-                const screenX = x * T - this.cam.x;
-                const screenY = y * T - this.cam.y;
-                const obj = this.objects[y][x];
-                if (obj === 1) { // tree
+        const camX = this.player.x * this.tileSize - this.canvas.width / 2;
+        const camY = this.player.y * this.tileSize - this.canvas.height / 2;
+        for (let y = 0; y < this.mapHeight; y++) {
+            for (let x = 0; x < this.mapWidth; x++) {
+                const screenX = x * this.tileSize - camX;
+                const screenY = y * this.tileSize - camY;
+                if (screenX + this.tileSize < 0 || screenX > this.canvas.width || screenY + this.tileSize < 0 || screenY > this.canvas.height) continue;
+                // ground
+                if (this.ground[y][x] === 0) this.ctx.fillStyle = '#3a7734';
+                else if (this.ground[y][x] === 1) this.ctx.fillStyle = '#2a5a8c';
+                else this.ctx.fillStyle = '#8b6b4d';
+                this.ctx.fillRect(screenX, screenY, this.tileSize - 1, this.tileSize - 1);
+                // objects
+                if (this.objects[y][x] === 1) {
                     this.ctx.fillStyle = '#4a3a2a';
-                    this.ctx.fillRect(screenX+10, screenY+10, 12, 22);
+                    this.ctx.fillRect(screenX + 10, screenY + 10, 12, 22);
                     this.ctx.fillStyle = '#2a6b2a';
                     this.ctx.beginPath();
-                    this.ctx.arc(screenX+16, screenY+8, 12, 0, Math.PI*2);
+                    this.ctx.arc(screenX + 16, screenY + 8, 12, 0, Math.PI * 2);
                     this.ctx.fill();
-                } else if (obj === 2) { // house
+                } else if (this.objects[y][x] === 2) {
                     this.ctx.fillStyle = '#8b5a2b';
-                    this.ctx.fillRect(screenX+4, screenY+8, 24, 20);
-                    this.ctx.fillStyle = '#b88a5a';
-                    this.ctx.fillRect(screenX+10, screenY+16, 12, 12);
+                    this.ctx.fillRect(screenX + 4, screenY + 8, 24, 20);
                 }
             }
         }
-
-        // Draw NPCs
+        // NPCs
         this.npcs.forEach(npc => {
-            if (npc.x >= startX && npc.x <= endX && npc.y >= startY && npc.y <= endY) {
-                const screenX = npc.x * T - this.cam.x;
-                const screenY = npc.y * T - this.cam.y;
-                this.ctx.font = `${T}px serif`;
-                this.ctx.fillStyle = '#ffaa44';
-                this.ctx.fillText(npc.sprite, screenX+4, screenY+T-4);
-                // Name label
-                this.ctx.font = '10px monospace';
-                this.ctx.fillStyle = '#fff';
-                this.ctx.fillText(npc.name, screenX, screenY-2);
-            }
+            const sx = npc.x * this.tileSize - camX;
+            const sy = npc.y * this.tileSize - camY;
+            this.ctx.font = `${this.tileSize}px monospace`;
+            this.ctx.fillStyle = '#ffaa44';
+            this.ctx.fillText(npc.sprite, sx + 4, sy + this.tileSize - 4);
         });
-
-        // Draw player
-        const px = this.player.tx * T - this.cam.x;
-        const py = this.player.ty * T - this.cam.y;
-        this.ctx.font = `${T}px serif`;
+        // Player
+        const px = this.player.x * this.tileSize - camX;
+        const py = this.player.y * this.tileSize - camY;
+        this.ctx.font = `${this.tileSize}px monospace`;
         this.ctx.fillStyle = '#ffd700';
-        this.ctx.fillText('⚔', px+6, py+T-6); // player sword icon
-
-        // Draw floating texts
-        this.floatingTexts = this.floatingTexts.filter(t => {
-            t.life--;
-            t.y += t.vy;
-            this.ctx.font = '12px monospace';
-            this.ctx.fillStyle = t.color;
-            this.ctx.fillText(t.text, t.x * T - this.cam.x, t.y * T - this.cam.y - 20);
-            return t.life > 0;
-        });
-
-        this.renderMinimap();
+        this.ctx.fillText('⚔', px + 6, py + this.tileSize - 6);
         requestAnimationFrame(() => this.render());
     }
-
-    renderMinimap() {
-        const mc = $('minimap-canvas');
-        if (!mc) return;
-        const ctx = mc.getContext('2d');
-        ctx.fillStyle = '#0a0c10';
-        ctx.fillRect(0, 0, 150, 150);
-        const scale = 150 / 50;
-        for (let y = 0; y < 50; y++) {
-            for (let x = 0; x < 50; x++) {
-                const tile = this.ground[y] ? this.ground[y][x] : 0;
-                ctx.fillStyle = tile === 0 ? '#3a7734' : tile === 1 ? '#2a5a8c' : '#8b6b4d';
-                ctx.fillRect(x*scale, y*scale, scale, scale);
-            }
-        }
-        // Player dot
-        ctx.fillStyle = '#fd0';
-        ctx.fillRect(this.player.tx*scale-2, this.player.ty*scale-2, 4, 4);
-        // NPC dots
-        this.npcs.forEach(npc => {
-            ctx.fillStyle = '#ffaa44';
-            ctx.fillRect(npc.x*scale-1, npc.y*scale-1, 2, 2);
-        });
-    }
-
     movePlayer(dx, dy) {
-        const nx = this.player.tx + dx;
-        const ny = this.player.ty + dy;
+        const nx = this.player.x + dx;
+        const ny = this.player.y + dy;
         if (ny < 0 || ny >= this.mapHeight || nx < 0 || nx >= this.mapWidth) return;
-        // Check collision with objects (trees/buildings)
         if (this.objects[ny][nx] !== 0) return; // blocked
-        // Check NPCs (can't walk through them, but can interact)
-        const npcHere = this.npcs.find(n => n.x === nx && n.y === ny);
-        if (npcHere) {
-            this.startDialogue(npcHere);
-            return;
-        }
-        this.player.tx = nx;
-        this.player.ty = ny;
-        wsSend({ type:'move', character_id:currentChar?.id, x:nx, y:ny });
-    }
-
-    startDialogue(npc) {
-        currentNPC = npc;
-        const popup = $('dialogue-popup');
-        $('dialogue-npc-name').textContent = npc.name;
-        $('dialogue-text').textContent = npc.dialogue.welcome || "...";
-        const choicesDiv = $('dialogue-choices');
-        choicesDiv.innerHTML = '';
-        if (npc.dialogue.options) {
-            npc.dialogue.options.forEach(opt => {
-                const btn = document.createElement('div');
-                btn.className = 'dialogue-choice';
-                btn.textContent = opt.text;
-                btn.onclick = () => {
-                    if (opt.action === 'close') {
-                        popup.classList.remove('active');
-                    } else if (opt.action === 'quest') {
-                        showNotif('Quest started!', 'success');
-                        activeQuests.add(opt.questId);
-                        renderHUDQuests();
-                        popup.classList.remove('active');
-                    } else if (opt.next) {
-                        $('dialogue-text').textContent = npc.dialogue[opt.next] || "...";
-                        // For simplicity, just close after
-                    } else {
-                        popup.classList.remove('active');
-                    }
-                };
-                choicesDiv.appendChild(btn);
-            });
-        }
-        popup.classList.add('active');
-    }
-
-    clickCanvas(cx, cy) {
-        const tx = Math.floor((cx + this.cam.x) / this.tileSize);
-        const ty = Math.floor((cy + this.cam.y) / this.tileSize);
-        const npc = this.npcs.find(n => n.x === tx && n.y === ty);
+        const npc = this.npcs.find(n => n.x === nx && n.y === ny);
         if (npc) {
             this.startDialogue(npc);
             return;
         }
-        // If not NPC, move towards (simple)
-        const dx = Math.sign(tx - this.player.tx);
-        const dy = Math.sign(ty - this.player.ty);
+        this.player.x = nx;
+        this.player.y = ny;
+        wsSend({ type: 'move', character_id: currentChar?.id, x: nx, y: ny });
+    }
+    startDialogue(npc) {
+        currentNPC = npc;
+        $('dialogue-npc-name').textContent = npc.name;
+        $('dialogue-text').textContent = npc.dialogue;
+        $('dialogue-choices').innerHTML = '<div class="dialogue-choice" onclick="document.getElementById(\'dialogue-popup\').classList.remove(\'active\')">Close</div>';
+        $('dialogue-popup').classList.add('active');
+    }
+    clickCanvas(cx, cy) {
+        const camX = this.player.x * this.tileSize - this.canvas.width / 2;
+        const camY = this.player.y * this.tileSize - this.canvas.height / 2;
+        const tx = Math.floor((cx + camX) / this.tileSize);
+        const ty = Math.floor((cy + camY) / this.tileSize);
+        const npc = this.npcs.find(n => n.x === tx && n.y === ty);
+        if (npc) { this.startDialogue(npc); return; }
+        const dx = Math.sign(tx - this.player.x);
+        const dy = Math.sign(ty - this.player.y);
         this.movePlayer(dx, dy);
     }
 }
@@ -1386,86 +891,61 @@ function initGameCanvas() {
         renderer.clickCanvas(e.clientX - rect.left, e.clientY - rect.top);
     });
     window.addEventListener('keydown', e => {
-        if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName) || !$('game-screen').classList.contains('active')) return;
-        switch(e.key.toLowerCase()) {
-            case 'arrowup': case 'w': renderer.movePlayer(0,-1); break;
-            case 'arrowdown': case 's': renderer.movePlayer(0,1); break;
-            case 'arrowleft': case 'a': renderer.movePlayer(-1,0); break;
-            case 'arrowright': case 'd': renderer.movePlayer(1,0); break;
+        if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) || !$('game-screen').classList.contains('active')) return;
+        switch (e.key.toLowerCase()) {
+            case 'arrowup': case 'w': renderer.movePlayer(0, -1); break;
+            case 'arrowdown': case 's': renderer.movePlayer(0, 1); break;
+            case 'arrowleft': case 'a': renderer.movePlayer(-1, 0); break;
+            case 'arrowright': case 'd': renderer.movePlayer(1, 0); break;
             case 'i': openInventory(); break;
             case 'k': openSkills(); break;
             case 'j': openQuestLog(); break;
             case 'g': openGuild(); break;
             case 'h': openAuction(); break;
-            case 'escape': closeAllPopups(); if ($('dialogue-popup').classList.contains('active')) $('dialogue-popup').classList.remove('active'); break;
+            case 'escape': closeAllPopups(); $('dialogue-popup').classList.remove('active'); break;
         }
     });
 }
 
-// ==================== SKILL BAR ====================
-function buildSkillBar() {
-    let bar = $('hud-skills');
-    if (!bar || !currentChar) return;
-    const skills = [
-        ['Slash', '🗡', 1],
-        ['Fireball', '🔥', 2],
-        ['Heal', '💚', 3],
-        ['Shield', '🛡', 4]
-    ];
-    bar.innerHTML = skills.slice(0,4).map((sk,i) =>
-        `<div class="skill-slot" onclick="useSkill('${sk[0]}',${i})">
-            <div class="skill-icon">${sk[1]}</div>
-            <div class="skill-key">${i+1}</div>
-        </div>`
-    ).join('');
+function startGame() {
+    showScreen('game-screen');
+    buildSkillBar();
+    updateHUD();
+    renderHUDQuests();
+    connectWebSocket();
+    initGameCanvas();
 }
 
-function useSkill(name) { showNotif(`Used ${name}!`, 'info'); }
+function returnToLobby() { showScreen('lobby-screen'); buildLobbyCharCard(); }
+
+// ==================== SKILL BAR ====================
+function buildSkillBar() {
+    $('hud-skills').innerHTML = `
+        <div class="skill-slot" onclick="useSkill('Slash')"><div class="skill-icon">🗡</div><div>1</div></div>
+        <div class="skill-slot" onclick="useSkill('Fireball')"><div class="skill-icon">🔥</div><div>2</div></div>
+        <div class="skill-slot" onclick="useSkill('Heal')"><div class="skill-icon">💚</div><div>3</div></div>
+        <div class="skill-slot" onclick="useSkill('Shield')"><div class="skill-icon">🛡</div><div>4</div></div>
+    `;
+}
+function useSkill(name) { showNotif(`Used ${name}!`); }
 
 // ==================== HUD QUESTS ====================
 function renderHUDQuests() {
-    let el = $('hud-quest-list');
-    if (!el) return;
-    let active = [...activeQuests].slice(0,3);
-    if (active.length===0) { el.innerHTML='<div style="color:#555">No active quests</div>'; return; }
-    el.innerHTML = active.map(qid=>{
-        const quests = {
-            q1_1:{ icon:'👺', title:'The Dark Omen', obj:'Kill 5 goblins' }
-        };
-        let q = quests[qid] || { icon:'📜', title:'Quest', obj:'...' };
-        return `<div class="quest-entry active-quest">
-            <div class="quest-name">${q.icon} ${q.title}</div>
-            <div class="quest-obj">${q.obj}</div>
-        </div>`;
-    }).join('');
+    $('hud-quest-list').innerHTML = activeQuests.size ? [...activeQuests].map(q => `<div class="quest-entry">${q}</div>`).join('') : '<div>No active quests</div>';
 }
 
 // ==================== INVENTORY ====================
 function openInventory() { loadInventory(); openPopup('inv-popup'); }
 async function loadInventory() {
     if (!currentChar) return;
-    let grid = $('inv-grid'); grid.innerHTML='';
     $('inv-gold').textContent = currentChar.gold;
-    try {
-        let {data}=await apiFetch(`/api/characters/${currentChar.id}`);
-        let inv = (data && data.inventory) ? data.inventory : [];
-        for (let i=0;i<24;i++) {
-            let slot = document.createElement('div');
-            slot.className = 'inv-slot';
-            let item = inv[i];
-            if (item) {
-                slot.innerHTML = item.icon || '❓';
-                slot.onclick = () => showNotif(`Item ${item.name}`, 'info');
-            }
-            grid.appendChild(slot);
-        }
-    } catch {
-        for (let i=0;i<24;i++) {
-            let slot = document.createElement('div');
-            slot.className = 'inv-slot';
-            if (i<5) slot.innerHTML = ['🗡','🧪','🛡','💍','📜'][i];
-            grid.appendChild(slot);
-        }
+    const grid = $('inv-grid');
+    grid.innerHTML = '';
+    for (let i = 0; i < 24; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'inv-slot';
+        if (i < 3) slot.innerHTML = '🗡';
+        grid.appendChild(slot);
     }
 }
 
@@ -1481,70 +961,72 @@ function openGuild() { openPopup('guild-popup'); }
 // ==================== AUCTION ====================
 function openAuction() { loadAuctions(); openPopup('auction-popup'); }
 async function loadAuctions() {
-    $('auction-grid').innerHTML='<div>Loading...</div>';
-    try {
-        let {data}=await apiFetch('/api/auction/listings');
-        auctionsData=Array.isArray(data)?data:[];
-    } catch { auctionsData=[]; }
-    renderAuctions(auctionsData);
+    $('auction-grid').innerHTML = '<div>Loading...</div>';
+    const { data } = await apiFetch('/api/auction/listings');
+    if (Array.isArray(data)) {
+        $('auction-grid').innerHTML = data.map(a => `<div class="auction-card">Item ${a.item_id}</div>`).join('');
+    } else {
+        $('auction-grid').innerHTML = '<div>No auctions</div>';
+    }
 }
-function renderAuctions(data) {
-    let grid=$('auction-grid');
-    if (!data.length){ grid.innerHTML='<div>No auctions</div>'; return; }
-    grid.innerHTML=data.map(a=>`<div class="auction-card" onclick="alert('Bid not implemented')">Item ${a.item_id}</div>`).join('');
-}
-function refreshAuctions() { loadAuctions(); }
-function auctionTab(el,tab) { document.querySelectorAll('.auction-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
 
 // ==================== TRADE ====================
-function initiateTrade() { showNotif('Trade not implemented', 'info'); }
 function closeTrade() { closePopup('trade-popup'); }
+function acceptTrade() { showNotif('Trade not fully implemented', 'info'); }
+function cancelTrade() { closeTrade(); }
+function handleTradeRequest(d) { showNotif('Trade request received', 'info'); }
 
 // ==================== PVP ====================
-function challengePvP() { showNotif('PvP not implemented', 'info'); }
 function closePvP() { closePopup('pvp-popup'); }
+function acceptPvP() { showNotif('PvP not implemented', 'info'); }
+function handlePvPChallenge(d) { showNotif('PvP challenge received', 'info'); }
+function handlePvPResult(d) { showNotif('PvP result received', 'info'); }
 
 // ==================== LEADERBOARD ====================
 function openLeaderboard() { loadLeaderboard('level'); openPopup('leaderboard-popup'); }
 async function loadLeaderboard(type) {
-    let tbody=$('lb-tbody'); tbody.innerHTML='<tr><td colspan="4">Loading...</td></tr>';
-    let {data}=await apiFetch(`/api/leaderboard/${type}?limit=10`);
-    let arr=Array.isArray(data)?data:[];
-    tbody.innerHTML=arr.map((p,i)=>`<tr><td class="lb-rank">${i+1}</td><td class="lb-name">${esc(p.name)}</td><td class="lb-class">${p.class_name||''}</td><td class="lb-val">${p[type==='gold'?'gold':'level']}</td></tr>`).join('');
+    const tbody = $('lb-tbody');
+    tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+    const { data } = await apiFetch(`/api/leaderboard/${type}?limit=10`);
+    if (Array.isArray(data)) {
+        tbody.innerHTML = data.map((p, i) => `<tr><td>${i + 1}</td><td>${esc(p.name)}</td><td>${p.class_name || ''}</td><td>${p[type === 'gold' ? 'gold' : 'level']}</td></tr>`).join('');
+    } else {
+        tbody.innerHTML = '<tr><td colspan="4">No data</td></tr>';
+    }
 }
-function lbTab(el,type) { document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); loadLeaderboard(type); }
+function lbTab(el, type) { document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); loadLeaderboard(type); }
 
 // ==================== CHEAT ====================
 function openCheat() { openPopup('cheat-popup'); }
 async function cheatCmd(cmd) {
-    let target=$('cheat-target').value.trim()||null;
-    let amount=parseInt($('cheat-amount').value)||null;
-    let item_id=$('cheat-item-id').value.trim()||null;
-    let res=$('cheat-result'); res.textContent='Executing...';
-    let {ok,data}=await apiFetch('/api/admin/cheat',{method:'POST',body:JSON.stringify({command:cmd,target,amount,item_id})});
-    res.textContent=ok?'✓ '+(data.message||'Success'):'✗ '+(data.detail||'Failed');
-    if(ok) showNotif('Cheat executed','success');
+    const target = $('cheat-target')?.value.trim() || null;
+    const amount = parseInt($('cheat-amount')?.value) || null;
+    const item_id = $('cheat-item-id')?.value.trim() || null;
+    $('cheat-result').textContent = 'Executing...';
+    const { ok, data } = await apiFetch('/api/admin/cheat', { method: 'POST', body: JSON.stringify({ command: cmd, target, amount, item_id }) });
+    $('cheat-result').textContent = ok ? '✓ ' + (data.message || 'Success') : '✗ ' + (data.detail || 'Failed');
+    if (ok) showNotif('Cheat executed', 'success');
 }
 async function gameEventCmd(type) {
-    let msg=type==='announce'?prompt('Message:'):null;
-    if(type==='announce'&&!msg) return;
-    let {ok}=await apiFetch('/api/admin/event',{method:'POST',body:JSON.stringify({event_type:type,data:{message:msg}})});
-    if(ok) showNotif('Event sent','success');
+    let msg = type === 'announce' ? prompt('Message:') : null;
+    if (type === 'announce' && !msg) return;
+    const { ok } = await apiFetch('/api/admin/event', { method: 'POST', body: JSON.stringify({ event_type: type, data: { message: msg } }) });
+    if (ok) showNotif('Event sent', 'success');
 }
 async function openPromoteMenu() {
-    let uid=prompt('User ID:'); if(!uid) return;
-    let role=prompt('Role (moderator/admin):'); if(!role) return;
-    let {ok}=await apiFetch(`/api/admin/promote?target_user_id=${uid}&new_role=${role}`,{method:'POST'});
-    showNotif(ok?'Promoted':'Failed',ok?'success':'error');
+    const uid = prompt('User ID:'); if (!uid) return;
+    const role = prompt('Role (moderator/admin):'); if (!role) return;
+    const { ok } = await apiFetch(`/api/admin/promote?target_user_id=${uid}&new_role=${role}`, { method: 'POST' });
+    showNotif(ok ? 'Promoted' : 'Failed', ok ? 'success' : 'error');
 }
 
 // ==================== MOD PANEL ====================
 function openMod() { refreshModPanel(); openPopup('mod-popup'); }
 async function refreshModPanel() {
-    let {ok,data}=await apiFetch('/api/admin/online-players');
-    if(!ok){ $('mod-player-list').innerHTML='<div>Failed</div>'; return; }
-    $('mod-online-cnt').textContent=data.online_count||0;
-    $('mod-player-list').innerHTML=(data.players||[]).map(p=>
+    const { ok, data } = await apiFetch('/api/admin/online-players');
+    if (!ok) { $('mod-player-list').innerHTML = '<div>Failed</div>'; return; }
+    $('mod-online-cnt').textContent = data.online_count || 0;
+    $('mod-player-list').innerHTML = (data.players || []).map(p =>
         `<div class="admin-player-row">
             <span>${esc(p.character_name)} (Lv.${p.level})</span>
             <div class="admin-actions">
@@ -1554,41 +1036,34 @@ async function refreshModPanel() {
         </div>`
     ).join('');
 }
-async function modAction(action,userId) {
-    let reason=prompt('Reason:')||'No reason';
-    let {ok}=await apiFetch('/api/mod/action',{method:'POST',body:JSON.stringify({action,target_user_id:userId,reason})});
-    if(ok) showNotif(`${action} applied`,'success');
+async function modAction(action, userId) {
+    const reason = prompt('Reason:') || 'No reason';
+    const { ok } = await apiFetch('/api/mod/action', { method: 'POST', body: JSON.stringify({ action, target_user_id: userId, reason }) });
+    if (ok) showNotif(`${action} applied`, 'success');
 }
 
 // ==================== COMBAT ====================
 function startCombat() { openPopup('combat-popup'); }
 
 // ==================== CLOSE ALL ====================
-function closeAllPopups() { document.querySelectorAll('.popup-overlay.show').forEach(p=>p.classList.remove('show')); }
-document.addEventListener('click', e=>{ if(e.target.classList.contains('popup-overlay')) e.target.classList.remove('show'); });
+function closeAllPopups() { document.querySelectorAll('.popup-overlay.show').forEach(p => p.classList.remove('show')); }
+document.addEventListener('click', e => { if (e.target.classList.contains('popup-overlay')) e.target.classList.remove('show'); });
 
-// ==================== STARFIELD ====================
-function buildStarfield() {
-    let stars=$('login-stars');
-    for(let i=0;i<120;i++){
-        let s=document.createElement('div');
-        s.className='star';
-        s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;--dur:${Math.random()*4+2}s;--op:${Math.random()*0.7+0.3};animation-delay:${Math.random()*5}s`;
-        stars.appendChild(s);
-    }
-}
+// ==================== MISC ====================
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s || ''); return d.innerHTML; }
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', async () => {
-    buildStarfield();
-    showLoadingBar(20); await new Promise(r=>setTimeout(r,300));
-    showLoadingBar(50); await new Promise(r=>setTimeout(r,300));
-    showLoadingBar(80); await new Promise(r=>setTimeout(r,200));
-    showLoadingBar(100); await new Promise(r=>setTimeout(r,300));
-    $('loading-screen').style.display='none';
+    showLoadingBar(20); await new Promise(r => setTimeout(r, 300));
+    showLoadingBar(50); await new Promise(r => setTimeout(r, 300));
+    showLoadingBar(80); await new Promise(r => setTimeout(r, 200));
+    showLoadingBar(100); await new Promise(r => setTimeout(r, 300));
+    $('loading-screen').style.display = 'none';
     if (token) {
-        try { await loadCharacters(); } catch { localStorage.removeItem('rpg_token'); token=null; showScreen('login-screen'); }
-    } else showScreen('login-screen');
+        try { await loadCharacters(); } catch { localStorage.removeItem('rpg_token'); token = null; showScreen('login-screen'); }
+    } else {
+        showScreen('login-screen');
+    }
 });
 </script>
 </body>
