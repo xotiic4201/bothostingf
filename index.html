@@ -1196,10 +1196,9 @@
     </div>
 
     <script>
-        // ==================== Configuration ====================
+        // ==================== FIXED Configuration ====================
         const API_URL = 'https://bot-hosting-b-ga04.onrender.com';
         const WS_URL = 'wss://bot-hosting-b-ga04.onrender.com';
-            
 
         let socket = null;
         let currentUser = null;
@@ -1224,6 +1223,8 @@
             showLoading(true);
 
             try {
+                console.log('Attempting login to:', API_URL + '/api/login');
+                
                 const response = await fetch(`${API_URL}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1231,18 +1232,31 @@
                 });
 
                 const data = await response.json();
+                console.log('Login response:', data);
 
                 if (response.ok) {
                     token = data.access_token;
                     localStorage.setItem('token', token);
-                    currentUser = { username };
+                    currentUser = { username, role: data.role, is_owner: data.is_owner };
+                    
+                    // Show role in notification
+                    if (data.is_owner) {
+                        addNotification('👑 Logged in as Owner', 'success');
+                    } else if (data.role === 'admin') {
+                        addNotification('⚡ Logged in as Admin', 'success');
+                    } else if (data.role === 'moderator') {
+                        addNotification('🛡️ Logged in as Moderator', 'success');
+                    } else {
+                        addNotification('Logged in as Player', 'success');
+                    }
+                    
                     await loadCharacters();
                 } else {
                     showError(data.detail || 'Login failed');
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                showError('Connection error');
+                showError('Connection error: ' + error.message);
             } finally {
                 showLoading(false);
             }
@@ -1265,6 +1279,8 @@
             showLoading(true);
 
             try {
+                console.log('Attempting registration to:', API_URL + '/api/register');
+                
                 const response = await fetch(`${API_URL}/api/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1272,18 +1288,24 @@
                 });
 
                 const data = await response.json();
+                console.log('Registration response:', data);
 
                 if (response.ok) {
                     token = data.access_token;
                     localStorage.setItem('token', token);
-                    currentUser = { username };
+                    currentUser = { username, role: data.role, is_owner: data.is_owner };
+                    
+                    if (data.is_owner) {
+                        addNotification('👑 Registered as Owner!', 'success');
+                    }
+                    
                     await loadCharacters();
                 } else {
                     showError(data.detail || 'Registration failed');
                 }
             } catch (error) {
                 console.error('Registration error:', error);
-                showError('Connection error');
+                showError('Connection error: ' + error.message);
             } finally {
                 showLoading(false);
             }
@@ -1311,7 +1333,7 @@
                 }
             } catch (error) {
                 console.error('Load characters error:', error);
-                showError('Failed to load characters');
+                showError('Failed to load characters: ' + error.message);
             } finally {
                 showLoading(false);
             }
@@ -1360,7 +1382,7 @@
                 }
             } catch (error) {
                 console.error('Create character error:', error);
-                showError('Connection error');
+                showError('Connection error: ' + error.message);
             } finally {
                 showLoading(false);
             }
@@ -1863,7 +1885,7 @@
                 
                 const guild = await response.json();
                 
-                if (guild) {
+                if (guild && guild.name) {
                     document.getElementById('guild-name').textContent = guild.name;
                     document.getElementById('guild-tag').textContent = `[${guild.tag}]`;
                     
@@ -1933,7 +1955,7 @@
                 });
                 
                 const data = await response.json();
-                const inventory = data.inventory;
+                const inventory = data.inventory || [];
                 
                 const grid = document.getElementById('inventory-grid');
                 grid.innerHTML = '';
@@ -1956,7 +1978,7 @@
                     grid.appendChild(slot);
                 }
                 
-                document.getElementById('inventory-gold').textContent = data.character.gold;
+                document.getElementById('inventory-gold').textContent = data.character?.gold || 0;
             } catch (error) {
                 console.error('Load inventory error:', error);
             }
@@ -1992,7 +2014,7 @@
                 necromancer: ['Dark Bolt', 'Raise Dead', 'Life Drain', 'Curse', 'Bone Armor', 'Death Coil']
             };
             
-            const skills = classSkills[currentCharacter.class] || classSkills.warrior;
+            const skills = classSkills[currentCharacter?.class] || classSkills.warrior;
             
             container.innerHTML = '';
             
@@ -2246,7 +2268,3 @@
     </script>
 </body>
 </html>
-
-
-
-
