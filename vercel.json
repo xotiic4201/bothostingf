@@ -1,4 +1,5 @@
 {
+  "name": "pixel-rpg-frontend",
   "version": 2,
   "builds": [
     {
@@ -8,12 +9,34 @@
   ],
   "routes": [
     {
-      "src": "/",
-      "dest": "/index.html"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/index.html",
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
     }
-  ]
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "VITE_API_URL": "https://bot-hosting-b-ga04.onrender.com",
+    "VITE_WS_URL": "wss://bot-hosting-b-ga04.onrender.com"
+  }
 }
