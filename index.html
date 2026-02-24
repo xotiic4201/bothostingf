@@ -5,2295 +5,1440 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2D Pixel RPG - Epic Adventure</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Courier New', monospace;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; image-rendering: pixelated; image-rendering: crisp-edges; }
+        :root {
+            --gold: #ffd700; --dark-gold: #b8860b; --bg-deep: #0a0c0e; --bg-dark: #1a1d21;
+            --bg-panel: #2a2a35; --bg-item: #1e1e28; --border-brown: #6b4f3c;
+            --border-gold: #8b7a5a; --text-light: #e0d3b0; --text-muted: #a0a0b0;
+            --hp-red: #ff4444; --mana-blue: #4444ff; --exp-green: #44ff44;
+            --rarity-common: #a0a0a0; --rarity-uncommon: #00ff00; --rarity-rare: #0070ff;
+            --rarity-epic: #a335ee; --rarity-legendary: #ff8000;
+        }
+        body { background: var(--bg-deep); color: #fff; overflow: hidden; width: 100vw; height: 100vh; }
+
+        /* ===== PIXEL CHARACTER SPRITES ===== */
+        .pixel-art {
             image-rendering: pixelated;
             image-rendering: crisp-edges;
-        }
-
-        body {
-            background: #0a0c0e;
-            color: #fff;
-            overflow: hidden;
-        }
-
-        #game-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #game-canvas {
-            width: 1024px;
-            height: 768px;
-            background: #1a1d21;
-            border: 4px solid #4a4f55;
-            image-rendering: pixelated;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            display: none;
-        }
-
-        #ui-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 1024px;
-            height: 768px;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .ui-panel {
-            position: absolute;
-            background: rgba(20, 20, 30, 0.95);
-            border: 2px solid #6b4f3c;
-            border-radius: 0;
-            padding: 10px;
-            color: #e0d3b0;
-            font-size: 14px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-            pointer-events: all;
-            image-rendering: pixelated;
-        }
-
-        #login-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1a1f2e 0%, #2a1e2a 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .login-box {
-            background: #2a2a35;
-            border: 4px solid #8b7a5a;
-            padding: 40px;
-            width: 400px;
-            text-align: center;
-            box-shadow: 0 0 30px #000;
-        }
-
-        .login-box h1 {
-            color: #ffd700;
-            font-size: 36px;
-            margin-bottom: 10px;
-            text-shadow: 3px 3px 0 #4a2a2a;
-        }
-
-        .login-box h2 {
-            color: #c0b080;
-            font-size: 16px;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: #1e1e28;
-            border: 2px solid #5a4a3a;
-            color: #e0d3b0;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .login-input:focus {
-            border-color: #b8a060;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            background: #6b4f3c;
-            border: 2px solid #b88a5a;
-            color: #fff0d0;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .login-btn:hover {
-            background: #8b6f5c;
-            border-color: #ffb86c;
-            transform: translateY(-2px);
-        }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        .error-message {
-            color: #ff6b6b;
-            margin: 10px 0;
-            font-size: 14px;
-        }
-
-        #character-creation-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #1a1d21;
-            display: none;
-            z-index: 900;
-        }
-
-        .char-creation-box {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #2a2a35;
-            border: 4px solid #8b7a5a;
-            padding: 30px;
-            width: 600px;
-        }
-
-        .class-selector {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .class-card {
-            background: #1e1e28;
-            border: 2px solid #5a4a3a;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-        }
-
-        .class-card:hover {
-            border-color: #b8a060;
-            background: #2a2a35;
-        }
-
-        .class-card.selected {
-            border-color: #ffd700;
-            background: #3a3a45;
-            box-shadow: 0 0 15px #ffd700;
-        }
-
-        .class-card h3 {
-            color: #ffd700;
-            margin-bottom: 5px;
-        }
-
-        .class-card p {
-            color: #a0a0b0;
-            font-size: 12px;
-        }
-
-        #lobby-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #1a1d21;
-            display: none;
-            z-index: 800;
-        }
-
-        .lobby-header {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            height: 60px;
-            background: #2a2a35;
-            border: 2px solid #6b4f3c;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            justify-content: space-between;
-        }
-
-        .lobby-stats {
-            display: flex;
-            gap: 30px;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .stat-icon {
-            width: 20px;
-            height: 20px;
-            background: #ffd700;
-        }
-
-        .lobby-main {
-            position: absolute;
-            top: 100px;
-            left: 20px;
-            right: 20px;
-            bottom: 20px;
-            display: flex;
-            gap: 20px;
-        }
-
-        .lobby-left {
-            width: 200px;
-            background: #2a2a35;
-            border: 2px solid #6b4f3c;
-            padding: 10px;
-        }
-
-        .lobby-center {
-            flex: 1;
-            background: #2a2a35;
-            border: 2px solid #6b4f3c;
-            padding: 10px;
-            overflow-y: auto;
-        }
-
-        .lobby-right {
-            width: 300px;
-            background: #2a2a35;
-            border: 2px solid #6b4f3c;
-            padding: 10px;
-        }
-
-        .player-list {
-            list-style: none;
-        }
-
-        .player-item {
-            padding: 5px;
-            margin: 2px 0;
-            background: #1e1e28;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .player-item:hover {
-            background: #3a3a45;
-        }
-
-        .player-status {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .status-online { background: #4caf50; }
-        .status-away { background: #ff9800; }
-        .status-offline { background: #f44336; }
-
-        #chat-container {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            width: 400px;
-            height: 300px;
-            background: rgba(20, 20, 30, 0.95);
-            border: 2px solid #6b4f3c;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-        }
-
-        .chat-tabs {
-            display: flex;
-            border-bottom: 1px solid #4a4f55;
-        }
-
-        .chat-tab {
-            padding: 8px 15px;
-            cursor: pointer;
-            background: #2a2a35;
-            color: #a0a0b0;
-            border-right: 1px solid #4a4f55;
-        }
-
-        .chat-tab.active {
-            background: #3a3a45;
-            color: #ffd700;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            font-size: 12px;
-        }
-
-        .chat-message {
-            margin: 5px 0;
-            word-wrap: break-word;
-        }
-
-        .chat-message .timestamp {
-            color: #808080;
-            margin-right: 5px;
-        }
-
-        .chat-message .sender {
-            color: #ffd700;
-            font-weight: bold;
-            margin-right: 5px;
-        }
-
-        .chat-message.system {
-            color: #98fb98;
-            font-style: italic;
-        }
-
-        .chat-message.whisper {
-            color: #dda0dd;
-        }
-
-        .chat-message.guild {
-            color: #87ceeb;
-        }
-
-        .chat-message.party {
-            color: #98fb98;
-        }
-
-        .chat-input-container {
-            display: flex;
-            padding: 5px;
-            border-top: 1px solid #4a4f55;
-        }
-
-        #chat-input {
-            flex: 1;
-            background: #1e1e28;
-            border: 1px solid #5a4a3a;
-            color: #e0d3b0;
-            padding: 5px;
-            outline: none;
-        }
-
-        #chat-send {
-            background: #6b4f3c;
-            border: 1px solid #b88a5a;
-            color: #fff0d0;
-            padding: 5px 15px;
-            cursor: pointer;
-            margin-left: 5px;
-        }
-
-        #chat-send:hover {
-            background: #8b6f5c;
-        }
-
-        #character-hud {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 300px;
-            background: rgba(20, 20, 30, 0.9);
-            border: 2px solid #6b4f3c;
-            padding: 15px;
-            z-index: 100;
-        }
-
-        .health-bar {
-            width: 100%;
-            height: 20px;
-            background: #4a2a2a;
-            border: 1px solid #8b5a5a;
-            margin: 5px 0;
-            position: relative;
-        }
-
-        .health-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ff4444, #ff8888);
-            width: 100%;
-            transition: width 0.3s;
-        }
-
-        .mana-bar {
-            width: 100%;
-            height: 20px;
-            background: #2a2a4a;
-            border: 1px solid #5a5a8b;
-            margin: 5px 0;
-            position: relative;
-        }
-
-        .mana-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4444ff, #8888ff);
-            width: 100%;
-            transition: width 0.3s;
-        }
-
-        .exp-bar {
-            width: 100%;
-            height: 10px;
-            background: #2a4a2a;
-            border: 1px solid #5a8b5a;
-            margin: 5px 0;
-        }
-
-        .exp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #44ff44, #88ff88);
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .bar-text {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 12px;
-            line-height: 20px;
-            color: white;
-            text-shadow: 1px 1px 0 black;
-        }
-
-        #inventory-panel {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            background: rgba(20, 20, 30, 0.95);
-            border: 3px solid #8b7a5a;
-            padding: 20px;
-            display: none;
-            z-index: 500;
-        }
-
-        .inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .inventory-slot {
-            aspect-ratio: 1;
-            background: #2a2a35;
-            border: 2px solid #5a4a3a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .inventory-slot:hover {
-            border-color: #ffd700;
-        }
-
-        .inventory-slot .item-quantity {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            font-size: 10px;
-            color: #ffd700;
-        }
-
-        .item-common { border-color: #a0a0a0; }
-        .item-uncommon { border-color: #00ff00; }
-        .item-rare { border-color: #0070ff; }
-        .item-epic { border-color: #a335ee; }
-        .item-legendary { border-color: #ff8000; }
-
-        #trade-window {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 700px;
-            background: rgba(20, 20, 30, 0.95);
-            border: 3px solid #8b7a5a;
-            padding: 20px;
-            display: none;
-            z-index: 600;
-        }
-
-        .trade-container {
-            display: flex;
-            gap: 20px;
-        }
-
-        .trade-side {
-            flex: 1;
-        }
-
-        .trade-side h3 {
-            color: #ffd700;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .trade-items {
-            min-height: 200px;
-            background: #2a2a35;
-            border: 2px solid #5a4a3a;
-            padding: 10px;
-        }
-
-        .trade-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px;
-            margin: 2px 0;
-            background: #1e1e28;
-        }
-
-        .trade-gold {
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .trade-gold input {
-            width: 100px;
-            background: #1e1e28;
-            border: 1px solid #5a4a3a;
-            color: #ffd700;
-            padding: 5px;
-        }
-
-        .trade-status {
-            text-align: center;
-            margin: 10px 0;
-            color: #98fb98;
-        }
-
-        #quest-tracker {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 250px;
-            background: rgba(20, 20, 30, 0.9);
-            border: 2px solid #6b4f3c;
-            padding: 15px;
-            z-index: 100;
-        }
-
-        .quest-item {
-            margin: 10px 0;
-            padding: 5px;
-            background: #2a2a35;
-        }
-
-        .quest-title {
-            color: #ffd700;
-            font-weight: bold;
-        }
-
-        .quest-progress {
-            font-size: 10px;
-            color: #a0a0b0;
-        }
-
-        .quest-objective {
-            font-size: 11px;
-            color: #98fb98;
-            margin-left: 10px;
-        }
-
-        #skill-tree {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 800px;
-            background: rgba(20, 20, 30, 0.95);
-            border: 3px solid #8b7a5a;
-            padding: 20px;
-            display: none;
-            z-index: 700;
-        }
-
-        .skill-tree-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .skill-tier {
-            background: #2a2a35;
-            padding: 15px;
-            border: 2px solid #5a4a3a;
-        }
-
-        .skill-tier h3 {
-            color: #ffd700;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .skill-node {
-            background: #1e1e28;
-            border: 2px solid #5a4a3a;
-            padding: 10px;
-            margin: 5px 0;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .skill-node:hover {
-            border-color: #ffd700;
-        }
-
-        .skill-node.learned {
-            border-color: #00ff00;
-            background: #1a3a1a;
-        }
-
-        .skill-node.available {
-            border-color: #ffd700;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { border-color: #ffd700; }
-            50% { border-color: #ffa500; }
-            100% { border-color: #ffd700; }
-        }
-
-        #guild-panel {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 700px;
-            background: rgba(20, 20, 30, 0.95);
-            border: 3px solid #8b7a5a;
-            padding: 20px;
-            display: none;
-            z-index: 650;
-        }
-
-        .guild-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .guild-name {
-            color: #ffd700;
-            font-size: 24px;
-        }
-
-        .guild-tag {
-            color: #a0a0b0;
-            font-size: 14px;
-        }
-
-        .guild-members {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .guild-member {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            background: #2a2a35;
-            margin: 2px 0;
-        }
-
-        .member-rank {
-            color: #ffd700;
-        }
-
-        .member-name {
-            color: #fff;
-        }
-
-        #pvp-arena {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 900px;
-            background: rgba(20, 20, 30, 0.95);
-            border: 3px solid #8b0000;
-            padding: 20px;
-            display: none;
-            z-index: 680;
-        }
-
-        .pvp-versus {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px 0;
-        }
-
-        .pvp-player {
-            text-align: center;
-            flex: 1;
-        }
-
-        .pvp-player h2 {
-            color: #ffd700;
-        }
-
-        .pvp-vs {
-            font-size: 48px;
-            color: #8b0000;
-            margin: 0 20px;
-        }
-
-        .pvp-countdown {
-            text-align: center;
-            font-size: 72px;
-            color: #ffd700;
-            margin: 20px 0;
-        }
-
-        #auction-house {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 900px;
-            background: rgba(20, 20, 30, 0.95);
-            border: 3px solid #8b7a5a;
-            padding: 20px;
-            display: none;
-            z-index: 670;
-        }
-
-        .auction-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .auction-item {
-            background: #2a2a35;
-            border: 2px solid #5a4a3a;
-            padding: 10px;
-        }
-
-        .auction-item .current-bid {
-            color: #ffd700;
-        }
-
-        .auction-item .buyout {
-            color: #98fb98;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: 1px solid #8b0000;
-            color: #8b0000;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .close-btn:hover {
-            background: #8b0000;
-            color: #fff;
-        }
-
-        .action-btn {
-            background: #6b4f3c;
-            border: 2px solid #b88a5a;
-            color: #fff0d0;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin: 5px;
-            font-size: 14px;
-        }
-
-        .action-btn:hover {
-            background: #8b6f5c;
-        }
-
-        .action-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .tooltip {
-            position: absolute;
-            background: rgba(0,0,0,0.9);
-            border: 2px solid #8b7a5a;
-            padding: 10px;
-            max-width: 250px;
-            pointer-events: none;
-            z-index: 1000;
-            display: none;
-        }
-
-        .tooltip .item-name {
-            color: #ffd700;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .tooltip .item-description {
-            color: #a0a0b0;
-            font-size: 12px;
-            margin: 5px 0;
-        }
-
-        .tooltip .item-stats {
-            color: #98fb98;
-            font-size: 11px;
-        }
-
+            display: inline-block;
+        }
+        .pixel-warrior, .pixel-mage, .pixel-rogue, .pixel-archer, .pixel-paladin, .pixel-necro {
+            width: 32px; height: 32px; position: relative;
+        }
+        .pixel-warrior::before { content: ''; position: absolute; width: 32px; height: 32px; background: linear-gradient(90deg, transparent 30%, #aaa 30%, #aaa 70%, transparent 70%) 0 0 / 100% 20%, linear-gradient(90deg, transparent 20%, #fda 20%, #fda 80%, transparent 80%) 0 20% / 100% 20%, linear-gradient(90deg, transparent 10%, #44f 10%, #44f 90%, transparent 90%) 0 40% / 100% 30%, linear-gradient(90deg, transparent 20%, #44f 20%, #44f 45%, transparent 45%, transparent 55%, #44f 55%, #44f 80%, transparent 80%) 0 70% / 100% 30%; background-repeat: no-repeat; }
+        .pixel-mage::before { content: ''; position: absolute; width: 32px; height: 32px; background: linear-gradient(90deg, transparent 25%, #a6f 25%, #a6f 75%, transparent 75%) 0 0 / 100% 20%, linear-gradient(90deg, transparent 30%, #fdb 30%, #fdb 70%, transparent 70%) 0 20% / 100% 20%, linear-gradient(90deg, transparent 15%, #a6f 15%, #a6f 85%, transparent 85%) 0 40% / 100% 30%, linear-gradient(90deg, transparent 70%, #fb0 70%, #fb0 75%, transparent 75%) 80% 10% / 20% 60%; background-repeat: no-repeat; }
+        .pixel-rogue::before { content: ''; position: absolute; width: 32px; height: 32px; background: linear-gradient(90deg, transparent 20%, #666 20%, #666 80%, transparent 80%) 0 0 / 100% 20%, linear-gradient(90deg, transparent 30%, #ecb 30%, #ecb 70%, transparent 70%) 0 20% / 100% 20%, linear-gradient(90deg, transparent 10%, #666 10%, #666 90%, transparent 90%) 0 40% / 100% 30%, linear-gradient(45deg, transparent 45%, #ccc 45%, #ccc 55%, transparent 55%) 20% 50% / 20% 20%, linear-gradient(-45deg, transparent 45%, #ccc 45%, #ccc 55%, transparent 55%) 60% 50% / 20% 20%; background-repeat: no-repeat; }
+        .pixel-archer::before { content: ''; position: absolute; width: 32px; height: 32px; background: linear-gradient(90deg, transparent 20%, #8b6 20%, #8b6 80%, transparent 80%) 0 0 / 100% 15%, linear-gradient(90deg, transparent 30%, #fda 30%, #fda 70%, transparent 70%) 0 15% / 100% 25%, linear-gradient(90deg, transparent 10%, #8b6 10%, #8b6 90%, transparent 90%) 0 40% / 100% 30%, linear-gradient(45deg, transparent 45%, #b95 45%, #b95 55%, transparent 55%) 70% 30% / 25% 40%; background-repeat: no-repeat; }
+        .pixel-paladin::before { content: ''; position: absolute; width: 32px; height: 32px; background: linear-gradient(90deg, transparent 20%, #fd0 20%, #fd0 80%, transparent 80%) 0 0 / 100% 20%, linear-gradient(90deg, transparent 25%, #fca 25%, #fca 75%, transparent 75%) 0 20% / 100% 20%, linear-gradient(90deg, transparent 5%, #fa0 5%, #fa0 95%, transparent 95%) 0 40% / 100% 30%, linear-gradient(90deg, transparent 70%, #fd0 70%, #fd0 90%, transparent 90%) 10% 45% / 25% 40%; background-repeat: no-repeat; }
+        .pixel-necro::before { content: ''; position: absolute; width: 32px; height: 32px; background: linear-gradient(90deg, transparent 25%, #aaa 25%, #aaa 75%, transparent 75%) 0 0 / 100% 20%, linear-gradient(90deg, transparent 30%, #6a5 30%, #6a5 70%, transparent 70%) 0 20% / 100% 20%, linear-gradient(90deg, transparent 10%, #426 10%, #426 90%, transparent 90%) 0 40% / 100% 30%, radial-gradient(circle at 70% 50%, #f4f 0%, #f4f 30%, transparent 31%) 0 0 / 100% 100%; background-repeat: no-repeat; }
+
+        /* ===== LOADING SCREEN ===== */
         #loading-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0c0e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-deep); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
         }
+        #loading-screen h1 { color: var(--gold); font-size: 48px; text-shadow: 0 0 20px var(--gold); margin-bottom: 20px; letter-spacing: 6px; }
+        #loading-screen p { color: var(--text-muted); font-size: 14px; margin-bottom: 30px; }
+        .loading-bar-wrap { width: 300px; height: 8px; background: #2a2a35; border: 1px solid var(--border-brown); }
+        .loading-bar-fill { height: 100%; background: linear-gradient(90deg, var(--dark-gold), var(--gold)); width: 0%; transition: width 0.3s; }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--border-brown); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-top: 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #6b4f3c;
-            border-top-color: #ffd700;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        /* ===== LOGIN SCREEN ===== */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0d1117 0%, #1a1230 50%, #0d1117 100%);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
         }
+        #login-screen.active { display: flex; }
+        .login-stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--dur, 3s) infinite; opacity: 0; }
+        @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op,0.8)} }
+        .login-box {
+            position: relative; background: rgba(20,20,35,0.97); border: 2px solid var(--border-gold);
+            padding: 50px 40px; width: 440px; text-align: center;
+            box-shadow: 0 0 60px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.3);
+        }
+        .login-box::before {
+            content: ''; position: absolute; top: -1px; left: 20px; right: 20px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        .login-logo { font-size: 52px; color: var(--gold); text-shadow: 0 0 30px var(--gold), 3px 3px 0 #4a2a00; letter-spacing: 4px; margin-bottom: 5px; }
+        .login-subtitle { color: #c0b080; font-size: 13px; letter-spacing: 5px; margin-bottom: 35px; opacity: 0.8; }
+        .form-group { position: relative; margin: 12px 0; }
+        .form-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; pointer-events: none; }
+        .login-input {
+            width: 100%; padding: 13px 13px 13px 38px; background: #12121e;
+            border: 1px solid #3a3a50; color: var(--text-light); font-size: 15px;
+            outline: none; transition: border-color 0.2s; font-family: 'Courier New', monospace;
+        }
+        .login-input:focus { border-color: var(--dark-gold); box-shadow: 0 0 8px rgba(184,134,11,0.3); }
+        .login-btn {
+            width: 100%; padding: 14px; margin: 8px 0; font-size: 16px; cursor: pointer;
+            border: 1px solid; font-family: 'Courier New', monospace; letter-spacing: 2px;
+            transition: all 0.2s; position: relative; overflow: hidden;
+        }
+        .login-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: rgba(255,255,255,0.05); transition: left 0.3s; }
+        .login-btn:hover::after { left: 100%; }
+        .btn-login { background: #3a2a1a; border-color: #b88a5a; color: #fff0d0; }
+        .btn-login:hover { background: #5a3a2a; border-color: var(--gold); }
+        .btn-register { background: #1a2a3a; border-color: #5a8ab8; color: #d0e8ff; }
+        .btn-register:hover { background: #2a3a5a; border-color: #88aadd; }
+        .login-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .error-box { background: rgba(180,30,30,0.15); border-left: 3px solid #ff4444; padding: 10px 12px; margin: 10px 0; font-size: 12px; color: #ff9999; text-align: left; display: none; }
+        .error-box.show { display: block; }
+        .server-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); margin-top: 15px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
+        .status-dot.online { background: #44ff44; box-shadow: 0 0 6px #44ff44; }
+        .status-dot.offline { background: #ff4444; }
+        .status-dot.checking { background: #ffaa00; animation: pulse-dot 1s infinite; }
+        @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* ===== CHARACTER CREATION ===== */
+        #char-create-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); display: none; justify-content: center; align-items: center; z-index: 900; overflow-y: auto;
         }
+        #char-create-screen.active { display: flex; }
+        .char-create-box { background: var(--bg-panel); border: 2px solid var(--border-gold); padding: 35px; width: 640px; max-width: 95vw; }
+        .char-create-box h2 { color: var(--gold); text-align: center; font-size: 26px; margin-bottom: 25px; letter-spacing: 3px; }
+        .class-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0; }
+        .class-card { background: var(--bg-item); border: 2px solid #3a3a50; padding: 14px 10px; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .class-card:hover { border-color: var(--dark-gold); background: #2a2a40; }
+        .class-card.selected { border-color: var(--gold); background: #2a2840; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
+        .pixel-class-icon { width: 48px; height: 48px; margin: 0 auto 8px; }
+        .class-card h3 { color: var(--gold); font-size: 13px; margin-bottom: 4px; }
+        .class-card p { color: var(--text-muted); font-size: 10px; line-height: 1.4; }
+        .class-stats { display: flex; gap: 4px; justify-content: center; margin-top: 6px; }
+        .stat-pip { width: 10px; height: 5px; background: #333; }
+        .stat-pip.filled { background: var(--gold); }
 
-        #notification-area {
-            position: absolute;
-            top: 100px;
-            right: 20px;
-            width: 300px;
-            z-index: 1500;
+        /* ===== LOBBY SCREEN ===== */
+        #lobby-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); display: none; z-index: 800;
         }
+        #lobby-screen.active { display: block; }
+        .lobby-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at 50% 0%, #1a1a3a 0%, var(--bg-dark) 70%); }
+        .lobby-wrap { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; }
+        .lobby-topbar {
+            height: 56px; background: rgba(20,20,30,0.95); border-bottom: 1px solid var(--border-brown);
+            display: flex; align-items: center; padding: 0 20px; gap: 20px; flex-shrink: 0;
+        }
+        .lobby-title { color: var(--gold); font-size: 22px; letter-spacing: 3px; margin-right: auto; }
+        .topbar-stat { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-light); }
+        .topbar-stat span { color: var(--gold); }
+        .lobby-body { flex: 1; display: flex; gap: 0; overflow: hidden; }
+        .lobby-sidebar { width: 200px; background: rgba(15,15,25,0.6); border-right: 1px solid #2a2a3a; padding: 15px 0; flex-shrink: 0; }
+        .sidebar-item { padding: 10px 20px; cursor: pointer; font-size: 13px; color: var(--text-muted); transition: all 0.15s; display: flex; align-items: center; gap: 10px; border-left: 3px solid transparent; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.04); color: var(--text-light); border-left-color: var(--border-brown); }
+        .sidebar-item.active { background: rgba(255,215,0,0.06); color: var(--gold); border-left-color: var(--gold); }
+        .sidebar-section { padding: 8px 20px 4px; font-size: 10px; color: #555; letter-spacing: 2px; margin-top: 10px; }
+        .lobby-main { flex: 1; overflow-y: auto; padding: 20px; }
+        .lobby-right { width: 280px; background: rgba(15,15,25,0.6); border-left: 1px solid #2a2a3a; padding: 15px; flex-shrink: 0; overflow-y: auto; }
+        .panel-title { color: var(--gold); font-size: 14px; letter-spacing: 2px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #2a2a3a; }
 
-        .notification {
-            background: rgba(20, 20, 30, 0.95);
-            border-left: 4px solid #ffd700;
-            padding: 15px;
-            margin: 10px 0;
-            animation: slideIn 0.3s;
+        /* ===== GAME SCREEN ===== */
+        #game-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-deep); display: none; z-index: 700;
         }
+        #game-screen.active { display: block; }
+        #game-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        /* ===== HUD ELEMENTS ===== */
+        .hud-elem { position: absolute; pointer-events: all; }
+        #hud-char {
+            top: 15px; left: 15px; width: 280px;
+            background: rgba(10,12,18,0.92); border: 1px solid var(--border-brown);
+            padding: 12px; z-index: 200;
         }
+        .hud-name { color: var(--gold); font-size: 15px; font-weight: bold; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .hud-role { font-size: 10px; color: #aaa; }
+        .bar-wrap { margin: 4px 0; }
+        .bar-label { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; display: flex; justify-content: space-between; }
+        .bar { height: 14px; background: #1a1a2a; border: 1px solid #3a3a4a; position: relative; }
+        .bar-fill { height: 100%; transition: width 0.4s ease; }
+        .bar-fill.hp { background: linear-gradient(90deg, #aa2222, #ff5555); }
+        .bar-fill.mp { background: linear-gradient(90deg, #2222aa, #5555ff); }
+        .bar-fill.xp { background: linear-gradient(90deg, #226622, #55cc55); }
+        .hud-stats { display: flex; gap: 10px; margin-top: 8px; font-size: 11px; color: var(--text-muted); }
+        .hud-stats span { color: var(--text-light); }
+
+        #hud-minimap { bottom: 170px; right: 15px; width: 150px; height: 150px; background: rgba(10,12,18,0.9); border: 1px solid var(--border-brown); z-index: 200; }
+        #minimap-canvas { width: 150px; height: 150px; }
+
+        #hud-skills { bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 200; }
+        .skill-slot {
+            width: 52px; height: 52px; background: rgba(10,12,18,0.92); border: 1px solid var(--border-brown);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; transition: border-color 0.15s;
+        }
+        .skill-slot:hover { border-color: var(--gold); }
+        .skill-icon { font-size: 22px; }
+
+        #hud-quests { top: 15px; right: 15px; width: 240px; background: rgba(10,12,18,0.92); border: 1px solid var(--border-brown); padding: 12px; z-index: 200; max-height: 300px; overflow-y: auto; }
+        .quest-entry { margin: 8px 0; padding: 8px; background: rgba(255,255,255,0.03); border-left: 2px solid var(--border-brown); }
+        .quest-entry.active-quest { border-left-color: var(--gold); }
+        .quest-name { color: var(--gold); font-size: 12px; font-weight: bold; }
+
+        #hud-chat {
+            bottom: 10px; left: 10px; width: 400px; height: 220px;
+            background: rgba(10,12,18,0.92); border: 1px solid var(--border-brown);
+            display: flex; flex-direction: column; z-index: 200;
+        }
+        .chat-tabs { display: flex; border-bottom: 1px solid #2a2a3a; flex-shrink: 0; }
+        .chat-tab { padding: 5px 10px; font-size: 11px; cursor: pointer; color: var(--text-muted); border-right: 1px solid #2a2a3a; }
+        .chat-tab:hover { color: var(--text-light); }
+        .chat-tab.active { color: var(--gold); background: rgba(255,215,0,0.06); }
+        .chat-msgs { flex: 1; overflow-y: auto; padding: 8px; font-size: 11px; }
+        .chat-msg { margin: 3px 0; line-height: 1.4; }
+        .chat-msg .ts { color: #555; margin-right: 4px; }
+        .chat-msg .who { font-weight: bold; margin-right: 4px; }
+        .chat-input-row { display: flex; border-top: 1px solid #2a2a3a; flex-shrink: 0; }
+        #chat-input { flex: 1; background: transparent; border: none; color: var(--text-light); padding: 6px 8px; font-size: 12px; outline: none; font-family: 'Courier New', monospace; }
+        #chat-send-btn { background: none; border: none; border-left: 1px solid #2a2a3a; color: var(--text-muted); padding: 0 10px; cursor: pointer; font-size: 14px; }
+
+        #hud-actions { top: 15px; left: 300px; display: flex; gap: 5px; z-index: 200; }
+        .hud-btn { background: rgba(10,12,18,0.9); border: 1px solid var(--border-brown); color: var(--text-light); padding: 6px 12px; font-size: 11px; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s; white-space: nowrap; }
+        .hud-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+        /* ===== POPUP PANELS ===== */
+        .popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 500; display: none; justify-content: center; align-items: center; }
+        .popup-overlay.show { display: flex; }
+        .popup-box { background: var(--bg-panel); border: 2px solid var(--border-gold); padding: 25px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .popup-title { color: var(--gold); font-size: 18px; letter-spacing: 2px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .popup-close { background: none; border: 1px solid #662222; color: #aa4444; width: 26px; height: 26px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+        .popup-close:hover { background: #662222; color: white; }
+        .action-btn { background: var(--border-brown); border: 1px solid #b88a5a; color: #fff0d0; padding: 8px 18px; cursor: pointer; font-size: 13px; font-family: 'Courier New', monospace; transition: all 0.15s; }
+        .action-btn:hover { background: #8b6f5c; border-color: var(--gold); }
+
+        /* ===== INVENTORY ===== */
+        #inv-popup .popup-box { width: 620px; }
+        .inv-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 15px 0; }
+        .inv-slot { aspect-ratio: 1; background: var(--bg-item); border: 1px solid #3a3a50; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: border-color 0.15s; font-size: 22px; }
+        .inv-slot:hover { border-color: var(--gold); }
+
+        /* ===== SKILL TREE ===== */
+        #skills-popup .popup-box { width: 750px; }
+        .skill-tree-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .skill-tier-box { background: var(--bg-item); border: 1px solid #3a3a50; padding: 12px; }
+        .skill-tier-label { color: var(--gold); font-size: 11px; letter-spacing: 2px; text-align: center; margin-bottom: 10px; }
+        .skill-node { padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid #3a3a50; margin: 6px 0; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 10px; }
+        .skill-node:hover { border-color: var(--gold); }
+        .skill-node.learned { border-color: #44aa44; }
+        .skill-node-icon { font-size: 22px; }
+        .skill-node-name { color: var(--text-light); font-size: 12px; }
+
+        /* ===== GUILD PANEL ===== */
+        #guild-popup .popup-box { width: 680px; }
+        .guild-header-box { background: var(--bg-item); border: 1px solid #3a3a50; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
+        .guild-emblem { width: 56px; height: 56px; background: #2a2a40; border: 2px solid var(--border-gold); display: flex; align-items: center; justify-content: center; font-size: 26px; }
+        .guild-info h3 { color: var(--gold); font-size: 20px; }
+        .guild-members-list { max-height: 300px; overflow-y: auto; }
+        .guild-member-row { display: flex; align-items: center; padding: 8px 10px; background: var(--bg-item); margin: 3px 0; gap: 10px; }
+
+        /* ===== AUCTION HOUSE ===== */
+        #auction-popup .popup-box { width: 860px; }
+        .auction-tabs { display: flex; gap: 0; border-bottom: 1px solid #2a2a3a; margin-bottom: 15px; }
+        .auction-tab { padding: 8px 18px; cursor: pointer; font-size: 12px; color: var(--text-muted); border-bottom: 2px solid transparent; }
+        .auction-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .auction-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-height: 360px; overflow-y: auto; }
+        .auction-card { background: var(--bg-item); border: 1px solid #3a3a50; padding: 12px; cursor: pointer; transition: all 0.15s; }
+        .auction-card:hover { border-color: var(--gold); }
+        .auction-item-icon { font-size: 24px; }
+        .auction-item-name { color: var(--text-light); font-size: 13px; font-weight: bold; }
+        .auction-bid-row { display: flex; justify-content: space-between; font-size: 12px; margin: 4px 0; }
+        .bid-val { color: var(--gold); }
+
+        /* ===== TRADE WINDOW ===== */
+        #trade-popup .popup-box { width: 700px; }
+        .trade-layout { display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: start; }
+        .trade-pane { background: var(--bg-item); border: 1px solid #3a3a50; padding: 12px; min-height: 200px; }
+        .trade-pane h4 { color: var(--gold); font-size: 12px; letter-spacing: 1px; margin-bottom: 10px; text-align: center; }
+        .trade-items-area { min-height: 130px; border: 1px dashed #3a3a50; padding: 8px; margin-bottom: 10px; }
+        .trade-gold-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+        .trade-gold-row input { width: 80px; background: var(--bg-deep); border: 1px solid #3a3a50; color: var(--gold); padding: 4px 6px; font-family: 'Courier New', monospace; outline: none; text-align: center; }
+        .trade-status-bar { text-align: center; padding: 10px; background: rgba(0,0,0,0.2); margin: 12px 0; font-size: 12px; }
+
+        /* ===== PVP ARENA ===== */
+        #pvp-popup .popup-box { width: 800px; }
+        .pvp-arena-layout { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; margin: 20px 0; }
+        .pvp-fighter { text-align: center; background: var(--bg-item); border: 1px solid #3a3a50; padding: 20px; }
+        .pvp-fighter h3 { color: var(--gold); font-size: 18px; margin-bottom: 5px; }
+        .pvp-vs-badge { font-size: 48px; color: #8b0000; text-align: center; }
+        .pvp-countdown { font-size: 64px; color: var(--gold); text-align: center; }
+        .pvp-combat-log { background: var(--bg-item); border: 1px solid #3a3a50; padding: 12px; max-height: 180px; overflow-y: auto; font-size: 11px; }
+
+        /* ===== LEADERBOARD ===== */
+        #leaderboard-popup .popup-box { width: 640px; }
+        .lb-tabs { display: flex; gap: 0; margin-bottom: 15px; border-bottom: 1px solid #2a2a3a; }
+        .lb-tab { padding: 7px 15px; font-size: 12px; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; }
+        .lb-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .lb-table { width: 100%; border-collapse: collapse; }
+        .lb-table th { padding: 8px 10px; text-align: left; color: var(--text-muted); font-size: 11px; letter-spacing: 1px; border-bottom: 1px solid #2a2a3a; }
+        .lb-table td { padding: 9px 10px; font-size: 13px; border-bottom: 1px solid #1a1a2a; }
+        .lb-rank { color: var(--text-muted); width: 40px; }
+        .lb-name { color: var(--text-light); }
+        .lb-val { color: var(--gold); font-weight: bold; text-align: right; }
+
+        /* ===== QUEST LOG ===== */
+        #questlog-popup .popup-box { width: 700px; }
+        .quest-log-layout { display: grid; grid-template-columns: 200px 1fr; gap: 15px; }
+        .quest-list-panel { background: var(--bg-item); border: 1px solid #2a2a3a; padding: 8px; max-height: 420px; overflow-y: auto; }
+        .quest-list-item { padding: 8px 10px; cursor: pointer; border-left: 3px solid transparent; font-size: 12px; color: var(--text-muted); }
+        .quest-list-item:hover { background: rgba(255,255,255,0.03); }
+        .quest-list-item.selected { background: rgba(255,215,0,0.06); color: var(--gold); border-left-color: var(--gold); }
+        .quest-detail-panel { background: var(--bg-item); border: 1px solid #2a2a3a; padding: 15px; }
+        .quest-detail-panel h3 { color: var(--gold); font-size: 16px; margin-bottom: 5px; }
+
+        /* ===== CHEAT MENU ===== */
+        #cheat-popup .popup-box { width: 580px; border-color: var(--gold); }
+        .cheat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .cheat-btn { background: #2a1a0a; border: 1px solid #6a4a2a; color: #ffcc88; padding: 12px; cursor: pointer; font-size: 12px; font-family: 'Courier New', monospace; text-align: left; transition: all 0.15s; }
+        .cheat-btn:hover { background: #3a2a1a; border-color: var(--gold); }
+        .cheat-input-row { display: flex; gap: 8px; margin: 8px 0; }
+        .cheat-input { flex: 1; background: var(--bg-item); border: 1px solid #3a3a50; color: var(--text-light); padding: 8px 10px; font-family: 'Courier New', monospace; outline: none; font-size: 12px; }
+
+        /* ===== MOD PANEL ===== */
+        #mod-popup .popup-box { width: 640px; border-color: #3a4a8a; }
+        .admin-player-row { display: flex; align-items: center; padding: 8px 10px; background: var(--bg-item); margin: 3px 0; gap: 10px; }
+        .admin-actions { display: flex; gap: 5px; margin-left: auto; }
+        .mod-btn { padding: 4px 8px; font-size: 10px; cursor: pointer; border: 1px solid; font-family: 'Courier New', monospace; background: transparent; }
+        .mod-log-area { background: var(--bg-item); border: 1px solid #2a2a3a; padding: 10px; max-height: 150px; overflow-y: auto; font-size: 11px; margin-top: 12px; }
+
+        /* ===== NOTIFICATIONS ===== */
+        #notif-area { position: fixed; top: 15px; right: 260px; width: 280px; z-index: 9000; pointer-events: none; }
+        .notif { background: rgba(10,12,18,0.97); border-left: 3px solid var(--gold); padding: 10px 14px; margin-bottom: 8px; animation: notif-in 0.3s ease; font-size: 12px; color: var(--text-light); }
+        @keyframes notif-in { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <canvas id="game-canvas" width="1024" height="768"></canvas>
 
-        <div id="ui-overlay">
-            <div id="character-hud" class="ui-panel">
-                <div id="character-name">Loading...</div>
-                <div class="health-bar">
-                    <div id="health-fill" class="health-fill" style="width: 100%"></div>
-                    <span class="bar-text" id="health-text">100/100</span>
-                </div>
-                <div class="mana-bar">
-                    <div id="mana-fill" class="mana-fill" style="width: 100%"></div>
-                    <span class="bar-text" id="mana-text">50/50</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
-                    <span>Level <span id="char-level">1</span></span>
-                    <span><span id="char-gold">100</span> Gold</span>
-                </div>
-                <div class="exp-bar">
-                    <div id="exp-fill" class="exp-fill" style="width: 0%"></div>
-                </div>
-            </div>
+<!-- ===== LOADING SCREEN ===== -->
+<div id="loading-screen">
+    <h1>PIXEL RPG</h1>
+    <p>EPIC ADVENTURE</p>
+    <div class="loading-bar-wrap"><div class="loading-bar-fill" id="load-bar"></div></div>
+    <div class="spinner"></div>
+</div>
 
-            <div id="quest-tracker" class="ui-panel">
-                <h3 style="color: #ffd700; text-align: center;">Active Quests</h3>
-                <div id="quest-list"></div>
-            </div>
-
-            <div id="chat-container">
-                <div class="chat-tabs">
-                    <div class="chat-tab active" data-channel="global">Global</div>
-                    <div class="chat-tab" data-channel="guild">Guild</div>
-                    <div class="chat-tab" data-channel="party">Party</div>
-                    <div class="chat-tab" data-channel="trade">Trade</div>
-                    <div class="chat-tab" data-channel="system">System</div>
-                </div>
-                <div class="chat-messages" id="chat-messages"></div>
-                <div class="chat-input-container">
-                    <input type="text" id="chat-input" placeholder="Type a message...">
-                    <button id="chat-send">Send</button>
-                </div>
-            </div>
-
-            <div style="position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px;">
-                <button class="action-btn" onclick="toggleInventory()">Inventory</button>
-                <button class="action-btn" onclick="toggleSkills()">Skills</button>
-                <button class="action-btn" onclick="toggleGuild()">Guild</button>
-                <button class="action-btn" onclick="toggleAuction()">Auction</button>
-            </div>
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen" class="active">
+    <div class="login-stars" id="login-stars"></div>
+    <div class="login-box">
+        <div class="login-logo">PIXEL RPG</div>
+        <div class="login-subtitle">EPIC ADVENTURE</div>
+        <div class="form-group">
+            <span class="form-icon">👤</span>
+            <input type="text" id="login-username" class="login-input" placeholder="Username">
         </div>
-
-        <div id="login-screen">
-            <div class="login-box">
-                <h1>PIXEL RPG</h1>
-                <h2>EPIC ADVENTURE</h2>
-                <input type="text" id="login-username" class="login-input" placeholder="Username" value="xotiic">
-                <input type="password" id="login-password" class="login-input" placeholder="Password" value="owner123">
-                <div id="login-error" class="error-message"></div>
-                <button class="login-btn" onclick="handleLogin()">Login</button>
-                <button class="login-btn" onclick="handleRegister()">Register</button>
-            </div>
+        <div class="form-group">
+            <span class="form-icon">🔒</span>
+            <input type="password" id="login-password" class="login-input" placeholder="Password">
         </div>
-
-        <div id="character-creation-screen">
-            <div class="char-creation-box">
-                <h2 style="color: #ffd700; text-align: center;">CREATE YOUR HERO</h2>
-                <input type="text" id="char-name" class="login-input" placeholder="Character Name">
-                
-                <div class="class-selector" id="class-selector">
-                    <div class="class-card selected" data-class="warrior">
-                        <h3>WARRIOR</h3>
-                        <p>High HP & Strength. Masters of melee combat.</p>
-                    </div>
-                    <div class="class-card" data-class="mage">
-                        <h3>MAGE</h3>
-                        <p>Powerful spells. High intelligence, low defense.</p>
-                    </div>
-                    <div class="class-card" data-class="rogue">
-                        <h3>ROGUE</h3>
-                        <p>Agile and deadly. Critical strikes and stealth.</p>
-                    </div>
-                    <div class="class-card" data-class="archer">
-                        <h3>ARCHER</h3>
-                        <p>Ranged expert. High agility and precision.</p>
-                    </div>
-                    <div class="class-card" data-class="paladin">
-                        <h3>PALADIN</h3>
-                        <p>Holy warrior. Balanced offense and defense.</p>
-                    </div>
-                    <div class="class-card" data-class="necromancer">
-                        <h3>NECROMANCER</h3>
-                        <p>Dark magic. Summon and drain life.</p>
-                    </div>
-                </div>
-
-                <button class="login-btn" onclick="createCharacter()">Create Character</button>
-            </div>
+        <div class="error-box" id="login-error"></div>
+        <button class="login-btn btn-login" onclick="handleLogin()">▶ LOGIN</button>
+        <button class="login-btn btn-register" onclick="handleRegister()">+ REGISTER</button>
+        <div class="server-badge">
+            <div class="status-dot checking" id="status-dot"></div>
+            <span id="status-text">Checking server...</span>
         </div>
+    </div>
+</div>
 
-        <div id="lobby-screen">
-            <div class="lobby-header">
-                <div class="lobby-stats">
-                    <div class="stat-item">
-                        <span>👥</span>
-                        <span id="online-count">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>🏆</span>
-                        <span id="top-player">None</span>
-                    </div>
-                </div>
-                <div>
-                    <button class="action-btn" onclick="startGame()">Enter World</button>
-                    <button class="action-btn" onclick="logout()">Logout</button>
-                </div>
+<!-- ===== CHARACTER CREATION ===== -->
+<div id="char-create-screen">
+    <div class="char-create-box">
+        <h2>⚔ CREATE YOUR HERO</h2>
+        <div class="form-group">
+            <input type="text" id="char-name-input" class="login-input" placeholder="Character Name" style="padding-left:13px" maxlength="20" value="PixelHero">
+        </div>
+        <div class="class-grid" id="class-grid"></div>
+        <div class="error-box" id="char-create-error"></div>
+        <button class="login-btn btn-login" onclick="submitCreateCharacter()">⚔ CREATE CHARACTER</button>
+    </div>
+</div>
+
+<!-- ===== LOBBY SCREEN ===== -->
+<div id="lobby-screen">
+    <div class="lobby-bg"></div>
+    <div class="lobby-wrap">
+        <div class="lobby-topbar">
+            <div class="lobby-title">PIXEL RPG</div>
+            <div class="topbar-stat">👤 <span id="lb-username">xotiic</span></div>
+            <div class="topbar-stat">🏅 <span id="lb-role">Player</span></div>
+            <div class="topbar-stat">⚔ <span id="lb-charname">PixelHero</span></div>
+            <div class="topbar-stat">⭐ Lv.<span id="lb-level">1</span></div>
+            <div class="topbar-stat">💰 <span id="lb-gold">100</span>g</div>
+            <button class="action-btn" onclick="startGame()" style="margin-left:auto">▶ ENTER WORLD</button>
+            <button class="action-btn" onclick="logout()">LOGOUT</button>
+        </div>
+        <div class="lobby-body">
+            <div class="lobby-sidebar">
+                <div class="sidebar-section">NAVIGATE</div>
+                <div class="sidebar-item active" data-tab="characters" onclick="lobbyTab(this,'characters')">🗡 Characters</div>
+                <div class="sidebar-item" data-tab="leaderboard" onclick="lobbyTab(this,'leaderboard')">🏆 Leaderboard</div>
+                <div class="sidebar-item" data-tab="guilds" onclick="lobbyTab(this,'guilds')">⚔ Guilds</div>
+                <div class="sidebar-item" data-tab="quests" onclick="lobbyTab(this,'quests')">📜 Quests</div>
+                <div class="sidebar-section">SOCIAL</div>
+                <div class="sidebar-item" data-tab="party" onclick="lobbyTab(this,'party')">👥 Party</div>
+                <div class="sidebar-item" data-tab="friends" onclick="lobbyTab(this,'friends')">💬 Friends</div>
+                <div class="sidebar-section">SYSTEM</div>
+                <div class="sidebar-item" data-tab="settings" onclick="lobbyTab(this,'settings')">⚙ Settings</div>
             </div>
-
-            <div class="lobby-main">
-                <div class="lobby-left">
-                    <h3 style="color: #ffd700;">Menu</h3>
-                    <ul style="list-style: none;">
-                        <li class="player-item" onclick="showLeaderboard()">🏆 Leaderboard</li>
-                        <li class="player-item" onclick="showGuilds()">⚔️ Guilds</li>
-                        <li class="player-item" onclick="showParty()">👥 Party</li>
-                        <li class="player-item" onclick="showProfile()">📊 Profile</li>
-                        <li class="player-item" onclick="showSettings()">⚙️ Settings</li>
-                    </ul>
+            <div class="lobby-main" id="lobby-main-content"></div>
+            <div class="lobby-right">
+                <div class="panel-title">YOUR CHARACTER</div>
+                <div id="lobby-char-card"></div>
+                <div class="panel-title" style="margin-top:15px">SERVER INFO</div>
+                <div id="lobby-server-info" style="font-size:12px;color:var(--text-muted);">
+                    <div>Status: <span style="color:#44ff44">Online</span></div>
+                    <div>Players: <span id="lobby-online-cnt" style="color:var(--gold)">12</span></div>
+                    <div>Version: <span style="color:var(--text-light)">2.0.0</span></div>
                 </div>
-
-                <div class="lobby-center" id="lobby-content">
-                    <h3 style="color: #ffd700;">Online Players</h3>
-                    <ul class="player-list" id="online-players"></ul>
-                </div>
-
-                <div class="lobby-right">
-                    <h3 style="color: #ffd700;">Recent Activity</h3>
-                    <div id="activity-feed"></div>
+                <div class="panel-title" style="margin-top:15px">RECENT ACTIVITY</div>
+                <div id="lobby-activity" style="font-size:11px;color:var(--text-muted);">
+                    <div>⚔ Hero defeated a Goblin</div>
+                    <div>🏆 New leaderboard entry</div>
+                    <div>🎉 Server event started</div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <div id="inventory-panel" class="ui-panel">
-            <button class="close-btn" onclick="toggleInventory()">×</button>
-            <h2 style="color: #ffd700; text-align: center;">INVENTORY</h2>
-            <div class="inventory-grid" id="inventory-grid"></div>
-            <div style="display: flex; justify-content: space-between;">
-                <span>Gold: <span id="inventory-gold">100</span></span>
-                <button class="action-btn" onclick="sortInventory()">Sort</button>
-            </div>
-        </div>
+<!-- ===== GAME SCREEN ===== -->
+<div id="game-screen">
+    <canvas id="game-canvas"></canvas>
 
-        <div id="trade-window" class="ui-panel">
-            <button class="close-btn" onclick="closeTrade()">×</button>
-            <h2 style="color: #ffd700; text-align: center;">TRADE</h2>
-            <div class="trade-container">
-                <div class="trade-side">
-                    <h3>Your Items</h3>
-                    <div class="trade-items" id="your-trade-items"></div>
-                    <div class="trade-gold">
-                        <span>Gold:</span>
-                        <input type="number" id="your-trade-gold" min="0" value="0">
-                    </div>
-                </div>
-                <div class="trade-side">
-                    <h3>Their Items</h3>
-                    <div class="trade-items" id="their-trade-items"></div>
-                    <div class="trade-gold">
-                        <span>Gold:</span>
-                        <span id="their-trade-gold">0</span>
-                    </div>
-                </div>
-            </div>
-            <div class="trade-status" id="trade-status">Waiting for partner...</div>
-            <div style="display: flex; justify-content: center; gap: 20px;">
-                <button class="action-btn" onclick="acceptTrade()">Accept</button>
-                <button class="action-btn" onclick="cancelTrade()">Cancel</button>
-            </div>
+    <!-- HUD Elements -->
+    <div class="hud-elem" id="hud-char">
+        <div class="hud-name">
+            <span id="hud-char-name">PixelHero</span>
+            <span class="hud-role" id="hud-role-badge">Player</span>
         </div>
-
-        <div id="skill-tree" class="ui-panel">
-            <button class="close-btn" onclick="toggleSkills()">×</button>
-            <h2 style="color: #ffd700; text-align: center;">SKILL TREE</h2>
-            <div class="skill-tree-container" id="skill-tree-container"></div>
-            <div style="text-align: center; margin-top: 20px;">
-                <span>Skill Points: <span id="skill-points">0</span></span>
-            </div>
+        <div class="bar-wrap">
+            <div class="bar-label"><span>HP</span><span id="hud-hp-txt">100/100</span></div>
+            <div class="bar"><div class="bar-fill hp" id="hud-hp-bar" style="width:100%"></div></div>
         </div>
-
-        <div id="guild-panel" class="ui-panel">
-            <button class="close-btn" onclick="toggleGuild()">×</button>
-            <div class="guild-header">
-                <span class="guild-name" id="guild-name">No Guild</span>
-                <span class="guild-tag" id="guild-tag"></span>
-            </div>
-            <div>
-                <button class="action-btn" onclick="createGuild()">Create Guild</button>
-                <button class="action-btn" onclick="findGuild()">Find Guild</button>
-            </div>
-            <div class="guild-members" id="guild-members"></div>
+        <div class="bar-wrap">
+            <div class="bar-label"><span>MP</span><span id="hud-mp-txt">50/50</span></div>
+            <div class="bar"><div class="bar-fill mp" id="hud-mp-bar" style="width:100%"></div></div>
         </div>
-
-        <div id="auction-house" class="ui-panel">
-            <button class="close-btn" onclick="toggleAuction()">×</button>
-            <h2 style="color: #ffd700; text-align: center;">AUCTION HOUSE</h2>
-            <div class="auction-grid" id="auction-grid"></div>
-            <div style="display: flex; justify-content: center;">
-                <button class="action-btn" onclick="listAuctionItem()">List Item</button>
-            </div>
+        <div class="bar-wrap">
+            <div class="bar-label"><span>XP</span><span id="hud-xp-txt">0%</span></div>
+            <div class="bar" style="height:8px"><div class="bar-fill xp" id="hud-xp-bar" style="width:0%"></div></div>
         </div>
-
-        <div id="pvp-arena" class="ui-panel">
-            <button class="close-btn" onclick="closePvP()">×</button>
-            <h2 style="color: #ffd700; text-align: center;">PVP ARENA</h2>
-            <div class="pvp-versus" id="pvp-versus">
-                <div class="pvp-player">
-                    <h2 id="pvp-player1">Player 1</h2>
-                    <div>Level <span id="pvp-level1">1</span></div>
-                </div>
-                <div class="pvp-vs">VS</div>
-                <div class="pvp-player">
-                    <h2 id="pvp-player2">Player 2</h2>
-                    <div>Level <span id="pvp-level2">1</span></div>
-                </div>
-            </div>
-            <div class="pvp-countdown" id="pvp-countdown"></div>
-            <div style="text-align: center; margin-top: 20px;">
-                <button class="action-btn" onclick="startPvP()">Accept Challenge</button>
-                <button class="action-btn" onclick="declinePvP()">Decline</button>
-            </div>
+        <div class="hud-stats">
+            Level: <span id="hud-level">1</span> &nbsp;|&nbsp;
+            Gold: <span id="hud-gold">100</span>
         </div>
-
-        <div id="notification-area"></div>
-        <div id="loading-screen">
-            <div class="loading-spinner"></div>
-        </div>
-        <div id="tooltip" class="tooltip"></div>
     </div>
 
-    <script>
-        // ==================== Configuration ====================
-        const API_URL = 'https://bot-hosting-b-ga04.onrender.com';
-        const WS_URL = 'wss://bot-hosting-b-ga04.onrender.com';  // Use wss:// for secure WebSocket
+    <div class="hud-elem" id="hud-actions">
+        <button class="hud-btn" onclick="openInventory()">🎒 Bag (I)</button>
+        <button class="hud-btn" onclick="openSkills()">⚡ Skills (K)</button>
+        <button class="hud-btn" onclick="openQuestLog()">📜 Quests (J)</button>
+        <button class="hud-btn" onclick="openGuild()">⚔ Guild (G)</button>
+        <button class="hud-btn" onclick="openAuction()">🏪 AH (H)</button>
+        <button class="hud-btn" onclick="openCheat()" style="display:inline-block;border-color:var(--gold);color:var(--gold)">👑 CHEAT</button>
+        <button class="hud-btn" onclick="openMod()" style="display:inline-block;border-color:#88aaff;color:#88aaff">🛡 MOD</button>
+        <button class="hud-btn" onclick="returnToLobby()">🏠 Lobby</button>
+    </div>
 
-        let socket = null;
-        let currentUser = null;
-        let currentCharacter = null;
-        let token = localStorage.getItem('token');
-        let currentChannel = 'global';
-        let activeTrade = null;
-        let activePvP = null;
-        let gameLoop = null;
-        let selectedClass = 'warrior';
+    <div class="hud-elem" id="hud-quests">
+        <div class="panel-title" style="font-size:12px;margin-bottom:8px">📜 QUESTS</div>
+        <div id="hud-quest-list"></div>
+    </div>
 
-        // ==================== Authentication ====================
+    <div class="hud-elem" id="hud-minimap">
+        <canvas id="minimap-canvas" width="150" height="150"></canvas>
+    </div>
 
-        async function handleLogin() {
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
+    <div class="hud-elem" id="hud-skills"></div>
 
-            if (!username || !password) {
-                showError('Please enter username and password');
-                return;
-            }
+    <div class="hud-elem" id="hud-chat">
+        <div class="chat-tabs" id="chat-tabs-row">
+            <div class="chat-tab active" onclick="switchChatTab(this,'global')">Global</div>
+            <div class="chat-tab" onclick="switchChatTab(this,'guild')">Guild</div>
+            <div class="chat-tab" onclick="switchChatTab(this,'party')">Party</div>
+        </div>
+        <div class="chat-msgs" id="chat-msgs"></div>
+        <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button id="chat-send-btn" onclick="sendChat()">➤</button>
+        </div>
+    </div>
+</div>
 
-            showLoading(true);
+<!-- ===== POPUP OVERLAYS ===== -->
+<div class="popup-overlay" id="inv-popup"><div class="popup-box"><div class="popup-title">🎒 INVENTORY <button class="popup-close" onclick="closePopup('inv-popup')">×</button></div><div class="inv-grid" id="inv-grid"></div><div class="inv-footer"><div class="gold-display">💰 <span id="inv-gold">0</span> Gold</div><button class="action-btn" onclick="closePopup('inv-popup')">Close</button></div></div></div>
+<div class="popup-overlay" id="skills-popup"><div class="popup-box"><div class="popup-title">⚡ SKILL TREE <button class="popup-close" onclick="closePopup('skills-popup')">×</button></div><div class="skill-points-display">Skill Points: <span id="skill-pts">0</span></div><div class="skill-tree-grid" id="skill-tree-grid"></div></div></div>
+<div class="popup-overlay" id="guild-popup"><div class="popup-box"><div class="popup-title">⚔ GUILD <button class="popup-close" onclick="closePopup('guild-popup')">×</button></div><div id="guild-content"></div></div></div>
+<div class="popup-overlay" id="auction-popup"><div class="popup-box"><div class="popup-title">🏪 AUCTION HOUSE <button class="popup-close" onclick="closePopup('auction-popup')">×</button></div><div class="auction-tabs"><div class="auction-tab active" onclick="auctionTab(this,'browse')">Browse</div><div class="auction-tab" onclick="auctionTab(this,'mylistings')">My Listings</div></div><div class="auction-search"><input type="text" id="auction-search-input" placeholder="Search..."><select id="auction-sort"><option>Sort...</option></select><button class="action-btn" onclick="refreshAuctions()">🔄 Refresh</button></div><div class="auction-grid" id="auction-grid"></div></div></div>
+<div class="popup-overlay" id="trade-popup"><div class="popup-box"><div class="popup-title">🔄 TRADE <button class="popup-close" onclick="closeTrade()">×</button></div><div class="trade-layout"><div class="trade-pane"><h4>YOUR OFFER</h4><div class="trade-items-area" id="trade-your-items"></div><div class="trade-gold-row">💰 <input type="number" id="trade-your-gold" value="0" min="0" onchange="updateTradeOffer()"> gold</div></div><div class="trade-divider"><div class="trade-vs">VS</div></div><div class="trade-pane"><h4 id="trade-partner-name">PARTNER'S OFFER</h4><div class="trade-items-area" id="trade-their-items"></div><div class="trade-gold-row">💰 <span id="trade-their-gold">0</span> gold</div></div></div><div class="trade-status-bar pending" id="trade-status-bar">⏳ Waiting...</div><div class="trade-actions"><button class="action-btn success" onclick="acceptTrade()" id="trade-accept-btn">✓ Accept</button><button class="action-btn danger" onclick="cancelTrade()">✗ Cancel</button></div></div></div>
+<div class="popup-overlay" id="pvp-popup"><div class="popup-box"><div class="popup-title">⚔ PVP ARENA <button class="popup-close" onclick="closePvP()">×</button></div><div class="pvp-arena-layout"><div class="pvp-fighter"><h3 id="pvp-p1-name">Player 1</h3><div class="bar-wrap"><div class="bar"><div class="bar-fill hp" id="pvp-p1-hp" style="width:100%"></div></div></div></div><div><div class="pvp-vs-badge">VS</div><div class="pvp-countdown" id="pvp-countdown"></div></div><div class="pvp-fighter"><h3 id="pvp-p2-name">Player 2</h3><div class="bar-wrap"><div class="bar"><div class="bar-fill hp" id="pvp-p2-hp" style="width:100%"></div></div></div></div></div><div class="pvp-combat-log" id="pvp-combat-log"></div><div style="display:flex;justify-content:center;gap:10px;margin-top:15px" id="pvp-btns"><button class="action-btn success" onclick="acceptPvP()">⚔ Accept</button><button class="action-btn danger" onclick="closePvP()">✗ Decline</button></div></div></div>
+<div class="popup-overlay" id="leaderboard-popup"><div class="popup-box"><div class="popup-title">🏆 LEADERBOARD <button class="popup-close" onclick="closePopup('leaderboard-popup')">×</button></div><div class="lb-tabs"><div class="lb-tab active" onclick="lbTab(this,'level')">Level</div><div class="lb-tab" onclick="lbTab(this,'gold')">Gold</div><div class="lb-tab" onclick="lbTab(this,'pvp')">PvP</div></div><table class="lb-table"><thead><tr><th>#</th><th>Character</th><th>Class</th><th style="text-align:right">Score</th></tr></thead><tbody id="lb-tbody"></tbody></table></div></div>
+<div class="popup-overlay" id="questlog-popup"><div class="popup-box"><div class="popup-title">📜 QUEST LOG <button class="popup-close" onclick="closePopup('questlog-popup')">×</button></div><div class="quest-log-layout"><div class="quest-list-panel" id="quest-log-list"></div><div class="quest-detail-panel" id="quest-log-detail"><div style="color:var(--text-muted);text-align:center;padding:20px">Select a quest</div></div></div></div></div>
+<div class="popup-overlay" id="cheat-popup"><div class="popup-box"><div class="popup-title">👑 OWNER CHEAT MENU <button class="popup-close" onclick="closePopup('cheat-popup')">×</button></div><div class="cheat-input-row"><input type="text" class="cheat-input" id="cheat-target" placeholder="Target"><input type="number" class="cheat-input" id="cheat-amount" placeholder="Amount"><input type="text" class="cheat-input" id="cheat-item-id" placeholder="Item ID"></div><div class="cheat-grid"><button class="cheat-btn" onclick="cheatCmd('give_gold')">💰 Give Gold</button><button class="cheat-btn" onclick="cheatCmd('set_level')">⭐ Set Level</button><button class="cheat-btn" onclick="cheatCmd('spawn_item')">🎁 Spawn Item</button><button class="cheat-btn" onclick="cheatCmd('god_mode')">🛡 God Mode</button><button class="cheat-btn" onclick="cheatCmd('heal')">💚 Full Heal</button><button class="cheat-btn" onclick="cheatCmd('kill')">💀 Kill</button><button class="cheat-btn" onclick="gameEventCmd('spawn_boss')">🔥 Spawn Boss</button><button class="cheat-btn" onclick="gameEventCmd('announce')">📢 Announce</button><button class="cheat-btn" onclick="gameEventCmd('give_rewards')">🎉 Give Rewards</button><button class="cheat-btn" onclick="openPromoteMenu()">⚡ Promote</button></div><div id="cheat-result" style="background:var(--bg-item);padding:10px;font-size:12px;min-height:40px;"></div></div></div>
+<div class="popup-overlay" id="mod-popup"><div class="popup-box"><div class="popup-title">🛡 MOD PANEL <button class="popup-close" onclick="closePopup('mod-popup')">×</button></div><div><span>Online: <span id="mod-online-cnt">0</span></span><button class="action-btn" onclick="refreshModPanel()">🔄 Refresh</button></div><div class="player-admin-list" id="mod-player-list"></div><div class="mod-log-area" id="mod-log-area"></div></div></div>
 
-            try {
-                console.log('Attempting login to:', API_URL + '/api/login');
-                
-                const response = await fetch(`${API_URL}/api/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
+<!-- Notifications Area -->
+<div id="notif-area"></div>
 
-                const data = await response.json();
-                console.log('Login response:', data);
+<script>
+// ===================================================================
+// CONFIGURATION
+// ===================================================================
+const API = 'https://bot-hosting-b-ga04.onrender.com';
+const WSS = 'wss://bot-hosting-b-ga04.onrender.com';
 
-                if (response.ok) {
-                    token = data.access_token;
-                    localStorage.setItem('token', token);
-                    currentUser = { username, role: data.role, is_owner: data.is_owner };
-                    
-                    if (data.is_owner) {
-                        addNotification('👑 Logged in as Owner', 'success');
-                    } else if (data.role === 'admin') {
-                        addNotification('⚡ Logged in as Admin', 'success');
-                    } else if (data.role === 'moderator') {
-                        addNotification('🛡️ Logged in as Moderator', 'success');
-                    } else {
-                        addNotification('Logged in as Player', 'success');
-                    }
-                    
-                    await loadCharacters();
-                } else {
-                    showError(data.detail || 'Login failed');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showError('Connection error: ' + error.message);
-            } finally {
-                showLoading(false);
-            }
-        }
+// ===================================================================
+// STATE
+// ===================================================================
+let token = localStorage.getItem('rpg_token');
+let currentUser = null;
+let currentChar = null;
+let ws = null;
+let wsTimer = null;
+let currentChatChannel = 'global';
+let activeTrade = null;
+let activePvP = null;
+let pvpCountdownTimer = null;
+let gameRenderer = null;
+let learnedSkills = new Set();
+let skillPoints = 3;
+let auctionsData = [];
+let modLog = [];
 
-        async function handleRegister() {
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
+// Quest tracking
+const questProgress = {};
+const activeQuests = new Set(['q1_1']);
 
-            if (!username || !password) {
-                showError('Please enter username and password');
-                return;
-            }
+// Item database
+const ITEMS = {
+    sword_iron: { name: 'Iron Sword', icon: '🗡', type: 'Weapon', rarity: 'common', stats: '+12 ATK', desc: 'A sturdy iron sword.' },
+    sword_steel: { name: 'Steel Sword', icon: '⚔', type: 'Weapon', rarity: 'uncommon', stats: '+22 ATK' },
+    potion_hp: { name: 'Health Potion', icon: '🧪', type: 'Consumable', rarity: 'common', stats: 'Restores 50 HP' }
+};
 
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters');
-                return;
-            }
+// Enemy database
+const ENEMIES = {
+    goblin: { name: 'Goblin', icon: '👺', level: 1, hp: 50, attack: 8, defense: 2, exp: 25, gold: 10 },
+    goblin_chief: { name: 'Goblin Chief', icon: '👹', level: 3, hp: 150, exp: 100, gold: 50 }
+};
 
-            showLoading(true);
+// Class data
+const CLASSES = {
+    warrior: { icon: 'pixel-warrior', name: 'WARRIOR', desc: 'High HP & Strength', skillset: 'melee' },
+    mage: { icon: 'pixel-mage', name: 'MAGE', desc: 'Powerful spells', skillset: 'magic' },
+    rogue: { icon: 'pixel-rogue', name: 'ROGUE', desc: 'Agile, critical hits', skillset: 'stealth' },
+    archer: { icon: 'pixel-archer', name: 'ARCHER', desc: 'Ranged precision', skillset: 'ranged' },
+    paladin: { icon: 'pixel-paladin', name: 'PALADIN', desc: 'Holy warrior', skillset: 'holy' },
+    necromancer: { icon: 'pixel-necro', name: 'NECROMANCER', desc: 'Dark summoner', skillset: 'dark' }
+};
 
-            try {
-                console.log('Attempting registration to:', API_URL + '/api/register');
-                
-                // FIXED: Using /api/register instead of /api/login
-                const response = await fetch(`${API_URL}/api/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
+const CLASS_SKILLS = {
+    melee:   [['Slash', '🗡', 'Strike', 1], ['Whirlwind', '🌀', 'Spin attack', 2]],
+    magic:   [['Fireball', '🔥', 'Launch fire', 1], ['Frostbolt', '❄', 'Freeze', 2]],
+    stealth: [['Backstab', '🗡', 'Crit hit', 1], ['Poison', '☠', 'Damage over time', 2]],
+    ranged:  [['Multi-Shot', '🏹', 'Multiple arrows', 1], ['Pierce', '↗', 'Armor break', 2]],
+    holy:    [['Holy Strike', '✨', 'Blessed attack', 1], ['Heal', '💚', 'Restore HP', 2]],
+    dark:    [['Dark Bolt', '🌑', 'Dark damage', 1], ['Life Drain', '🩸', 'Steal HP', 2]]
+};
 
-                const data = await response.json();
-                console.log('Registration response:', data);
+const QUESTS = {
+    q1_1: { id:'q1_1', title:'The Dark Omen', act:1, ch:1, desc:'Kill 5 goblins.', obj:'Goblins 0/5', rewards:{exp:100, gold:50}, next:'q1_2', icon:'👺' },
+    q1_2: { id:'q1_2', title:'The Goblin Camp', act:1, ch:2, desc:'Find the camp.', obj:'Explore', rewards:{exp:150, gold:75}, next:'q1_3', icon:'🏕' }
+};
 
-                if (response.ok) {
-                    token = data.access_token;
-                    localStorage.setItem('token', token);
-                    currentUser = { username, role: data.role, is_owner: data.is_owner };
-                    
-                    if (data.is_owner) {
-                        addNotification('👑 Registered as Owner!', 'success');
-                    }
-                    
-                    await loadCharacters();
-                } else {
-                    showError(data.detail || 'Registration failed');
-                }
-            } catch (error) {
-                console.error('Registration error:', error);
-                showError('Connection error: ' + error.message);
-            } finally {
-                showLoading(false);
-            }
-        }
+// ===================================================================
+// UTILITIES
+// ===================================================================
+const esc = s => { const d = document.createElement('div'); d.textContent = String(s||''); return d.innerHTML; };
+const $ = id => document.getElementById(id);
 
-        async function loadCharacters() {
-            showLoading(true);
+function showNotif(msg, type='info', duration=3000) {
+    const area = $('notif-area');
+    const el = document.createElement('div');
+    el.className = `notif ${type}`;
+    el.textContent = msg;
+    area.appendChild(el);
+    setTimeout(() => el.remove(), duration);
+}
 
-            try {
-                const response = await fetch(`${API_URL}/api/characters`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+function showLoadingBar(pct) { $('load-bar').style.width = pct + '%'; }
 
-                if (!response.ok) {
-                    throw new Error('Failed to load characters');
-                }
+async function apiFetch(path, opts={}) {
+    const headers = { 'Content-Type': 'application/json', ...(opts.headers||{}) };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    try {
+        const res = await fetch(API + path, { ...opts, headers });
+        const txt = await res.text();
+        try { return { ok: res.ok, status: res.status, data: JSON.parse(txt) }; } catch { return { ok: false, status: res.status, data: { detail: txt } }; }
+    } catch(e) { return { ok: false, data: { detail: e.message } }; }
+}
 
-                const characters = await response.json();
-                console.log('Characters:', characters);
+function openPopup(id) { $(id).classList.add('show'); }
+function closePopup(id) { $(id).classList.remove('show'); }
 
-                if (characters.length > 0) {
-                    currentCharacter = characters[0];
-                    showLobby();
-                    connectWebSocket();
-                } else {
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('character-creation-screen').style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Load characters error:', error);
-                showError('Failed to load characters: ' + error.message);
-            } finally {
-                showLoading(false);
-            }
-        }
+function updateHUD() {
+    if (!currentChar) return;
+    $('hud-char-name').textContent = currentChar.name;
+    $('hud-hp-bar').style.width = (currentChar.hp/currentChar.max_hp*100)+'%';
+    $('hud-mp-bar').style.width = (currentChar.mana/currentChar.max_mana*100)+'%';
+    $('hud-hp-txt').textContent = `${currentChar.hp}/${currentChar.max_hp}`;
+    $('hud-mp-txt').textContent = `${currentChar.mana}/${currentChar.max_mana}`;
+    $('hud-level').textContent = currentChar.level;
+    $('hud-gold').textContent = currentChar.gold;
+}
 
-        // ==================== Character Creation ====================
+// ===================================================================
+// SCREEN TRANSITIONS
+// ===================================================================
+function showScreen(id) {
+    ['login-screen','char-create-screen','lobby-screen','game-screen'].forEach(s => {
+        const el = $(s);
+        if (el) { el.style.display = 'none'; el.classList.remove('active'); }
+    });
+    if (id) {
+        const el = $(id);
+        if (el) { el.style.display = (id==='lobby-screen'||id==='game-screen') ? 'block' : 'flex'; el.classList.add('active'); }
+    }
+    $('loading-screen').style.display = 'none';
+}
 
-        document.querySelectorAll('.class-card').forEach(card => {
-            card.addEventListener('click', () => {
-                document.querySelectorAll('.class-card').forEach(c => c.classList.remove('selected'));
-                card.classList.add('selected');
-                selectedClass = card.dataset.class;
-            });
-        });
+// ===================================================================
+// AUTH
+// ===================================================================
+async function handleLogin() {
+    const username = $('login-username').value.trim();
+    const password = $('login-password').value;
+    if (!username || !password) { showNotif('Enter credentials', 'error'); return; }
+    const { ok, data } = await apiFetch('/api/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+    if (ok && data.access_token) {
+        token = data.access_token;
+        localStorage.setItem('rpg_token', token);
+        currentUser = { username, role: data.role, is_owner: data.is_owner };
+        showNotif(`Welcome, ${username}!`, 'success');
+        await loadCharacters();
+    } else showNotif(data.detail || 'Login failed', 'error');
+}
 
-        async function createCharacter() {
-            const name = document.getElementById('char-name').value;
+async function handleRegister() {
+    const username = $('login-username').value.trim();
+    const password = $('login-password').value;
+    if (!username || username.length<3) { showNotif('Username min 3 chars', 'error'); return; }
+    if (!password || password.length<6) { showNotif('Password min 6 chars', 'error'); return; }
+    const { ok, data } = await apiFetch('/api/register', { method: 'POST', body: JSON.stringify({ username, password }) });
+    if (ok) {
+        token = data.access_token;
+        localStorage.setItem('rpg_token', token);
+        currentUser = { username, role: data.role, is_owner: data.is_owner };
+        showNotif('Registered!', 'success');
+        await loadCharacters();
+    } else showNotif(data.detail || 'Registration failed', 'error');
+}
 
-            if (!name) {
-                showError('Please enter a character name');
-                return;
-            }
+async function loadCharacters() {
+    const { ok, data, status } = await apiFetch('/api/characters');
+    if (status === 401) { logout(); return; }
+    if (!ok) { showNotif('Failed to load characters', 'error'); return; }
+    if (data.length > 0) {
+        currentChar = data[0];
+        showLobbyScreen();
+    } else {
+        showCharCreate();
+    }
+}
 
-            showLoading(true);
+function logout() {
+    localStorage.removeItem('rpg_token');
+    token = null; currentUser = null; currentChar = null;
+    if (ws) { ws.close(); ws = null; }
+    showScreen('login-screen');
+}
 
-            try {
-                const response = await fetch(`${API_URL}/api/characters`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ name, class_name: selectedClass })
-                });
+// ===================================================================
+// CHARACTER CREATION
+// ===================================================================
+let selectedClass = 'warrior';
 
-                const character = await response.json();
+function showCharCreate() {
+    buildClassGrid();
+    showScreen('char-create-screen');
+}
 
-                if (response.ok) {
-                    currentCharacter = character;
-                    showLobby();
-                    connectWebSocket();
-                } else {
-                    showError(character.detail || 'Failed to create character');
-                }
-            } catch (error) {
-                console.error('Create character error:', error);
-                showError('Connection error: ' + error.message);
-            } finally {
-                showLoading(false);
-            }
-        }
+function buildClassGrid() {
+    const grid = $('class-grid');
+    grid.innerHTML = '';
+    Object.entries(CLASSES).forEach(([key, cl]) => {
+        const card = document.createElement('div');
+        card.className = 'class-card' + (key===selectedClass?' selected':'');
+        card.dataset.class = key;
+        card.innerHTML = `<div class="pixel-class-icon"><div class="${cl.icon}"></div></div><h3>${cl.name}</h3><p>${cl.desc}</p>`;
+        card.onclick = () => {
+            document.querySelectorAll('.class-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedClass = key;
+        };
+        grid.appendChild(card);
+    });
+}
 
-        // ==================== WebSocket Connection ====================
+async function submitCreateCharacter() {
+    const name = $('char-name-input').value.trim();
+    if (!name || name.length<3) { showNotif('Name 3-20 chars', 'error'); return; }
+    const { ok, data } = await apiFetch('/api/characters', { method: 'POST', body: JSON.stringify({ name, class_name: selectedClass }) });
+    if (ok) {
+        currentChar = data;
+        showNotif(`Character ${name} created!`, 'success');
+        showLobbyScreen();
+    } else showNotif(data.detail || 'Failed', 'error');
+}
 
-        function connectWebSocket() {
-            if (socket) {
-                socket.close();
-            }
+// ===================================================================
+// LOBBY
+// ===================================================================
+function showLobbyScreen() {
+    showScreen('lobby-screen');
+    if (currentUser) $('lb-username').textContent = currentUser.username;
+    if (currentChar) {
+        $('lb-charname').textContent = currentChar.name;
+        $('lb-level').textContent = currentChar.level;
+        $('lb-gold').textContent = currentChar.gold;
+        buildLobbyCharCard();
+    }
+    connectWebSocket();
+    lobbyTab(document.querySelector('.sidebar-item.active'), 'characters');
+    loadLobbyActivity();
+}
 
-            socket = new WebSocket(`${WS_URL}/ws?token=${token}`);
+function buildLobbyCharCard() {
+    const c = currentChar;
+    if (!c) return;
+    const cl = CLASSES[c.class_name] || {};
+    $('lobby-char-card').innerHTML = `
+        <div style="text-align:center;padding:10px;background:var(--bg-item);border:1px solid #3a3a50">
+            <div class="pixel-class-icon" style="width:64px;height:64px;margin:0 auto"><div class="${cl.icon}"></div></div>
+            <div style="color:var(--gold);font-size:16px;font-weight:bold">${esc(c.name)}</div>
+            <div style="color:var(--text-muted);font-size:11px">${(c.class_name||'').toUpperCase()}</div>
+        </div>
+        <div style="font-size:12px;line-height:2;">
+            <div><span style="color:var(--text-muted)">Level:</span> <span style="color:var(--gold)">${c.level}</span></div>
+            <div><span style="color:var(--text-muted)">Gold:</span> <span style="color:var(--gold)">${c.gold}g</span></div>
+        </div>`;
+}
 
-            socket.onopen = () => {
-                console.log('WebSocket connected');
-                addChatMessage('System', 'Connected to game server', 'system');
-            };
+function lobbyTab(el, tab) {
+    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+    if (el) el.classList.add('active');
+    const mc = $('lobby-main-content');
+    if (tab === 'characters') renderLobbyCharacters();
+    else if (tab === 'leaderboard') renderLobbyLeaderboard();
+    else if (tab === 'guilds') renderLobbyGuilds();
+    else if (tab === 'quests') renderLobbyQuests();
+    else mc.innerHTML = `<div class="panel-title">${tab}</div><div style="color:var(--text-muted)">Content coming soon.</div>`;
+}
 
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                handleWebSocketMessage(data);
-            };
-
-            socket.onclose = () => {
-                console.log('WebSocket disconnected');
-                addChatMessage('System', 'Disconnected from server', 'system');
-                
-                setTimeout(connectWebSocket, 5000);
-            };
-
-            socket.onerror = (error) => {
-                console.error('WebSocket error:', error);
-            };
-        }
-
-        function handleWebSocketMessage(data) {
-            switch (data.type) {
-                case 'chat':
-                    addChatMessage(data.sender, data.content, data.channel);
-                    break;
-                
-                case 'system':
-                    addChatMessage('System', data.message, 'system');
-                    break;
-                
-                case 'movement':
-                    updatePlayerPosition(data.character_id, data.x, data.y);
-                    break;
-                
-                case 'trade_request':
-                    handleTradeRequest(data);
-                    break;
-                
-                case 'trade_update':
-                    updateTradeOffer(data);
-                    break;
-                
-                case 'trade_accepted':
-                    updateTradeStatus('accepted', data.accepted_by);
-                    break;
-                
-                case 'trade_completed':
-                    handleTradeComplete(data);
-                    break;
-                
-                case 'pvp_challenge':
-                    handlePvPChallenge(data);
-                    break;
-                
-                case 'pvp_result':
-                    handlePvPResult(data);
-                    break;
-                
-                case 'new_auction':
-                    addNotification(`New auction listed!`, 'info');
-                    break;
-                
-                case 'outbid':
-                    addNotification(`You've been outbid on an item!`, 'warning');
-                    break;
-                
-                case 'emote':
-                    addChatMessage(data.user_id, `[${data.emote}]`, 'system');
-                    break;
-                
-                case 'guild_chat':
-                    addChatMessage(data.from, data.message, 'guild');
-                    break;
-                
-                case 'party_invite':
-                    handlePartyInvite(data);
-                    break;
-                case 'announcement':
-                    addNotification(`📢 ${data.message}`, 'info');
-                    break;
-                case 'boss_spawn':
-                    addNotification(`🔥 BOSS SPAWNED: ${data.boss} at ${data.location}!`, 'warning');
-                    break;
-                case 'global_event':
-                    addNotification(`🎉 EVENT: ${data.event} - ${data.description}`, 'success');
-                    break;
-                case 'reward':
-                    addNotification(`🎁 ${data.message}`, 'success');
-                    break;
-                case 'cheat':
-                    addNotification(`💫 ${data.message}`, 'info');
-                    break;
-            }
-        }
-
-        // ==================== Chat System ====================
-
-        function addChatMessage(sender, content, channel = 'global') {
-            const messagesDiv = document.getElementById('chat-messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message ${channel}`;
-            
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            messageDiv.innerHTML = `
-                <span class="timestamp">[${timestamp}]</span>
-                <span class="sender">${escapeHtml(sender)}:</span>
-                <span class="content">${escapeHtml(content)}</span>
-            `;
-            
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            
-            while (messagesDiv.children.length > 100) {
-                messagesDiv.removeChild(messagesDiv.firstChild);
-            }
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        document.getElementById('chat-send').addEventListener('click', sendChatMessage);
-        document.getElementById('chat-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendChatMessage();
-        });
-
-        document.querySelectorAll('.chat-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentChannel = tab.dataset.channel;
-            });
-        });
-
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-
-            if (!message || !socket) return;
-
-            if (message.startsWith('/w ')) {
-                const parts = message.split(' ');
-                if (parts.length >= 3) {
-                    const target = parts[1];
-                    const whisperMessage = parts.slice(2).join(' ');
-                    socket.send(JSON.stringify({
-                        type: 'chat',
-                        channel: 'whisper',
-                        content: whisperMessage,
-                        target: target
-                    }));
-                    input.value = '';
-                    return;
-                }
-            }
-
-            socket.send(JSON.stringify({
-                type: 'chat',
-                channel: currentChannel,
-                content: message
-            }));
-
-            input.value = '';
-        }
-
-        // ==================== Lobby Functions ====================
-
-        function showLobby() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('character-creation-screen').style.display = 'none';
-            document.getElementById('lobby-screen').style.display = 'block';
-            
-            if (currentCharacter) {
-                document.getElementById('char-level').textContent = currentCharacter.level || 1;
-                document.getElementById('char-gold').textContent = currentCharacter.gold || 100;
-                document.getElementById('character-name').textContent = currentCharacter.name || 'Hero';
-            }
-            
-            loadOnlinePlayers();
-        }
-
-        async function loadOnlinePlayers() {
-            try {
-                const response = await fetch(`${API_URL}/api/characters`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const players = await response.json();
-                const playerList = document.getElementById('online-players');
-                
-                playerList.innerHTML = players.map(player => `
-                    <li class="player-item" onclick="interactPlayer('${player.id}')">
-                        <span class="player-status status-online"></span>
-                        ${player.name} (Lv.${player.level} ${player.class})
-                    </li>
-                `).join('');
-                
-                document.getElementById('online-count').textContent = players.length;
-            } catch (error) {
-                console.error('Load players error:', error);
-            }
-        }
-
-        function interactPlayer(playerId) {
-            const modal = document.createElement('div');
-            modal.id = 'player-modal';
-            modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #2a2a35; border: 2px solid #8b7a5a; padding: 20px; z-index: 2000;';
-            modal.innerHTML = `
-                <h3 style="color: #ffd700;">Player Actions</h3>
-                <button class="action-btn" onclick="inviteToParty(${playerId})">Invite to Party</button>
-                <button class="action-btn" onclick="challengePvP(${playerId})">Challenge to PvP</button>
-                <button class="action-btn" onclick="initiateTrade(${playerId})">Trade</button>
-                <button class="action-btn" onclick="viewProfile(${playerId})">View Profile</button>
-                <button class="action-btn" onclick="closeModal()">Close</button>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('player-modal');
-            if (modal) modal.remove();
-        }
-
-        // ==================== Trading System ====================
-
-        async function initiateTrade(targetId) {
-            showLoading(true);
-            
-            try {
-                const response = await fetch(`${API_URL}/api/trade/initiate/${targetId}`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    activeTrade = {
-                        id: data.trade_id,
-                        target: targetId,
-                        yourItems: [],
-                        theirItems: [],
-                        yourGold: 0,
-                        theirGold: 0,
-                        status: 'pending'
-                    };
-                    
-                    openTradeWindow();
-                } else {
-                    showError(data.detail || 'Failed to initiate trade');
-                }
-            } catch (error) {
-                console.error('Trade initiation error:', error);
-                showError('Connection error');
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function handleTradeRequest(data) {
-            activeTrade = {
-                id: data.trade_id,
-                from: data.from_character,
-                yourItems: [],
-                theirItems: [],
-                yourGold: 0,
-                theirGold: 0,
-                status: 'pending'
-            };
-            
-            if (confirm(`Player ${data.from_character} wants to trade. Accept?`)) {
-                openTradeWindow();
-            }
-        }
-
-        function openTradeWindow() {
-            document.getElementById('trade-window').style.display = 'block';
-            updateTradeDisplay();
-        }
-
-        function closeTrade() {
-            document.getElementById('trade-window').style.display = 'none';
-            activeTrade = null;
-        }
-
-        function updateTradeDisplay() {
-            if (!activeTrade) return;
-            
-            const yourItemsDiv = document.getElementById('your-trade-items');
-            const theirItemsDiv = document.getElementById('their-trade-items');
-            
-            yourItemsDiv.innerHTML = activeTrade.yourItems.map(item => `
-                <div class="trade-item">
-                    <span>${item.name || 'Item'} x${item.quantity || 1}</span>
+function renderLobbyCharacters() {
+    $('lobby-main-content').innerHTML = `
+        <div class="panel-title">🗡 YOUR CHARACTER</div>
+        <div style="background:var(--bg-item);border:1px solid #3a3a50;padding:20px">
+            <div style="display:flex;gap:20px;align-items:center">
+                <div class="pixel-class-icon" style="width:64px;height:64px"><div class="${CLASSES[currentChar.class_name]?.icon}"></div></div>
+                <div>
+                    <div style="color:var(--gold);font-size:22px;font-weight:bold">${esc(currentChar.name)}</div>
+                    <div style="color:var(--text-muted)">${(currentChar.class_name||'').toUpperCase()} · Level ${currentChar.level}</div>
+                    <div style="color:var(--text-light)">💰 ${currentChar.gold}g</div>
                 </div>
-            `).join('');
-            
-            theirItemsDiv.innerHTML = activeTrade.theirItems.map(item => `
-                <div class="trade-item">
-                    <span>${item.name || 'Item'} x${item.quantity || 1}</span>
-                </div>
-            `).join('');
-            
-            document.getElementById('your-trade-gold').value = activeTrade.yourGold;
-            document.getElementById('their-trade-gold').textContent = activeTrade.theirGold;
-            
-            document.getElementById('trade-status').textContent = 
-                activeTrade.status === 'accepted' ? 'Trade accepted by both parties!' : 'Waiting for partner...';
+            </div>
+            <div style="margin-top:15px"><button class="action-btn" onclick="startGame()">▶ Enter World</button></div>
+        </div>`;
+}
+
+async function renderLobbyLeaderboard() {
+    $('lobby-main-content').innerHTML = `<div class="panel-title">🏆 LEADERBOARD</div><div>Loading...</div>`;
+    const { data } = await apiFetch('/api/leaderboard/level?limit=10');
+    const rows = (Array.isArray(data)?data:[]).map((p,i)=>`<tr><td>${i+1}</td><td>${esc(p.name)}</td><td>${p.class_name||''}</td><td>${p.level}</td></tr>`).join('');
+    $('lobby-main-content').innerHTML = `<div class="panel-title">🏆 LEADERBOARD</div><table class="lb-table"><thead><tr><th>#</th><th>Character</th><th>Class</th><th>Level</th></tr></thead><tbody>${rows||'<tr><td colspan="4">No data</td></tr>'}</tbody></table>`;
+}
+
+function renderLobbyGuilds() {
+    $('lobby-main-content').innerHTML = `<div class="panel-title">⚔ GUILDS</div><div style="padding:10px">Use in-game guild panel (G).</div>`;
+}
+
+function renderLobbyQuests() {
+    let html = `<div class="panel-title">📜 STORY QUESTS</div>`;
+    Object.values(QUESTS).forEach(q => {
+        html += `<div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg-item);margin:3px 0;border-left:3px solid ${activeQuests.has(q.id)?'var(--gold)':'#2a2a3a'}">
+            <span>${q.icon}</span><div style="flex:1"><div style="color:${activeQuests.has(q.id)?'var(--gold)':'var(--text-light)'}">${q.title}</div></div>
+            <div style="text-align:right;font-size:11px">+${q.rewards.exp}xp</div>
+        </div>`;
+    });
+    $('lobby-main-content').innerHTML = html;
+}
+
+async function loadLobbyActivity() {
+    const activities = ['⚔ Hero defeated a Goblin', '🏆 New leaderboard entry', '💰 Auction posted'];
+    $('lobby-activity').innerHTML = activities.map(a => `<div style="padding:4px 0">${a}</div>`).join('');
+    try {
+        const { data } = await apiFetch('/api/admin/online-players');
+        if (data?.online_count !== undefined) $('lobby-online-cnt').textContent = data.online_count;
+    } catch { $('lobby-online-cnt').textContent = '—'; }
+}
+
+// ===================================================================
+// WEBSOCKET
+// ===================================================================
+function connectWebSocket() {
+    if (!token) return;
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+    if (wsTimer) clearTimeout(wsTimer);
+    try {
+        ws = new WebSocket(`${WSS}/ws?token=${token}`);
+        ws.onopen = () => addChatMsg('System', 'Connected', 'sys');
+        ws.onmessage = e => { try { handleWS(JSON.parse(e.data)); } catch {} };
+        ws.onclose = () => { addChatMsg('System', 'Disconnected', 'sys'); wsTimer = setTimeout(connectWebSocket, 5000); };
+    } catch(e) {}
+}
+
+function wsSend(obj) { if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj)); }
+
+function handleWS(d) {
+    switch(d.type) {
+        case 'chat': addChatMsg(d.sender, d.content, d.channel); break;
+        case 'system': addChatMsg('System', d.message, 'sys'); break;
+        case 'reward': showNotif('🎁 '+d.message, 'success'); if (d.gold && currentChar) { currentChar.gold += d.gold; updateHUD(); } break;
+        case 'announcement': showNotif('📢 '+d.message, 'system'); addChatMsg('ANNOUNCE', d.message, 'announce'); break;
+        case 'pvp_result': handlePvPResult(d); break;
+    }
+}
+
+// ===================================================================
+// CHAT
+// ===================================================================
+function addChatMsg(who, content, channel='global') {
+    const msgs = $('chat-msgs');
+    if (!msgs) return;
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + (channel==='sys'?'sys':channel);
+    const ts = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    div.innerHTML = `<span class="ts">[${ts}]</span> <span class="who">${esc(who)}:</span> ${esc(content)}`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    while (msgs.children.length > 100) msgs.removeChild(msgs.firstChild);
+}
+
+function switchChatTab(el, ch) {
+    document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    currentChatChannel = ch;
+}
+
+function sendChat() {
+    const inp = $('chat-input');
+    const msg = inp.value.trim();
+    if (!msg) return;
+    inp.value = '';
+    if (msg.startsWith('/w ')) {
+        const parts = msg.slice(3).split(' ');
+        const target = parts[0], content = parts.slice(1).join(' ');
+        if (target && content) {
+            wsSend({ type:'chat', channel:'whisper', content, target });
+            addChatMsg('→ '+target, content, 'whisper');
         }
+    } else wsSend({ type:'chat', channel:currentChatChannel, content:msg });
+}
 
-        async function acceptTrade() {
-            if (!activeTrade) return;
-            
-            try {
-                const response = await fetch(`${API_URL}/api/trade/${activeTrade.id}/accept`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (response.ok) {
-                    activeTrade.status = 'accepted';
-                    updateTradeDisplay();
-                    
-                    if (activeTrade.status === 'accepted') {
-                        completeTrade();
-                    }
-                }
-            } catch (error) {
-                console.error('Accept trade error:', error);
-            }
+// ===================================================================
+// GAME SCREEN
+// ===================================================================
+function startGame() {
+    showScreen('game-screen');
+    buildSkillBar();
+    updateHUD();
+    renderHUDQuests();
+    connectWebSocket();
+    initGameCanvas();
+}
+
+function returnToLobby() { showScreen('lobby-screen'); buildLobbyCharCard(); }
+
+// ===================================================================
+// CANVAS RENDERER
+// ===================================================================
+class PixelRenderer {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.resize();
+        this.tileSize = 32;
+        this.cam = { x:0, y:0 };
+        this.player = { x:12, y:12, tx:12, ty:12 };
+        this.enemies = [];
+        this.floatingTexts = [];
+        this.map = this.generateMap(60,60);
+        this.spawnEnemies();
+        window.addEventListener('resize', () => this.resize());
+    }
+    resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; }
+    generateMap(w,h) {
+        let map = [];
+        for (let y=0; y<h; y++) { map[y] = []; for (let x=0; x<w; x++) map[y][x] = (x===0||y===0||x===w-1||y===h-1)?1:Math.random()<0.1?2:0; }
+        return map;
+    }
+    spawnEnemies() {
+        this.enemies = [];
+        for (let i=0; i<5; i++) {
+            let x = 5+Math.floor(Math.random()*50);
+            let y = 5+Math.floor(Math.random()*50);
+            if (Math.abs(x-12)<5 && Math.abs(y-12)<5) continue;
+            this.enemies.push({ key:'goblin', ...ENEMIES.goblin, x, y, hp:50, alive:true });
         }
-
-        async function completeTrade() {
-            try {
-                const response = await fetch(`${API_URL}/api/trade/${activeTrade.id}/complete`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (response.ok) {
-                    addNotification('Trade completed successfully!', 'success');
-                    closeTrade();
-                }
-            } catch (error) {
-                console.error('Complete trade error:', error);
-            }
+    }
+    floatText(x,y,text,color='#ff8888') { this.floatingTexts.push({ x,y,text,color,life:60,vy:-0.4 }); }
+    render() {
+        let ctx = this.ctx;
+        ctx.fillStyle = '#151820';
+        ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
+        this.cam.x += (this.player.tx*this.tileSize - this.canvas.width/2 - this.cam.x)*0.08;
+        this.cam.y += (this.player.ty*this.tileSize - this.canvas.height/2 - this.cam.y)*0.08;
+        let T = this.tileSize;
+        let sx = Math.max(0, Math.floor(this.cam.x/T)-1);
+        let sy = Math.max(0, Math.floor(this.cam.y/T)-1);
+        let ex = Math.min(this.map[0].length, sx + Math.ceil(this.canvas.width/T)+3);
+        let ey = Math.min(this.map.length, sy + Math.ceil(this.canvas.height/T)+3);
+        for (let ty=sy; ty<ey; ty++) for (let tx=sx; tx<ex; tx++) {
+            let scx = Math.round(tx*T - this.cam.x);
+            let scy = Math.round(ty*T - this.cam.y);
+            if (this.map[ty][tx]===0) ctx.fillStyle = (tx+ty)%2===0?'#2e4a30':'#334d35';
+            else if (this.map[ty][tx]===1) ctx.fillStyle = '#4a3828';
+            else if (this.map[ty][tx]===2) ctx.fillStyle = '#1e3a1e';
+            ctx.fillRect(scx,scy,T-1,T-1);
         }
-
-        // ==================== PvP System ====================
-
-        async function challengePvP(targetId) {
-            showLoading(true);
-            
-            try {
-                const response = await fetch(`${API_URL}/api/pvp/challenge/${targetId}`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    activePvP = {
-                        match_id: data.match_id,
-                        target: targetId,
-                        accepted: false
-                    };
-                    
-                    addNotification('PvP challenge sent!', 'info');
-                } else {
-                    showError(data.detail || 'Failed to challenge');
-                }
-            } catch (error) {
-                console.error('PvP challenge error:', error);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function handlePvPChallenge(data) {
-            activePvP = {
-                match_id: data.match_id,
-                challenger: data.challenger,
-                accepted: false
-            };
-            
-            document.getElementById('pvp-arena').style.display = 'block';
-            document.getElementById('pvp-player1').textContent = `Player ${data.challenger}`;
-            document.getElementById('pvp-player2').textContent = 'You';
-            
-            let countdown = 5;
-            const countdownEl = document.getElementById('pvp-countdown');
-            
-            const interval = setInterval(() => {
-                countdownEl.textContent = countdown;
-                countdown--;
-                
-                if (countdown < 0) {
-                    clearInterval(interval);
-                    startPvPMatch();
-                }
-            }, 1000);
-        }
-
-        async function startPvPMatch() {
-            try {
-                const response = await fetch(`${API_URL}/api/pvp/match/${activePvP.match_id}/accept`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    if (data.winner_id === currentCharacter.id) {
-                        addNotification('You won the PvP match!', 'success');
-                    } else {
-                        addNotification('You lost the PvP match.', 'error');
-                    }
-                }
-            } catch (error) {
-                console.error('Start PvP error:', error);
-            } finally {
-                closePvP();
-            }
-        }
-
-        function closePvP() {
-            document.getElementById('pvp-arena').style.display = 'none';
-            activePvP = null;
-        }
-
-        // ==================== Guild System ====================
-
-        async function createGuild() {
-            const name = prompt('Enter guild name:');
-            const tag = prompt('Enter guild tag (2-5 characters):');
-            
-            if (!name || !tag) return;
-            
-            try {
-                const response = await fetch(`${API_URL}/api/guilds`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ name, tag })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    addNotification(`Guild ${name} created!`, 'success');
-                    loadGuildInfo();
-                } else {
-                    showError(data.detail || 'Failed to create guild');
-                }
-            } catch (error) {
-                console.error('Create guild error:', error);
-            }
-        }
-
-        async function loadGuildInfo() {
-            try {
-                const response = await fetch(`${API_URL}/api/guilds/my-guild`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const guild = await response.json();
-                
-                if (guild && guild.name) {
-                    document.getElementById('guild-name').textContent = guild.name;
-                    document.getElementById('guild-tag').textContent = `[${guild.tag}]`;
-                    
-                    const membersDiv = document.getElementById('guild-members');
-                    membersDiv.innerHTML = guild.members.map(member => `
-                        <div class="guild-member">
-                            <span class="member-rank">${member.rank}</span>
-                            <span class="member-name">${member.name}</span>
-                            <span>Lv.${member.level}</span>
-                        </div>
-                    `).join('');
-                }
-            } catch (error) {
-                console.error('Load guild error:', error);
-            }
-        }
-
-        // ==================== Auction House ====================
-
-        async function loadAuctions() {
-            try {
-                const response = await fetch(`${API_URL}/api/auction/listings`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const auctions = await response.json();
-                const grid = document.getElementById('auction-grid');
-                
-                grid.innerHTML = auctions.map(auction => `
-                    <div class="auction-item">
-                        <div>Item #${auction.item_id}</div>
-                        <div class="current-bid">Current: ${auction.current_bid || auction.starting_bid} gold</div>
-                        ${auction.buyout_price ? `<div class="buyout">Buyout: ${auction.buyout_price}</div>` : ''}
-                        <button class="action-btn" onclick="placeBid(${auction.id})">Bid</button>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error('Load auctions error:', error);
-            }
-        }
-
-        async function placeBid(auctionId) {
-            const amount = prompt('Enter bid amount:');
-            if (!amount) return;
-            
-            try {
-                const response = await fetch(`${API_URL}/api/auction/${auctionId}/bid?bid_amount=${amount}`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (response.ok) {
-                    addNotification('Bid placed successfully!', 'success');
-                    loadAuctions();
-                }
-            } catch (error) {
-                console.error('Place bid error:', error);
-            }
-        }
-
-        // ==================== Inventory ====================
-
-        async function loadInventory() {
-            try {
-                const response = await fetch(`${API_URL}/api/characters/${currentCharacter.id}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const data = await response.json();
-                const inventory = data.inventory || [];
-                
-                const grid = document.getElementById('inventory-grid');
-                grid.innerHTML = '';
-                
-                for (let i = 0; i < 20; i++) {
-                    const slot = document.createElement('div');
-                    slot.className = 'inventory-slot';
-                    
-                    const item = inventory[i];
-                    if (item) {
-                        slot.innerHTML = `
-                            <div class="item-${item.rarity || 'common'}">${item.name || 'Item'}</div>
-                            ${item.quantity > 1 ? `<span class="item-quantity">${item.quantity}</span>` : ''}
-                        `;
-                        
-                        slot.addEventListener('mouseenter', (e) => showItemTooltip(e, item));
-                        slot.addEventListener('mouseleave', hideTooltip);
-                    }
-                    
-                    grid.appendChild(slot);
-                }
-                
-                document.getElementById('inventory-gold').textContent = data.character?.gold || 0;
-            } catch (error) {
-                console.error('Load inventory error:', error);
-            }
-        }
-
-        function showItemTooltip(event, item) {
-            const tooltip = document.getElementById('tooltip');
-            tooltip.style.display = 'block';
-            tooltip.style.left = event.pageX + 20 + 'px';
-            tooltip.style.top = event.pageY + 20 + 'px';
-            
-            tooltip.innerHTML = `
-                <div class="item-name">${item.name || 'Unknown Item'}</div>
-                <div class="item-description">${item.description || 'No description'}</div>
-                <div class="item-stats">${item.stats || ''}</div>
-            `;
-        }
-
-        function hideTooltip() {
-            document.getElementById('tooltip').style.display = 'none';
-        }
-
-        // ==================== Skill Tree ====================
-
-        async function loadSkillTree() {
-            const container = document.getElementById('skill-tree-container');
-            const classSkills = {
-                warrior: ['Slash', 'Whirlwind', 'Taunt', 'Defensive Stance', 'Charge', 'Execute'],
-                mage: ['Fireball', 'Frostbolt', 'Arcane Explosion', 'Polymorph', 'Blink', 'Meteor'],
-                rogue: ['Backstab', 'Poison Attack', 'Stealth', 'Shadowstep', 'Ambush', 'Blind'],
-                archer: ['Multi-Shot', 'Piercing Arrow', 'Hawk Eye', 'Volley', 'Rapid Fire', 'Trap'],
-                paladin: ['Holy Strike', 'Divine Shield', 'Heal', 'Blessing', 'Consecration', 'Lay on Hands'],
-                necromancer: ['Dark Bolt', 'Raise Dead', 'Life Drain', 'Curse', 'Bone Armor', 'Death Coil']
-            };
-            
-            const skills = classSkills[currentCharacter?.class] || classSkills.warrior;
-            
-            container.innerHTML = '';
-            
-            for (let tier = 0; tier < 3; tier++) {
-                const tierDiv = document.createElement('div');
-                tierDiv.className = 'skill-tier';
-                tierDiv.innerHTML = `<h3>Tier ${tier + 1}</h3>`;
-                
-                for (let i = 0; i < 2; i++) {
-                    const skillIndex = tier * 2 + i;
-                    if (skillIndex < skills.length) {
-                        const skillDiv = document.createElement('div');
-                        skillDiv.className = 'skill-node available';
-                        skillDiv.textContent = skills[skillIndex];
-                        skillDiv.onclick = () => learnSkill(skills[skillIndex]);
-                        tierDiv.appendChild(skillDiv);
-                    }
-                }
-                
-                container.appendChild(tierDiv);
-            }
-        }
-
-        function learnSkill(skillName) {
-            addNotification(`Learned ${skillName}!`, 'success');
-        }
-
-        // ==================== Game Rendering ====================
-
-        class GameRenderer {
-            constructor(canvas) {
-                this.canvas = canvas;
-                this.ctx = canvas.getContext('2d');
-                this.width = 1024;
-                this.height = 768;
-                this.tileSize = 32;
-                this.camera = { x: 0, y: 0 };
-                this.player = { x: 10, y: 10 };
-                
-                this.map = this.generateMap(50, 50);
-            }
-            
-            generateMap(width, height) {
-                const map = [];
-                for (let y = 0; y < height; y++) {
-                    map[y] = [];
-                    for (let x = 0; x < width; x++) {
-                        if (x === 0 || y === 0 || x === width-1 || y === height-1) {
-                            map[y][x] = 1;
-                        } else if (Math.random() < 0.1) {
-                            map[y][x] = 2;
-                        } else {
-                            map[y][x] = 0;
-                        }
-                    }
-                }
-                return map;
-            }
-            
-            render() {
-                this.ctx.fillStyle = '#1a1d21';
-                this.ctx.fillRect(0, 0, this.width, this.height);
-                
-                this.camera.x = this.player.x * this.tileSize - this.width / 2;
-                this.camera.y = this.player.y * this.tileSize - this.height / 2;
-                
-                const startX = Math.max(0, Math.floor(this.camera.x / this.tileSize));
-                const startY = Math.max(0, Math.floor(this.camera.y / this.tileSize));
-                const endX = Math.min(this.map[0].length, Math.ceil((this.camera.x + this.width) / this.tileSize));
-                const endY = Math.min(this.map.length, Math.ceil((this.camera.y + this.height) / this.tileSize));
-                
-                for (let y = startY; y < endY; y++) {
-                    for (let x = startX; x < endX; x++) {
-                        const screenX = x * this.tileSize - this.camera.x;
-                        const screenY = y * this.tileSize - this.camera.y;
-                        
-                        switch(this.map[y][x]) {
-                            case 0:
-                                this.ctx.fillStyle = '#3a6b4a';
-                                this.ctx.fillRect(screenX, screenY, this.tileSize-1, this.tileSize-1);
-                                break;
-                            case 1:
-                                this.ctx.fillStyle = '#6b4f3c';
-                                this.ctx.fillRect(screenX, screenY, this.tileSize-1, this.tileSize-1);
-                                break;
-                            case 2:
-                                this.ctx.fillStyle = '#3a6b4a';
-                                this.ctx.fillRect(screenX, screenY, this.tileSize-1, this.tileSize-1);
-                                this.ctx.fillStyle = '#2a5a2a';
-                                this.ctx.fillRect(screenX+8, screenY-8, 16, 16);
-                                break;
-                        }
-                        
-                        this.ctx.strokeStyle = '#2a2a2a';
-                        this.ctx.strokeRect(screenX, screenY, this.tileSize, this.tileSize);
-                    }
-                }
-                
-                const playerScreenX = this.player.x * this.tileSize - this.camera.x;
-                const playerScreenY = this.player.y * this.tileSize - this.camera.y;
-                
-                this.ctx.fillStyle = '#ffd700';
-                this.ctx.fillRect(playerScreenX + 4, playerScreenY + 4, 24, 24);
-                
-                this.ctx.fillStyle = '#44ff44';
-                this.ctx.fillRect(playerScreenX + 8, playerScreenY - 20, 16, 16);
-            }
-            
-            movePlayer(dx, dy) {
-                const newX = this.player.x + dx;
-                const newY = this.player.y + dy;
-                
-                if (this.map[newY] && this.map[newY][newX] === 0) {
-                    this.player.x = newX;
-                    this.player.y = newY;
-                    
-                    if (socket && currentCharacter) {
-                        socket.send(JSON.stringify({
-                            type: 'move',
-                            character_id: currentCharacter.id,
-                            x: newX,
-                            y: newY
-                        }));
-                    }
-                }
-            }
-        }
-
-        // ==================== UI Functions ====================
-
-        function toggleInventory() {
-            const panel = document.getElementById('inventory-panel');
-            if (panel.style.display === 'block') {
-                panel.style.display = 'none';
-            } else {
-                panel.style.display = 'block';
-                loadInventory();
-            }
-        }
-
-        function toggleSkills() {
-            const panel = document.getElementById('skill-tree');
-            if (panel.style.display === 'block') {
-                panel.style.display = 'none';
-            } else {
-                panel.style.display = 'block';
-                loadSkillTree();
-            }
-        }
-
-        function toggleGuild() {
-            const panel = document.getElementById('guild-panel');
-            if (panel.style.display === 'block') {
-                panel.style.display = 'none';
-            } else {
-                panel.style.display = 'block';
-                loadGuildInfo();
-            }
-        }
-
-        function toggleAuction() {
-            const panel = document.getElementById('auction-house');
-            if (panel.style.display === 'block') {
-                panel.style.display = 'none';
-            } else {
-                panel.style.display = 'block';
-                loadAuctions();
-            }
-        }
-
-        function startGame() {
-            document.getElementById('lobby-screen').style.display = 'none';
-            document.getElementById('game-canvas').style.display = 'block';
-            
-            const canvas = document.getElementById('game-canvas');
-            const renderer = new GameRenderer(canvas);
-            
-            function gameLoop() {
-                renderer.render();
-                requestAnimationFrame(gameLoop);
-            }
-            gameLoop();
-            
-            window.addEventListener('keydown', (e) => {
-                switch(e.key) {
-                    case 'w': case 'W': renderer.movePlayer(0, -1); break;
-                    case 's': case 'S': renderer.movePlayer(0, 1); break;
-                    case 'a': case 'A': renderer.movePlayer(-1, 0); break;
-                    case 'd': case 'D': renderer.movePlayer(1, 0); break;
-                }
-            });
-        }
-
-        function logout() {
-            localStorage.removeItem('token');
-            token = null;
-            currentUser = null;
-            currentCharacter = null;
-            
-            if (socket) {
-                socket.close();
-            }
-            
-            document.getElementById('lobby-screen').style.display = 'none';
-            document.getElementById('game-canvas').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'flex';
-        }
-
-        function showLoading(show) {
-            document.getElementById('loading-screen').style.display = show ? 'flex' : 'none';
-        }
-
-        function showError(message) {
-            document.getElementById('login-error').textContent = message;
-        }
-
-        function addNotification(message, type = 'info') {
-            const area = document.getElementById('notification-area');
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            
-            area.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 5000);
-        }
-
-        function showLeaderboard() {
-            addNotification('Leaderboard feature coming soon!', 'info');
-        }
-
-        function showGuilds() {
-            addNotification('Guild browser coming soon!', 'info');
-        }
-
-        function showParty() {
-            addNotification('Party system coming soon!', 'info');
-        }
-
-        function showProfile() {
-            addNotification('Profile viewer coming soon!', 'info');
-        }
-
-        function showSettings() {
-            addNotification('Settings coming soon!', 'info');
-        }
-
-        function updatePlayerPosition(character_id, x, y) {
-            // Update other players' positions on canvas
-        }
-
-        function updateTradeOffer(data) {
-            if (activeTrade) {
-                activeTrade.theirItems = data.items || [];
-                activeTrade.theirGold = data.gold || 0;
-                updateTradeDisplay();
-            }
-        }
-
-        function updateTradeStatus(status, accepted_by) {
-            if (activeTrade) {
-                activeTrade.status = status;
-                updateTradeDisplay();
-            }
-        }
-
-        function handleTradeComplete(data) {
-            addNotification('Trade completed!', 'success');
-            closeTrade();
-        }
-
-        function handlePvPResult(data) {
-            if (data.winner_id === currentCharacter.id) {
-                addNotification('You won the PvP match!', 'success');
-            } else {
-                addNotification('You lost the PvP match.', 'error');
-            }
-        }
-
-        function handlePartyInvite(data) {
-            addNotification(`You've been invited to a party by ${data.from}`, 'info');
-        }
-
-        function inviteToParty(playerId) {
-            addNotification(`Party invite sent to ${playerId}`, 'info');
-            closeModal();
-        }
-
-        function viewProfile(playerId) {
-            addNotification(`Viewing profile of ${playerId}`, 'info');
-            closeModal();
-        }
-
-        function cancelTrade() {
-            closeTrade();
-        }
-
-        function listAuctionItem() {
-            addNotification('Auction listing feature coming soon!', 'info');
-        }
-
-        function sortInventory() {
-            addNotification('Inventory sorting coming soon!', 'info');
-        }
-
-        function findGuild() {
-            addNotification('Guild finder coming soon!', 'info');
-        }
-
-        function startPvP() {
-            startPvPMatch();
-        }
-
-        function declinePvP() {
-            closePvP();
-            addNotification('PvP challenge declined', 'info');
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            if (token) {
-                loadCharacters();
-            }
+        this.enemies.filter(e=>e.alive).forEach(e => {
+            let scx = Math.round(e.x*T - this.cam.x);
+            let scy = Math.round(e.y*T - this.cam.y);
+            ctx.font = `${T-4}px serif`;
+            ctx.fillStyle = '#ff4444';
+            ctx.fillText(e.icon, scx+4, scy+T-8);
         });
-    </script>
+        let px = Math.round(this.player.x*T - this.cam.x);
+        let py = Math.round(this.player.y*T - this.cam.y);
+        ctx.font = `${T-2}px serif`;
+        ctx.fillStyle = '#ffd700';
+        ctx.fillText('⚔', px+6, py+T-6);
+        this.renderMinimap();
+        requestAnimationFrame(()=>this.render());
+    }
+    renderMinimap() {
+        let mc = $('minimap-canvas');
+        if (!mc) return;
+        let ctx = mc.getContext('2d');
+        ctx.fillStyle = '#0a0c10';
+        ctx.fillRect(0,0,150,150);
+        for (let y=0; y<Math.min(this.map.length,50); y++) for (let x=0; x<Math.min(this.map[y].length,50); x++) {
+            ctx.fillStyle = this.map[y][x]===0?'#2e4030':'#4a3828';
+            ctx.fillRect(x*3,y*3,3,3);
+        }
+        this.enemies.filter(e=>e.alive).forEach(e=>{ ctx.fillStyle='#f33'; ctx.fillRect(e.x*3-1,e.y*3-1,3,3); });
+        ctx.fillStyle='#fd0'; ctx.fillRect(this.player.tx*3-2,this.player.ty*3-2,4,4);
+    }
+    movePlayer(dx,dy) {
+        let nx = this.player.tx+dx, ny = this.player.ty+dy;
+        if (ny>=0 && ny<this.map.length && nx>=0 && nx<this.map[0].length && this.map[ny][nx]===0) {
+            this.player.tx = nx; this.player.ty = ny;
+            this.player.x += (this.player.tx - this.player.x)*0.5;
+            this.player.y += (this.player.ty - this.player.y)*0.5;
+            wsSend({ type:'move', character_id:currentChar?.id, x:nx, y:ny });
+        }
+    }
+    clickCanvas(cx,cy) {
+        let wx = Math.floor((cx+this.cam.x)/this.tileSize);
+        let wy = Math.floor((cy+this.cam.y)/this.tileSize);
+        let enemy = this.enemies.find(e=>e.alive && Math.abs(e.x-wx)<=1 && Math.abs(e.y-wy)<=1);
+        if (enemy) startCombat(enemy.key, enemy);
+        else this.movePlayer(wx-this.player.tx, wy-this.player.ty);
+    }
+}
+
+let renderer = null;
+function initGameCanvas() {
+    renderer = new PixelRenderer($('game-canvas'));
+    renderer.render();
+    $('game-canvas').addEventListener('click', e => {
+        let rect = $('game-canvas').getBoundingClientRect();
+        renderer.clickCanvas(e.clientX - rect.left, e.clientY - rect.top);
+    });
+    window.addEventListener('keydown', e => {
+        if (!['INPUT','TEXTAREA'].includes(document.activeElement.tagName) && $('game-screen').classList.contains('active')) {
+            switch(e.key.toLowerCase()) {
+                case 'arrowup':case 'w': renderer.movePlayer(0,-1); break;
+                case 'arrowdown':case 's': renderer.movePlayer(0,1); break;
+                case 'arrowleft':case 'a': renderer.movePlayer(-1,0); break;
+                case 'arrowright':case 'd': renderer.movePlayer(1,0); break;
+                case 'i': openInventory(); break;
+                case 'k': openSkills(); break;
+                case 'j': openQuestLog(); break;
+                case 'g': openGuild(); break;
+                case 'h': openAuction(); break;
+                case 'escape': closeAllPopups(); break;
+            }
+        }
+    });
+}
+
+// ===================================================================
+// SKILL BAR
+// ===================================================================
+function buildSkillBar() {
+    let bar = $('hud-skills');
+    if (!currentChar) return;
+    let cl = CLASSES[currentChar.class_name] || CLASSES.warrior;
+    let skills = CLASS_SKILLS[cl.skillset] || CLASS_SKILLS.melee;
+    bar.innerHTML = skills.slice(0,4).map((sk,i)=>`<div class="skill-slot" onclick="useSkill('${sk[0]}',${i})"><div class="skill-icon">${sk[1]}</div><div class="skill-key">${i+1}</div></div>`).join('');
+}
+
+function useSkill(name,slot) { showNotif(`Used ${name}!`, 'info'); }
+
+// ===================================================================
+// HUD QUESTS
+// ===================================================================
+function renderHUDQuests() {
+    let el = $('hud-quest-list');
+    if (!el) return;
+    let active = [...activeQuests].slice(0,3);
+    if (active.length===0) { el.innerHTML = '<div style="color:#555">No active quests</div>'; return; }
+    el.innerHTML = active.map(qid => {
+        let q = QUESTS[qid];
+        return q?`<div class="quest-entry active-quest"><div class="quest-name">${q.icon} ${q.title}</div><div class="quest-obj">${q.obj}</div></div>`:'';
+    }).join('');
+}
+
+// ===================================================================
+// INVENTORY
+// ===================================================================
+function openInventory() { loadInventory(); openPopup('inv-popup'); }
+function toggleInventory() {
+    if ($('inv-popup').classList.contains('show')) closePopup('inv-popup');
+    else openInventory();
+}
+async function loadInventory() {
+    if (!currentChar) return;
+    let grid = $('inv-grid');
+    grid.innerHTML = '';
+    $('inv-gold').textContent = currentChar.gold;
+    try {
+        let { data } = await apiFetch(`/api/characters/${currentChar.id}`);
+        let inv = (data && data.inventory) ? data.inventory : [];
+        for (let i=0; i<24; i++) {
+            let slot = document.createElement('div');
+            slot.className = 'inv-slot';
+            let item = inv[i];
+            if (item) {
+                let iData = ITEMS[item.item_id] || { icon:'❓', name:item.item_id };
+                slot.innerHTML = iData.icon;
+                slot.onclick = ()=>useItem(item, iData);
+            }
+            grid.appendChild(slot);
+        }
+    } catch {
+        for (let i=0; i<24; i++) {
+            let slot = document.createElement('div');
+            slot.className = 'inv-slot';
+            if (i===0) slot.innerHTML = '🗡';
+            else if (i===1) slot.innerHTML = '🧪';
+            grid.appendChild(slot);
+        }
+    }
+}
+function useItem(item, iData) {
+    if (iData.type === 'Consumable' && iData.name.includes('Health') && currentChar) {
+        currentChar.hp = Math.min(currentChar.max_hp, currentChar.hp+50);
+        updateHUD();
+        showNotif(`Used ${iData.name}`, 'success');
+    } else showNotif(`Equipped ${iData.name}`, 'info');
+}
+
+// ===================================================================
+// SKILLS
+// ===================================================================
+function openSkills() { buildSkillTreePopup(); openPopup('skills-popup'); }
+function toggleSkills() {
+    if ($('skills-popup').classList.contains('show')) closePopup('skills-popup');
+    else openSkills();
+}
+function buildSkillTreePopup() {
+    let grid = $('skill-tree-grid');
+    grid.innerHTML = '';
+    $('skill-pts').textContent = skillPoints;
+    if (!currentChar) return;
+    let cl = CLASSES[currentChar.class_name] || CLASSES.warrior;
+    let skills = CLASS_SKILLS[cl.skillset] || CLASS_SKILLS.melee;
+    let tiers = [skills.slice(0,2), skills.slice(2,4)];
+    tiers.forEach((tier,ti) => {
+        let box = document.createElement('div');
+        box.className = 'skill-tier-box';
+        box.innerHTML = `<div class="skill-tier-label">TIER ${ti+1}</div>` + tier.map(sk => {
+            let learned = learnedSkills.has(sk[0]);
+            return `<div class="skill-node ${learned?'learned':''}" onclick="learnSkill('${sk[0]}')">
+                <div class="skill-node-icon">${sk[1]}</div>
+                <div class="skill-node-info"><div class="skill-node-name">${sk[0]}</div></div>
+            </div>`;
+        }).join('');
+        grid.appendChild(box);
+    });
+}
+function learnSkill(name) {
+    if (learnedSkills.has(name)) { showNotif('Already learned', 'info'); return; }
+    if (skillPoints <= 0) { showNotif('No skill points', 'error'); return; }
+    learnedSkills.add(name);
+    skillPoints--;
+    buildSkillTreePopup();
+    buildSkillBar();
+    showNotif(`Learned ${name}!`, 'success');
+}
+
+// ===================================================================
+// QUEST LOG
+// ===================================================================
+function openQuestLog() { buildQuestLog(); openPopup('questlog-popup'); }
+function toggleQuestLog() {
+    if ($('questlog-popup').classList.contains('show')) closePopup('questlog-popup');
+    else openQuestLog();
+}
+function buildQuestLog() {
+    let listEl = $('quest-log-list');
+    listEl.innerHTML = '';
+    Object.values(QUESTS).forEach(q => {
+        let el = document.createElement('div');
+        el.className = 'quest-list-item' + (activeQuests.has(q.id)?' selected':'');
+        el.textContent = q.title;
+        el.onclick = () => showQuestDetail(q.id);
+        listEl.appendChild(el);
+    });
+}
+function showQuestDetail(qid) {
+    let q = QUESTS[qid];
+    if (!q) return;
+    $('quest-log-detail').innerHTML = `
+        <h3>${q.icon} ${q.title}</h3>
+        <div class="quest-act-badge">ACT ${q.act}</div>
+        <div class="quest-description">${q.desc}</div>
+        <div class="quest-objectives"><h4>OBJECTIVE</h4><div class="quest-obj-item">◯ ${q.obj}</div></div>
+        <div class="quest-rewards-box"><h4>REWARDS</h4><div class="reward-row">⭐ ${q.rewards.exp} EXP  💰 ${q.rewards.gold} Gold</div></div>
+        ${!activeQuests.has(qid)?`<div style="margin-top:12px"><button class="action-btn" onclick="startQuest('${qid}')">Start Quest</button></div>`:''}
+    `;
+}
+function startQuest(qid) {
+    activeQuests.add(qid);
+    questProgress[qid] = 0;
+    showNotif('Quest started!', 'success');
+    closePopup('questlog-popup');
+    renderHUDQuests();
+}
+
+// ===================================================================
+// GUILD
+// ===================================================================
+function openGuild() { loadGuildPopup(); openPopup('guild-popup'); }
+function toggleGuild() {
+    if ($('guild-popup').classList.contains('show')) closePopup('guild-popup');
+    else openGuild();
+}
+async function loadGuildPopup() {
+    let content = $('guild-content');
+    content.innerHTML = '<div>Loading...</div>';
+    try {
+        let { ok, data } = await apiFetch('/api/guilds/my-guild');
+        if (ok && data?.name) renderGuildInfo(data);
+        else renderNoGuild();
+    } catch { renderNoGuild(); }
+}
+function renderGuildInfo(g) {
+    $('guild-content').innerHTML = `
+        <div class="guild-header-box"><div class="guild-emblem">⚔</div><div class="guild-info"><h3>${esc(g.name)} [${esc(g.tag)}]</h3><p>${g.members?.length||0} members</p></div></div>
+        <div class="guild-members-list">${(g.members||[]).map(m=>`<div class="guild-member-row"><span>${m.name} (Lv.${m.level})</span></div>`).join('')}</div>
+        <button class="action-btn danger" onclick="leaveGuild()">Leave</button>`;
+}
+function renderNoGuild() {
+    $('guild-content').innerHTML = `
+        <div class="guild-no-guild"><div style="font-size:36px">⚔</div><div>You're not in a guild</div>
+        <button class="action-btn" onclick="showGuildCreate()">Create Guild</button></div>
+        <div class="guild-create-form" id="guild-create-form" style="display:none">
+            <input type="text" id="guild-name" placeholder="Name"><input type="text" id="guild-tag" placeholder="Tag">
+            <button class="action-btn success" onclick="submitCreateGuild()">Create</button>
+        </div>`;
+}
+function showGuildCreate() { $('guild-create-form').style.display = 'block'; }
+async function submitCreateGuild() {
+    let name = $('guild-name').value, tag = $('guild-tag').value;
+    if (!name || name.length<3 || !tag || tag.length<2) { showNotif('Invalid', 'error'); return; }
+    let { ok } = await apiFetch('/api/guilds', { method:'POST', body:JSON.stringify({name,tag}) });
+    if (ok) { showNotif('Guild created!', 'success'); loadGuildPopup(); }
+}
+function leaveGuild() { showNotif('Left guild', 'info'); renderNoGuild(); }
+
+// ===================================================================
+// AUCTION
+// ===================================================================
+function openAuction() { loadAuctions(); openPopup('auction-popup'); }
+function toggleAuction() {
+    if ($('auction-popup').classList.contains('show')) closePopup('auction-popup');
+    else openAuction();
+}
+async function loadAuctions() {
+    $('auction-grid').innerHTML = '<div>Loading...</div>';
+    try {
+        let { data } = await apiFetch('/api/auction/listings');
+        auctionsData = Array.isArray(data) ? data : getDemoAuctions();
+    } catch { auctionsData = getDemoAuctions(); }
+    renderAuctions(auctionsData);
+}
+function getDemoAuctions() {
+    return [
+        { id:1, item_id:'sword_steel', starting_bid:500, current_bid:620, buyout_price:1200, ends_in:'2h' },
+        { id:2, item_id:'potion_hp', starting_bid:50, current_bid:50, buyout_price:80, ends_in:'5h' }
+    ];
+}
+function renderAuctions(data) {
+    let grid = $('auction-grid');
+    if (!data.length) { grid.innerHTML = '<div>No auctions</div>'; return; }
+    grid.innerHTML = data.map(a => {
+        let iData = ITEMS[a.item_id] || { icon:'❓', name:a.item_id };
+        return `<div class="auction-card" onclick="openBidDialog(${a.id})">
+            <div class="auction-card-header"><span class="auction-item-icon">${iData.icon}</span><span class="auction-item-name">${iData.name}</span></div>
+            <div class="auction-bid-row"><span class="bid-label">Bid</span><span class="bid-val">${a.current_bid||a.starting_bid}g</span></div>
+            <div class="auction-time">⏱ ${a.ends_in}</div>
+        </div>`;
+    }).join('');
+}
+function refreshAuctions() { loadAuctions(); }
+function auctionTab(el, tab) {
+    document.querySelectorAll('.auction-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+}
+function openBidDialog(auctionId) {
+    let a = auctionsData.find(a=>a.id===auctionId);
+    let iData = ITEMS[a.item_id] || { name:a.item_id };
+    let bid = prompt(`Bid on ${iData.name} (current ${a.current_bid||a.starting_bid}g):`);
+    if (bid && !isNaN(bid)) placeBid(auctionId, parseInt(bid));
+}
+async function placeBid(auctionId, amount) {
+    let { ok } = await apiFetch(`/api/auction/${auctionId}/bid?bid_amount=${amount}`, { method:'POST' });
+    if (ok) { showNotif('Bid placed', 'success'); loadAuctions(); }
+    else showNotif('Bid failed', 'error');
+}
+
+// ===================================================================
+// TRADE
+// ===================================================================
+async function initiateTrade(targetId) {
+    let { ok, data } = await apiFetch(`/api/trade/initiate/${targetId}`, { method:'POST' });
+    if (ok) {
+        activeTrade = { id:data.trade_id, target:targetId, yourItems:[], theirItems:[], yourGold:0, theirGold:0, status:'pending' };
+        $('trade-partner-name').textContent = `Player ${targetId}'s Offer`;
+        openPopup('trade-popup');
+    } else showNotif('Trade failed', 'error');
+}
+function handleTradeRequest(d) {
+    activeTrade = { id:d.trade_id, from:d.from_character, yourItems:[], theirItems:[], yourGold:0, theirGold:0, status:'pending' };
+    if (confirm(`Trade request from Player ${d.from_character}. Accept?`)) openPopup('trade-popup');
+}
+function updateTradeOffer() {
+    if (!activeTrade) return;
+    activeTrade.yourGold = parseInt($('trade-your-gold').value) || 0;
+    wsSend({ type:'trade_update', trade_id:activeTrade.id, gold:activeTrade.yourGold, items:activeTrade.yourItems });
+}
+async function acceptTrade() {
+    if (!activeTrade) return;
+    let { ok } = await apiFetch(`/api/trade/${activeTrade.id}/accept`, { method:'POST' });
+    if (ok) {
+        $('trade-status-bar').textContent = 'Accepted, waiting for partner';
+        $('trade-accept-btn').disabled = true;
+    }
+}
+function cancelTrade() { closePopup('trade-popup'); activeTrade = null; }
+
+// ===================================================================
+// PVP
+// ===================================================================
+async function challengePvP(targetId) {
+    let { ok } = await apiFetch(`/api/pvp/challenge/${targetId}`, { method:'POST' });
+    if (ok) showNotif('PvP challenge sent', 'info');
+}
+function handlePvPChallenge(d) {
+    activePvP = { match_id:d.match_id, challenger:d.challenger };
+    $('pvp-p1-name').textContent = `Player ${d.challenger}`;
+    $('pvp-p2-name').textContent = currentChar?.name || 'You';
+    $('pvp-countdown').textContent = '3';
+    openPopup('pvp-popup');
+    let t=3;
+    pvpCountdownTimer = setInterval(() => {
+        t--; $('pvp-countdown').textContent = t;
+        if (t<=0) { clearInterval(pvpCountdownTimer); executePvP(); }
+    },1000);
+}
+async function executePvP() {
+    if (!activePvP) return;
+    let { ok, data } = await apiFetch(`/api/pvp/match/${activePvP.match_id}/accept`, { method:'POST' });
+    if (!ok) { showNotif('PvP error', 'error'); closePvP(); return; }
+    let log = $('pvp-combat-log');
+    log.innerHTML = (data.combat_log||[]).map(e=>`<div>${e.message||''}</div>`).join('');
+    let won = currentChar && data.winner_id === currentChar.id;
+    showNotif(won?'Victory!':'Defeat!', won?'success':'error');
+    if (won && data.rewards?.winner?.gold_earned && currentChar) {
+        currentChar.gold += data.rewards.winner.gold_earned;
+        updateHUD();
+    }
+    $('pvp-btns').innerHTML = '<button class="action-btn" onclick="closePvP()">Close</button>';
+}
+function closePvP() {
+    if (pvpCountdownTimer) clearInterval(pvpCountdownTimer);
+    closePopup('pvp-popup');
+    activePvP = null;
+    $('pvp-btns').innerHTML = '<button class="action-btn success" onclick="acceptPvP()">Accept</button><button class="action-btn danger" onclick="closePvP()">Decline</button>';
+}
+function acceptPvP() { if (activePvP) executePvP(); }
+
+// ===================================================================
+// COMBAT (PvE)
+// ===================================================================
+async function startCombat(enemyId, enemyInst) {
+    if (!currentChar) return;
+    let eData = enemyInst || ENEMIES[enemyId];
+    $('combat-popup') ? openPopup('combat-popup') : null; // simplified, popup exists in HTML
+    let { ok, data } = await apiFetch(`/api/characters/${currentChar.id}/combat/${enemyId}`, { method:'POST' });
+    if (ok) {
+        if (data.victory) {
+            currentChar.gold += data.gold_gained;
+            currentChar.exp += data.exp_gained;
+            if (currentChar.exp >= currentChar.level*100) { currentChar.level++; currentChar.exp=0; skillPoints+=2; showNotif('Level up!', 'success'); }
+            currentChar.hp = Math.max(1, data.player_hp);
+            updateHUD();
+            showNotif(`Victory! +${data.gold_gained}g +${data.exp_gained}xp`, 'success');
+            if (renderer) { let e = renderer.enemies.find(e=>e.key===enemyId); if (e) e.alive=false; }
+        } else {
+            currentChar.hp = Math.max(1, data.player_hp);
+            updateHUD();
+            showNotif('Defeated!', 'error');
+        }
+    }
+}
+
+// ===================================================================
+// LEADERBOARD
+// ===================================================================
+function openLeaderboard() { loadLeaderboard('level'); openPopup('leaderboard-popup'); }
+async function loadLeaderboard(type) {
+    let tbody = $('lb-tbody');
+    tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+    let { data } = await apiFetch(`/api/leaderboard/${type}?limit=10`);
+    let arr = Array.isArray(data)?data:[];
+    tbody.innerHTML = arr.map((p,i)=>`<tr><td class="lb-rank">${i+1}</td><td class="lb-name">${esc(p.name)}</td><td class="lb-class">${p.class_name||''}</td><td class="lb-val">${p[type==='gold'?'gold':'level']}</td></tr>`).join('');
+}
+function lbTab(el,type) {
+    document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    loadLeaderboard(type);
+}
+
+// ===================================================================
+// CHEAT MENU
+// ===================================================================
+function openCheat() { openPopup('cheat-popup'); }
+async function cheatCmd(cmd) {
+    let target = $('cheat-target').value.trim() || null;
+    let amount = parseInt($('cheat-amount').value) || null;
+    let item_id = $('cheat-item-id').value.trim() || null;
+    let res = $('cheat-result');
+    res.textContent = 'Executing...';
+    let { ok, data } = await apiFetch('/api/admin/cheat', { method:'POST', body:JSON.stringify({ command:cmd, target, amount, item_id }) });
+    res.textContent = ok ? '✓ '+(data.message||'Success') : '✗ '+(data.detail||'Failed');
+    if (ok) showNotif('Cheat executed', 'success');
+}
+async function gameEventCmd(type) {
+    let msg = type==='announce'?prompt('Message:'):null;
+    if (type==='announce' && !msg) return;
+    let eventData = type==='announce'?{message:msg}:type==='spawn_boss'?{name:'Dragon'}:{gold:100};
+    let { ok } = await apiFetch('/api/admin/event', { method:'POST', body:JSON.stringify({ event_type:type, data:eventData }) });
+    if (ok) showNotif('Event sent', 'success');
+}
+async function openPromoteMenu() {
+    let uid = prompt('User ID:'); if (!uid) return;
+    let role = prompt('Role (moderator/admin):'); if (!role) return;
+    let { ok } = await apiFetch(`/api/admin/promote?target_user_id=${uid}&new_role=${role}`, { method:'POST' });
+    showNotif(ok?'Promoted':'Failed', ok?'success':'error');
+}
+
+// ===================================================================
+// MOD PANEL
+// ===================================================================
+function openMod() { refreshModPanel(); openPopup('mod-popup'); }
+async function refreshModPanel() {
+    let { ok, data } = await apiFetch('/api/admin/online-players');
+    if (!ok) { $('mod-player-list').innerHTML = '<div>Failed</div>'; return; }
+    $('mod-online-cnt').textContent = data.online_count||0;
+    $('mod-player-list').innerHTML = (data.players||[]).map(p => `
+        <div class="admin-player-row">
+            <span>${esc(p.character_name)} (Lv.${p.level})</span>
+            <div class="admin-actions">
+                <button class="mod-btn warn" onclick="modAction('warn',${p.user_id})">Warn</button>
+                <button class="mod-btn mute" onclick="modAction('mute',${p.user_id})">Mute</button>
+                <button class="mod-btn kick" onclick="modAction('kick',${p.user_id})">Kick</button>
+                <button class="mod-btn ban" onclick="modAction('ban',${p.user_id})">Ban</button>
+            </div>
+        </div>
+    `).join('');
+}
+async function modAction(action, userId) {
+    let reason = prompt('Reason:') || 'No reason';
+    let duration = action==='mute' ? (parseInt(prompt('Minutes:'))||60) : undefined;
+    let { ok } = await apiFetch('/api/mod/action', { method:'POST', body:JSON.stringify({ action, target_user_id:userId, reason, duration }) });
+    if (ok) {
+        showNotif(`${action} applied`, 'success');
+        modLog.unshift(`${new Date().toLocaleTimeString()} ${action} user ${userId}`);
+        $('mod-log-area').innerHTML = modLog.slice(0,10).map(l=>`<div class="mod-log-entry">${l}</div>`).join('');
+        refreshModPanel();
+    }
+}
+
+// ===================================================================
+// CLOSE ALL
+// ===================================================================
+function closeAllPopups() { document.querySelectorAll('.popup-overlay.show').forEach(p=>p.classList.remove('show')); }
+document.addEventListener('click', e => { if (e.target.classList.contains('popup-overlay')) e.target.classList.remove('show'); });
+
+// ===================================================================
+// INIT
+// ===================================================================
+document.addEventListener('DOMContentLoaded', async () => {
+    // Build starfield
+    let stars = $('login-stars');
+    for (let i=0; i<100; i++) {
+        let s = document.createElement('div');
+        s.className = 'star';
+        s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;--dur:${Math.random()*4+2}s;--op:${Math.random()*0.7+0.3};`;
+        stars.appendChild(s);
+    }
+    // Simulate loading
+    showLoadingBar(20);
+    await new Promise(r=>setTimeout(r,300));
+    showLoadingBar(50);
+    await new Promise(r=>setTimeout(r,300));
+    showLoadingBar(80);
+    await new Promise(r=>setTimeout(r,200));
+    showLoadingBar(100);
+    await new Promise(r=>setTimeout(r,300));
+
+    if (token) {
+        try { await loadCharacters(); }
+        catch { localStorage.removeItem('rpg_token'); token=null; showScreen('login-screen'); }
+    } else showScreen('login-screen');
+});
+</script>
 </body>
-</html>
+</html>4
