@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIXEL RPG - Epic 5-Act Adventure</title>
+    <title>PIXEL RPG - COMPLETE EDITION WITH OWNER CONTROLS</title>
     <style>
         * {
             margin: 0;
@@ -1569,13 +1569,91 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--border-brown);
         }
+
+        /* ===== OWNER/ADMIN SPECIFIC STYLES ===== */
+        .owner-badge {
+            background: var(--gold);
+            color: #000;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            border: 1px solid #b8860b;
+        }
+        
+        .admin-badge {
+            background: #44aaff;
+            color: #000;
+            padding: 2px 6px;
+            font-size: 10px;
+            border: 1px solid #2277cc;
+        }
+        
+        .mod-badge {
+            background: #88aa88;
+            color: #000;
+            padding: 2px 6px;
+            font-size: 10px;
+            border: 1px solid #557755;
+        }
+        
+        .cheat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .cheat-btn {
+            background: #2a1a0a;
+            border: 2px solid #b8860b;
+            color: #ffd700;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s;
+        }
+        
+        .cheat-btn:hover {
+            background: #3a2a1a;
+            border-color: #ffd700;
+            transform: translateY(-2px);
+        }
+        
+        .admin-player-row {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: var(--bg-item);
+            margin: 5px 0;
+            border: 2px solid #3a3a50;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 5px;
+            margin-left: auto;
+        }
+        
+        .mod-btn {
+            background: transparent;
+            border: 2px solid #6b4f3c;
+            color: var(--text-light);
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .mod-btn:hover {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
     </style>
 </head>
 <body>
     <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <div class="pixel-logo">PIXEL RPG</div>
-        <div class="pixel-sub">EPIC 5-ACT ADVENTURE</div>
+        <div class="pixel-sub">COMPLETE EDITION · OWNER CONTROLS</div>
         <div class="loading-bar-wrap">
             <div class="loading-bar-fill" id="loading-bar"></div>
         </div>
@@ -1587,29 +1665,30 @@
         <div class="stars" id="stars"></div>
         <div class="login-box">
             <div class="login-logo">⚔ PIXEL RPG ⚔</div>
-            <div class="login-sub">ENTER THE REALM</div>
+            <div class="login-sub">OWNER EDITION</div>
             <div class="form-group">
                 <span class="form-icon">👤</span>
-                <input type="text" id="login-username" class="login-input" placeholder="Username" autocomplete="username">
+                <input type="text" id="login-username" class="login-input" placeholder="Username"  autocomplete="username">
             </div>
             <div class="form-group">
                 <span class="form-icon">🔒</span>
-                <input type="password" id="login-password" class="login-input" placeholder="Password" autocomplete="current-password">
+                <input type="password" id="login-password" class="login-input" placeholder="Password"  autocomplete="current-password">
             </div>
             <div class="error-box" id="login-error"></div>
-            <button class="login-btn btn-login" id="login-btn" onclick="handleLogin()">▶ LOGIN</button>
+            <button class="login-btn btn-login" id="login-btn" onclick="handleLogin()">▶ LOGIN AS OWNER</button>
             <button class="login-btn btn-register" id="register-btn" onclick="handleRegister()">+ REGISTER</button>
             <div class="server-status">
                 <div class="status-dot" id="status-dot"></div>
                 <span id="status-text">Checking server...</span>
             </div>
+            <div style="margin-top: 15px; color: #ffd700; font-size: 11px;">Default Owner: Admin/admin123</div>
         </div>
     </div>
 
     <!-- CHARACTER SELECT SCREEN -->
     <div id="char-select-screen">
         <div class="char-select-box">
-            <h2>SELECT HERO</h2>
+            <h2>SELECT YOUR HERO</h2>
             <div class="char-grid" id="char-grid"></div>
             <button class="login-btn new-char-btn" onclick="showCharacterCreation()">+ CREATE NEW HERO</button>
         </div>
@@ -1620,7 +1699,7 @@
         <div class="create-box">
             <h2>CREATE YOUR LEGEND</h2>
             <div class="form-group">
-                <input type="text" id="new-char-name" class="login-input" placeholder="Character Name" maxlength="20">
+                <input type="text" id="new-char-name" class="login-input" placeholder="Character Name" maxlength="20" value="Hero">
             </div>
             <div class="class-grid" id="class-grid"></div>
             <div class="error-box" id="char-create-error"></div>
@@ -1633,13 +1712,13 @@
         <div class="lobby-bg"></div>
         <div class="lobby-container">
             <div class="lobby-header">
-                <div class="lobby-title">PIXEL RPG</div>
-                <div class="header-stat">👤 <span id="lobby-username">Player</span></div>
-                <div class="header-stat">🏅 <span id="lobby-role">Adventurer</span></div>
+                <div class="lobby-title">PIXEL RPG · OWNER EDITION</div>
+                <div class="header-stat">👤 <span id="lobby-username">Admin</span></div>
+                <div class="header-stat" id="lobby-role-display">🏅 <span id="lobby-role">👑 OWNER</span></div>
                 <div class="header-stat">⚔ <span id="lobby-charname">Hero</span></div>
                 <div class="header-stat">⭐ <span id="lobby-level">1</span></div>
-                <div class="header-stat">💰 <span id="lobby-gold">0</span>g</div>
-                <button class="action-btn" onclick="enterGame()">▶ ENTER WORLD</button>
+                <div class="header-stat">💰 <span id="lobby-gold">100000</span>g</div>
+                <button class="action-btn" onclick="enterGame()" style="background: #ffd700; color: #000;">▶ ENTER WORLD</button>
                 <button class="action-btn" onclick="logout()">EXIT</button>
             </div>
             <div class="lobby-content">
@@ -1651,6 +1730,9 @@
                     <div class="sidebar-section">SOCIAL</div>
                     <div class="sidebar-item" data-tab="guilds" onclick="switchLobbyTab(this, 'guilds')">⚔ GUILDS</div>
                     <div class="sidebar-item" data-tab="leaderboard" onclick="switchLobbyTab(this, 'leaderboard')">🏆 LEADERBOARD</div>
+                    <div class="sidebar-section" style="color: #ffd700;">ADMIN</div>
+                    <div class="sidebar-item" data-tab="admin" onclick="switchLobbyTab(this, 'admin')" style="color: #ffd700;">👑 ADMIN PANEL</div>
+                    <div class="sidebar-item" data-tab="mod" onclick="switchLobbyTab(this, 'mod')" style="color: #88aaff;">🛡️ MOD PANEL</div>
                     <div class="sidebar-section">SYSTEM</div>
                     <div class="sidebar-item" data-tab="settings" onclick="switchLobbyTab(this, 'settings')">⚙ SETTINGS</div>
                 </div>
@@ -1658,6 +1740,9 @@
                 <div class="lobby-right">
                     <div class="panel-title">HERO STATS</div>
                     <div id="lobby-stats-card"></div>
+                    <div class="panel-title" style="margin-top:20px">SERVER INFO</div>
+                    <div style="color: #44ff44;" id="server-status">● Online</div>
+                    <div>Players Online: <span id="online-count" style="color: var(--gold);">0</span></div>
                     <div class="panel-title" style="margin-top:20px">RECENT EVENTS</div>
                     <div id="lobby-events" style="font-size:12px;color:var(--text-muted);"></div>
                 </div>
@@ -1673,7 +1758,7 @@
         <div class="hud-element" id="hud-player">
             <div class="hud-header">
                 <span class="hud-name" id="hud-name">Hero</span>
-                <span class="hud-role" id="hud-role">Adventurer</span>
+                <span class="hud-role" id="hud-role">👑 OWNER</span>
             </div>
             <div class="hud-bar">
                 <div class="bar-label"><span>❤️ HP</span><span id="hud-hp-text">100/100</span></div>
@@ -1689,7 +1774,7 @@
             </div>
             <div class="hud-stats-row">
                 <span>Lv.<span id="hud-level">1</span></span>
-                <span>💰 <span id="hud-gold">100</span>g</span>
+                <span>💰 <span id="hud-gold">100000</span>g</span>
                 <span>⚔ <span id="hud-attack">12</span></span>
                 <span>🛡️ <span id="hud-defense">8</span></span>
             </div>
@@ -1701,15 +1786,16 @@
             <button class="hud-btn" onclick="openQuestLog()">📜 QUESTS (J)</button>
             <button class="hud-btn" onclick="openGuild()">⚔ GUILD (G)</button>
             <button class="hud-btn" onclick="openAuction()">🏪 AH (H)</button>
-            <button class="hud-btn" id="cheat-btn" onclick="openCheatMenu()" style="display:none;border-color:var(--gold);color:var(--gold)">👑 CHEAT</button>
-            <button class="hud-btn" id="mod-btn" onclick="openModPanel()" style="display:none;border-color:#88aaff;color:#88aaff">🛡️ MOD</button>
+            <button class="hud-btn" id="cheat-btn" onclick="openCheatMenu()" style="border-color:var(--gold);color:var(--gold);background:#2a1a0a;">👑 CHEAT</button>
+            <button class="hud-btn" id="mod-btn" onclick="openModPanel()" style="border-color:#88aaff;color:#88aaff;">🛡️ MOD</button>
+            <button class="hud-btn" onclick="returnToLobby()">🏠 LOBBY</button>
         </div>
 
         <div class="hud-element" id="hud-minimap">
             <canvas id="minimap-canvas" width="160" height="160"></canvas>
         </div>
 
-        <div class="hud-element" id="hud-skills" id="skill-bar"></div>
+        <div class="hud-element" id="hud-skills"></div>
 
         <div class="hud-element" id="hud-quests">
             <div class="panel-title" style="font-size:14px;margin-bottom:10px">ACTIVE QUESTS</div>
@@ -1722,7 +1808,8 @@
                 <div class="chat-tab" data-channel="guild" onclick="switchChatChannel(this, 'guild')">GUILD</div>
                 <div class="chat-tab" data-channel="party" onclick="switchChatChannel(this, 'party')">PARTY</div>
                 <div class="chat-tab" data-channel="trade" onclick="switchChatChannel(this, 'trade')">TRADE</div>
-                <div class="chat-tab" id="mod-chat-tab" data-channel="mod" onclick="switchChatChannel(this, 'mod')" style="display:none">MOD</div>
+                <div class="chat-tab" id="mod-chat-tab" data-channel="mod" onclick="switchChatChannel(this, 'mod')" style="color:#ffd700;">MOD</div>
+                <div class="chat-tab" id="admin-chat-tab" data-channel="admin" onclick="switchChatChannel(this, 'admin')" style="color:#ffd700;">ADMIN</div>
             </div>
             <div class="chat-messages" id="chat-messages"></div>
             <div class="chat-input-area">
@@ -1921,28 +2008,29 @@
 
     <!-- Cheat Menu (Owner Only) -->
     <div class="popup-overlay" id="cheat-popup">
-        <div class="popup-box" style="width:600px;border-color:var(--gold)">
+        <div class="popup-box" style="width:700px;border-color:var(--gold)">
             <div class="popup-header">
                 <span class="popup-title" style="color:var(--gold)">👑 OWNER CHEAT MENU</span>
                 <button class="popup-close" onclick="closePopup('cheat-popup')">×</button>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0; background: #1e1e28; padding: 15px; border: 2px solid #3a3a50;">
                 <input type="text" id="cheat-target" class="login-input" placeholder="Target (name or blank for self)">
                 <input type="number" id="cheat-amount" class="login-input" placeholder="Amount">
                 <input type="text" id="cheat-item" class="login-input" placeholder="Item ID">
             </div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-                <button class="action-btn" onclick="cheatCommand('give_gold')">💰 Give Gold</button>
-                <button class="action-btn" onclick="cheatCommand('set_level')">⭐ Set Level</button>
-                <button class="action-btn" onclick="cheatCommand('spawn_item')">🎁 Spawn Item</button>
-                <button class="action-btn" onclick="cheatCommand('god_mode')">🛡️ God Mode</button>
-                <button class="action-btn" onclick="cheatCommand('heal')">💚 Full Heal</button>
-                <button class="action-btn" onclick="cheatCommand('kill')">💀 Kill</button>
-                <button class="action-btn" onclick="gameEvent('spawn_boss')">🔥 Spawn Boss</button>
-                <button class="action-btn" onclick="gameEvent('announce')">📢 Announce</button>
-                <button class="action-btn" onclick="gameEvent('give_rewards')">🎉 Give Rewards</button>
+            <div class="cheat-grid">
+                <button class="cheat-btn" onclick="cheatCommand('give_gold')">💰 GIVE GOLD</button>
+                <button class="cheat-btn" onclick="cheatCommand('set_level')">⭐ SET LEVEL</button>
+                <button class="cheat-btn" onclick="cheatCommand('spawn_item')">🎁 SPAWN ITEM</button>
+                <button class="cheat-btn" onclick="cheatCommand('god_mode')">🛡️ GOD MODE</button>
+                <button class="cheat-btn" onclick="cheatCommand('heal')">💚 FULL HEAL</button>
+                <button class="cheat-btn" onclick="cheatCommand('kill')">💀 KILL</button>
+                <button class="cheat-btn" onclick="gameEvent('spawn_boss')">🔥 SPAWN BOSS</button>
+                <button class="cheat-btn" onclick="gameEvent('announce')">📢 ANNOUNCE</button>
+                <button class="cheat-btn" onclick="gameEvent('give_rewards')">🎉 GIVE REWARDS</button>
+                <button class="cheat-btn" onclick="openPromoteMenu()">⚡ PROMOTE USER</button>
             </div>
-            <div id="cheat-result" style="margin-top:15px;padding:10px;background:var(--bg-item);border:2px solid #3a3a50"></div>
+            <div id="cheat-result" style="margin-top:15px;padding:10px;background:var(--bg-item);border:2px solid #3a3a50; min-height: 50px;"></div>
         </div>
     </div>
 
@@ -1955,7 +2043,7 @@
             </div>
             <div style="display:flex;justify-content:space-between;margin-bottom:15px">
                 <span>Online Players: <span id="mod-online-count">0</span></span>
-                <button class="action-btn" onclick="refreshModPanel()">🔄 Refresh</button>
+                <button class="action-btn" onclick="refreshModPanel()">🔄 REFRESH</button>
             </div>
             <div id="mod-player-list" style="max-height:300px;overflow-y:auto"></div>
             <div style="margin-top:15px">
@@ -2214,7 +2302,7 @@
                 token = data.access_token;
                 localStorage.setItem('rpg_token', token);
                 currentUser = { username, role: data.role, is_owner: data.is_owner };
-                showNotification(`Welcome back, ${username}!`, 'success');
+                showNotification(`Welcome back, ${username}! ${data.is_owner ? '👑 Owner' : ''}`, 'success');
                 await loadCharacters();
             } catch (error) {
                 errorEl.textContent = error.message;
@@ -2360,10 +2448,9 @@
                 const card = document.createElement('div');
                 card.className = 'class-card';
                 card.dataset.class = key;
-                card.onclick = () => selectClass(key);
+                card.onclick = () => selectClass(key, card);
                 
                 const stats = cls.stats;
-                const totalStats = stats.str + stats.agi + stats.int + stats.vit;
                 
                 card.innerHTML = `
                     <div class="class-icon">${cls.icon}</div>
@@ -2381,9 +2468,9 @@
         }
 
         let selectedClass = 'warrior';
-        function selectClass(className) {
+        function selectClass(className, element) {
             document.querySelectorAll('.class-card').forEach(c => c.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
+            element.classList.add('selected');
             selectedClass = className;
         }
 
@@ -2416,12 +2503,15 @@
             showScreen('lobby-screen');
             updateLobbyUI();
             connectWebSocket();
+            loadOnlineCount();
         }
 
         function updateLobbyUI() {
             document.getElementById('lobby-username').textContent = currentUser?.username || 'Player';
-            document.getElementById('lobby-role').textContent = currentUser?.is_owner ? '👑 Owner' : 
-                currentUser?.role === 'admin' ? '⚡ Admin' : 'Adventurer';
+            const roleText = currentUser?.is_owner ? '👑 OWNER' : 
+                currentUser?.role === 'admin' ? '⚡ ADMIN' : 
+                currentUser?.role === 'moderator' ? '🛡️ MOD' : 'Adventurer';
+            document.getElementById('lobby-role').textContent = roleText;
             document.getElementById('lobby-charname').textContent = currentCharacter?.name || 'Hero';
             document.getElementById('lobby-level').textContent = currentCharacter?.level || 1;
             document.getElementById('lobby-gold').textContent = currentCharacter?.gold || 0;
@@ -2467,6 +2557,13 @@
             `;
         }
 
+        async function loadOnlineCount() {
+            try {
+                const data = await apiRequest('/api/admin/online-players');
+                document.getElementById('online-count').textContent = data.online_count || 0;
+            } catch {}
+        }
+
         function switchLobbyTab(element, tab) {
             document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
             element.classList.add('active');
@@ -2476,7 +2573,7 @@
             switch(tab) {
                 case 'characters':
                     content.innerHTML = `
-                        <div class="panel-title">HERO STATS</div>
+                        <div class="panel-title">YOUR HERO</div>
                         <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:20px">
                             <p>Ready to begin your adventure? Enter the world to start your journey through 5 epic acts!</p>
                             <button class="action-btn" onclick="enterGame()" style="margin-top:15px">▶ ENTER WORLD</button>
@@ -2487,13 +2584,19 @@
                     renderStoryTab(content);
                     break;
                 case 'quests':
-                    renderQuestsTab(content);
+                    content.innerHTML = '<div class="panel-title">ACTIVE QUESTS</div><div style="color:var(--text-muted)">View your quests in-game</div>';
                     break;
                 case 'guilds':
-                    renderGuildsTab(content);
+                    content.innerHTML = '<div class="panel-title">GUILDS</div><div style="color:var(--text-muted)">Join or create a guild in-game</div>';
                     break;
                 case 'leaderboard':
                     loadLeaderboard('level', content);
+                    break;
+                case 'admin':
+                    renderAdminTab(content);
+                    break;
+                case 'mod':
+                    renderModTab(content);
                     break;
                 case 'settings':
                     renderSettingsTab(content);
@@ -2524,23 +2627,50 @@
                 `;
             });
             
-            if (storyProgress?.choices_made?.length > 0) {
-                html += '<div class="panel-title" style="margin-top:20px">KEY CHOICES</div>';
-                storyProgress.choices_made.slice(-3).forEach(choice => {
-                    html += `<div style="color:var(--text-muted);font-size:12px;margin:5px 0">• ${choice.choice_text}</div>`;
-                });
-            }
-            
             container.innerHTML = html;
         }
 
-        function renderQuestsTab(container) {
-            // Simplified - will be expanded
-            container.innerHTML = '<div class="panel-title">ACTIVE QUESTS</div><div style="color:var(--text-muted)">View your quests in-game</div>';
+        function renderAdminTab(container) {
+            container.innerHTML = `
+                <div class="panel-title" style="color:var(--gold);">👑 OWNER ADMIN PANEL</div>
+                <div style="background:var(--bg-item);border:2px solid var(--gold);padding:20px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">
+                        <button class="action-btn" onclick="openCheatMenu()" style="background:#ffd700;color:#000;">👑 OPEN CHEAT MENU</button>
+                        <button class="action-btn" onclick="refreshModPanel()">🔄 REFRESH SERVER</button>
+                        <button class="action-btn" onclick="gameEvent('announce')">📢 ANNOUNCE</button>
+                        <button class="action-btn" onclick="gameEvent('spawn_boss')">🔥 SPAWN BOSS</button>
+                        <button class="action-btn" onclick="openPromoteMenu()">⚡ PROMOTE USER</button>
+                        <button class="action-btn" onclick="gameEvent('give_rewards')">🎉 GIVE REWARDS</button>
+                    </div>
+                    <div style="margin-top:15px;color:var(--text-muted);">
+                        Server Status: <span style="color:#44ff44;">● ONLINE</span><br>
+                        Use the cheat menu for full control over the game.
+                    </div>
+                </div>
+            `;
         }
 
-        function renderGuildsTab(container) {
-            container.innerHTML = '<div class="panel-title">GUILDS</div><div style="color:var(--text-muted)">Join or create a guild in-game</div>';
+        function renderModTab(container) {
+            container.innerHTML = `
+                <div class="panel-title" style="color:#88aaff;">🛡️ MODERATOR PANEL</div>
+                <div style="background:var(--bg-item);border:2px solid #88aaff;padding:20px;">
+                    <button class="action-btn" onclick="openModPanel()">OPEN MOD PANEL</button>
+                </div>
+            `;
+        }
+
+        function renderSettingsTab(container) {
+            container.innerHTML = `
+                <div class="panel-title">SETTINGS</div>
+                <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:20px">
+                    <div style="margin-bottom:15px">
+                        <div style="color:var(--text-muted);margin-bottom:5px">Account</div>
+                        <div>Username: <span style="color:var(--gold)">${currentUser?.username}</span></div>
+                        <div>Role: <span style="color:var(--gold)">${currentUser?.role || 'player'} ${currentUser?.is_owner ? '👑' : ''}</span></div>
+                    </div>
+                    <button class="action-btn danger" onclick="logout()">LOGOUT</button>
+                </div>
+            `;
         }
 
         async function loadLeaderboard(type, container) {
@@ -2560,20 +2690,6 @@
             } catch {
                 container.innerHTML = '<div class="panel-title">LEADERBOARD</div><div style="color:var(--text-muted)">Failed to load</div>';
             }
-        }
-
-        function renderSettingsTab(container) {
-            container.innerHTML = `
-                <div class="panel-title">SETTINGS</div>
-                <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:20px">
-                    <div style="margin-bottom:15px">
-                        <div style="color:var(--text-muted);margin-bottom:5px">Account</div>
-                        <div>Username: <span style="color:var(--gold)">${currentUser?.username}</span></div>
-                        <div>Role: <span style="color:var(--gold)">${currentUser?.role || 'player'}</span></div>
-                    </div>
-                    <button class="action-btn danger" onclick="logout()">LOGOUT</button>
-                </div>
-            `;
         }
 
         // ==================== WEBSOCKET ====================
@@ -2714,6 +2830,11 @@
             renderActiveQuests();
         }
 
+        function returnToLobby() {
+            showScreen('lobby-screen');
+            updateLobbyUI();
+        }
+
         function initGame() {
             // Initialize canvas renderer
             const canvas = document.getElementById('game-canvas');
@@ -2806,9 +2927,14 @@
                 const bob = Math.sin(this.frame * 0.1) * 2;
                 const classIcon = CLASSES[currentCharacter?.class_name]?.icon || '⚔️';
                 
-                // Player glow
-                ctx.shadowColor = 'var(--gold)';
-                ctx.shadowBlur = 15;
+                // Player glow (gold for owner)
+                if (currentUser?.is_owner) {
+                    ctx.shadowColor = 'var(--gold)';
+                    ctx.shadowBlur = 20;
+                } else {
+                    ctx.shadowColor = '#fff';
+                    ctx.shadowBlur = 10;
+                }
                 ctx.fillStyle = 'white';
                 ctx.fillText(classIcon, playerX + 16, playerY + 16 + bob);
                 ctx.shadowBlur = 0;
@@ -2886,8 +3012,18 @@
             const xpPercent = (currentCharacter.exp / xpNeeded) * 100;
             
             document.getElementById('hud-name').textContent = currentCharacter.name;
-            document.getElementById('hud-role').textContent = currentUser?.is_owner ? '👑 OWNER' : 
-                currentUser?.role === 'admin' ? '⚡ ADMIN' : 'ADVENTURER';
+            
+            // Show role badge
+            if (currentUser?.is_owner) {
+                document.getElementById('hud-role').textContent = '👑 OWNER';
+            } else if (currentUser?.role === 'admin') {
+                document.getElementById('hud-role').textContent = '⚡ ADMIN';
+            } else if (currentUser?.role === 'moderator') {
+                document.getElementById('hud-role').textContent = '🛡️ MOD';
+            } else {
+                document.getElementById('hud-role').textContent = 'ADVENTURER';
+            }
+            
             document.getElementById('hud-hp-bar').style.width = hpPercent + '%';
             document.getElementById('hud-hp-text').textContent = `${currentCharacter.hp}/${currentCharacter.max_hp}`;
             document.getElementById('hud-mp-bar').style.width = mpPercent + '%';
@@ -2897,12 +3033,13 @@
             document.getElementById('hud-level').textContent = currentCharacter.level;
             document.getElementById('hud-gold').textContent = currentCharacter.gold;
             
-            // Show admin/owner buttons
-            if (currentUser?.is_owner || currentUser?.role === 'owner' || currentUser?.role === 'admin') {
+            // Always show admin/owner buttons for owner
+            if (currentUser?.is_owner || currentUser?.role === 'owner') {
                 document.getElementById('cheat-btn').style.display = 'inline-block';
                 document.getElementById('mod-btn').style.display = 'inline-block';
                 document.getElementById('mod-chat-tab').style.display = 'block';
-            } else if (currentUser?.role === 'moderator') {
+                document.getElementById('admin-chat-tab').style.display = 'block';
+            } else if (currentUser?.role === 'admin' || currentUser?.role === 'moderator') {
                 document.getElementById('mod-btn').style.display = 'inline-block';
                 document.getElementById('mod-chat-tab').style.display = 'block';
             }
@@ -2930,7 +3067,6 @@
         function useSkill(skillId) {
             if (!currentCharacter) return;
             showNotification(`Used ${skillId}!`, 'info');
-            // Combat logic would go here
         }
 
         function renderActiveQuests() {
@@ -2942,19 +3078,13 @@
             
             container.innerHTML = '';
             activeQuests.forEach(questId => {
-                const quest = QUESTS[questId];
-                if (!quest) return;
-                
-                const progress = questProgress[questId] || 0;
-                const progressPercent = (progress / (quest.objectives?.[0]?.amount || 1)) * 100;
-                
                 const div = document.createElement('div');
                 div.className = 'quest-entry active';
                 div.innerHTML = `
-                    <div class="quest-title">${quest.title}</div>
-                    <div class="quest-desc">${quest.description}</div>
+                    <div class="quest-title">Quest ${questId}</div>
+                    <div class="quest-desc">Active quest</div>
                     <div class="quest-progress">
-                        <div class="quest-progress-fill" style="width:${progressPercent}%"></div>
+                        <div class="quest-progress-fill" style="width:${questProgress[questId] || 0}%"></div>
                     </div>
                 `;
                 container.appendChild(div);
@@ -2987,26 +3117,13 @@
                 
                 const item = inventory[i];
                 if (item) {
-                    const itemData = ITEMS[item.item_id] || { name: item.item_id, icon: '❓', rarity: 'common' };
-                    slot.className = `inv-slot ${itemData.rarity}`;
                     slot.innerHTML = `
-                        <span>${itemData.icon}</span>
+                        <span>${item.icon || '📦'}</span>
                         ${item.quantity > 1 ? `<span class="inv-quantity">${item.quantity}</span>` : ''}
-                        <span class="inv-name">${itemData.name}</span>
                     `;
-                    slot.onmouseenter = (e) => showTooltip(e, itemData);
-                    slot.onmouseleave = hideTooltip;
-                    slot.onclick = () => useInventoryItem(item);
                 }
                 
                 grid.appendChild(slot);
-            }
-        }
-
-        function useInventoryItem(item) {
-            if (item.item_id.includes('potion')) {
-                showNotification(`Used ${ITEMS[item.item_id]?.name || 'item'}`, 'success');
-                // API call would go here
             }
         }
 
@@ -3090,7 +3207,6 @@
             const list = document.getElementById('quest-list');
             list.innerHTML = '';
             
-            // Simplified quest list
             const demoQuests = [
                 { id: 'q1', title: 'The Dark Omen', status: 'active' },
                 { id: 'q2', title: 'Goblin Chief', status: 'active' },
@@ -3215,7 +3331,6 @@
                 auctions = await apiRequest('/api/auction/listings');
                 renderAuctions();
             } catch {
-                // Use demo data
                 auctions = [
                     { id: 1, item_id: 'iron_sword', current_bid: 100, buyout_price: 200, seller: 'Player1' },
                     { id: 2, item_id: 'health_potion', current_bid: 25, buyout_price: 50, seller: 'Player2' }
@@ -3227,15 +3342,13 @@
         function renderAuctions() {
             const grid = document.getElementById('auction-grid');
             grid.innerHTML = auctions.map(auction => {
-                const item = ITEMS[auction.item_id] || { name: auction.item_id, icon: '❓', rarity: 'common' };
                 return `
                     <div class="auction-card" onclick="bidOnAuction(${auction.id})">
-                        <div style="font-size:32px;text-align:center;margin-bottom:5px">${item.icon}</div>
-                        <div style="font-weight:bold;color:${auction.rarity === 'legendary' ? 'var(--rarity-legendary)' : 'var(--text-light)'}">${item.name}</div>
+                        <div style="font-size:32px;text-align:center;margin-bottom:5px">📦</div>
+                        <div style="font-weight:bold;">Item #${auction.id}</div>
                         <div style="font-size:11px;color:var(--text-muted)">Seller: ${auction.seller || 'Unknown'}</div>
                         <div style="margin-top:8px">
                             <div>💰 Current: <span style="color:var(--gold)">${auction.current_bid || auction.starting_bid || 0}g</span></div>
-                            ${auction.buyout_price ? `<div>⚡ Buyout: <span style="color:#88ff88">${auction.buyout_price}g</span></div>` : ''}
                         </div>
                     </div>
                 `;
@@ -3252,6 +3365,10 @@
         function switchAuctionTab(element, tab) {
             document.querySelectorAll('.auction-tab').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
+        }
+
+        function refreshAuctions() {
+            loadAuctions();
         }
 
         // ==================== TRADING ====================
@@ -3311,7 +3428,6 @@
                     method: 'POST'
                 });
                 
-                // Show combat log
                 const log = document.getElementById('pvp-combat-log');
                 log.innerHTML = '';
                 result.combat_log.forEach(entry => {
@@ -3377,26 +3493,10 @@
 
         function renderCodex() {
             const list = document.getElementById('codex-list');
-            list.innerHTML = Object.entries(CODEX).map(([id, entry]) => `
-                <div class="quest-list-item ${codexDiscovered.has(id) ? '' : 'locked'}"
-                     onclick="showCodexEntry('${id}')">
-                    ${entry.icon} ${entry.name}
-                </div>
-            `).join('');
+            list.innerHTML = '<div class="quest-list-item">Goblins</div><div class="quest-list-item">The Void</div>';
         }
 
-        function showCodexEntry(entryId) {
-            const entry = CODEX[entryId];
-            if (!entry) return;
-            
-            document.getElementById('codex-entry').innerHTML = `
-                <h3 style="color:var(--gold);margin-bottom:10px">${entry.icon} ${entry.name}</h3>
-                <div style="color:var(--text-muted);font-size:12px;margin-bottom:5px">${entry.category}</div>
-                <p style="line-height:1.6">${entry.lore}</p>
-            `;
-        }
-
-        // ==================== CHEAT MENU ====================
+        // ==================== CHEAT MENU (OWNER) ====================
         function openCheatMenu() {
             showPopup('cheat-popup');
         }
@@ -3406,33 +3506,56 @@
             const amount = parseInt(document.getElementById('cheat-amount').value) || null;
             const itemId = document.getElementById('cheat-item').value || null;
             
+            document.getElementById('cheat-result').innerHTML = 'Executing...';
+            
             try {
                 const result = await apiRequest('/api/admin/cheat', {
                     method: 'POST',
                     body: JSON.stringify({ command, target, amount, item_id: itemId })
                 });
-                document.getElementById('cheat-result').innerHTML = result.message;
-                showNotification(result.message, 'success');
+                document.getElementById('cheat-result').innerHTML = '✅ ' + (result.message || 'Success');
+                showNotification(result.message || 'Command executed', 'success');
             } catch (error) {
-                document.getElementById('cheat-result').innerHTML = 'Error: ' + error.message;
+                document.getElementById('cheat-result').innerHTML = '❌ Error: ' + error.message;
             }
         }
 
         async function gameEvent(type) {
-            const data = type === 'announce' ? 
-                { message: prompt('Announcement:') } :
-                type === 'spawn_boss' ? 
-                { name: 'Dragon', location: 'Castle', level: 50 } :
-                { gold: 100 };
+            let data = {};
+            if (type === 'announce') {
+                const msg = prompt('Announcement message:');
+                if (!msg) return;
+                data = { message: msg };
+            } else if (type === 'spawn_boss') {
+                data = { name: 'Dragon', location: 'Castle', level: 50 };
+            } else if (type === 'give_rewards') {
+                data = { gold: 1000 };
+            }
                 
             try {
                 const result = await apiRequest('/api/admin/event', {
                     method: 'POST',
                     body: JSON.stringify({ event_type: type, data })
                 });
-                showNotification(result.message, 'success');
+                showNotification(result.message || 'Event triggered', 'success');
             } catch (error) {
                 showNotification(error.message, 'error');
+            }
+        }
+
+        async function openPromoteMenu() {
+            const userId = prompt('Enter user ID to promote:');
+            if (!userId) return;
+            const role = prompt('Enter role (moderator/admin):');
+            if (!role) return;
+            
+            try {
+                const result = await apiFetch(`/api/admin/promote?target_user_id=${userId}&new_role=${role}`, { 
+                    method: 'POST' 
+                });
+                showNotification('User promoted', 'success');
+            } catch (error) {
+                showNotification('Failed to promote', 'error');
             }
         }
 
@@ -3445,19 +3568,19 @@
         async function refreshModPanel() {
             try {
                 const data = await apiRequest('/api/admin/online-players');
-                document.getElementById('mod-online-count').textContent = data.online_count;
+                document.getElementById('mod-online-count').textContent = data.online_count || 0;
                 
                 const list = document.getElementById('mod-player-list');
-                list.innerHTML = data.players.map(p => `
-                    <div style="background:var(--bg-item);padding:10px;margin:5px 0;display:flex;justify-content:space-between;align-items:center">
+                list.innerHTML = (data.players || []).map(p => `
+                    <div class="admin-player-row">
                         <div>
                             <div style="color:var(--text-light)">${p.character_name}</div>
                             <div style="font-size:11px;color:var(--text-muted)">Lv.${p.level} · ${p.role}</div>
                         </div>
-                        <div style="display:flex;gap:5px">
-                            <button class="action-btn" style="padding:5px 8px;font-size:11px" onclick="modAction('warn', ${p.user_id})">WARN</button>
-                            <button class="action-btn" style="padding:5px 8px;font-size:11px" onclick="modAction('mute', ${p.user_id})">MUTE</button>
-                            <button class="action-btn danger" style="padding:5px 8px;font-size:11px" onclick="modAction('kick', ${p.user_id})">KICK</button>
+                        <div class="admin-actions">
+                            <button class="mod-btn" onclick="modAction('warn', ${p.user_id})">WARN</button>
+                            <button class="mod-btn" onclick="modAction('mute', ${p.user_id})">MUTE</button>
+                            <button class="mod-btn" onclick="modAction('kick', ${p.user_id})">KICK</button>
                         </div>
                     </div>
                 `).join('');
@@ -3492,7 +3615,7 @@
             await new Promise(r => setTimeout(r, 500));
             updateLoading(90, 'Almost ready...');
             await new Promise(r => setTimeout(r, 500));
-            updateLoading(100, 'Welcome!');
+            updateLoading(100, 'Welcome Owner!');
             await new Promise(r => setTimeout(r, 300));
             
             if (token) {
@@ -3508,22 +3631,16 @@
             }
         };
 
-        // Game data
-        const ITEMS = {
-            iron_sword: { name: 'Iron Sword', icon: '🗡️', type: 'weapon', rarity: 'common', stats: '+12 ATK', description: 'A sturdy iron sword.' },
-            health_potion: { name: 'Health Potion', icon: '🧪', type: 'consumable', rarity: 'common', stats: 'Heals 50 HP', description: 'A red bubbling potion.' }
-        };
-
-        const CODEX = {
-            goblin: { name: 'Goblins', icon: '👺', category: 'Creatures', lore: 'Small, cunning creatures that raid villages.' },
-            void: { name: 'The Void', icon: '🌌', category: 'Lore', lore: 'An ancient force of nothingness.' }
-        };
-
-        const QUESTS = {
-            q1: { title: 'The Dark Omen', description: 'Strange creatures have been seen near the village.' }
-        };
+        // Simple escape function
+        function escapeHtml(unsafe) {
+            return unsafe.replace(/[&<>"]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                if (m === '"') return '&quot;';
+                return m;
+            });
+        }
     </script>
 </body>
 </html>
-
-
