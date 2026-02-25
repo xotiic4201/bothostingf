@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIXEL RPG</title>
+    <title>⚔️ PIXEL RPG · MULTIPLAYER EDITION</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Courier New', monospace;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
         }
@@ -41,6 +40,7 @@
             overflow: hidden;
             width: 100vw;
             height: 100vh;
+            font-family: 'Courier New', monospace;
         }
 
         /* Loading Screen */
@@ -65,18 +65,12 @@
             letter-spacing: 8px;
             margin-bottom: 10px;
             animation: glowPulse 2s ease-in-out infinite;
+            font-family: 'Courier New', monospace;
         }
 
         @keyframes glowPulse {
             0%, 100% { text-shadow: 0 0 30px var(--gold), 4px 4px 0 #4a2a00, 8px 8px 0 #2a1a00; transform: scale(1); }
             50% { text-shadow: 0 0 60px var(--gold), 4px 4px 0 #4a2a00, 8px 8px 0 #2a1a00; transform: scale(1.05); }
-        }
-
-        .pixel-sub {
-            color: var(--text-muted);
-            font-size: 16px;
-            letter-spacing: 6px;
-            margin-bottom: 40px;
         }
 
         .loading-bar-wrap {
@@ -99,6 +93,7 @@
             color: var(--text-muted);
             font-size: 14px;
             letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
         }
 
         /* Login Screen */
@@ -174,6 +169,7 @@
             color: var(--gold);
             text-shadow: 0 0 20px var(--gold);
             margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
         }
 
         .login-sub {
@@ -181,6 +177,7 @@
             font-size: 12px;
             letter-spacing: 4px;
             margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
         }
 
         .form-group {
@@ -207,6 +204,7 @@
             font-size: 15px;
             outline: none;
             transition: all 0.2s;
+            font-family: 'Courier New', monospace;
         }
 
         .login-input:focus {
@@ -274,6 +272,7 @@
             color: #ff9999;
             text-align: left;
             display: none;
+            font-family: 'Courier New', monospace;
         }
 
         .error-box.show {
@@ -287,6 +286,7 @@
             font-size: 11px;
             color: var(--text-muted);
             margin-top: 20px;
+            font-family: 'Courier New', monospace;
         }
 
         .status-dot {
@@ -349,6 +349,7 @@
             text-align: center;
             letter-spacing: 4px;
             margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
         }
 
         .char-grid {
@@ -392,14 +393,10 @@
         }
 
         .char-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-            animation: iconBounce 2s infinite;
-        }
-
-        @keyframes iconBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 10px;
+            image-rendering: pixelated;
         }
 
         .char-name {
@@ -407,17 +404,20 @@
             font-size: 16px;
             font-weight: bold;
             margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
         }
 
         .char-class {
             color: var(--text-muted);
             font-size: 12px;
             margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
         }
 
         .char-level {
             color: var(--text-light);
             font-size: 14px;
+            font-family: 'Courier New', monospace;
         }
 
         .char-level span {
@@ -474,6 +474,7 @@
             text-align: center;
             letter-spacing: 4px;
             margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
         }
 
         .class-grid {
@@ -506,8 +507,10 @@
         }
 
         .class-icon {
-            font-size: 42px;
-            margin-bottom: 10px;
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 10px;
+            image-rendering: pixelated;
         }
 
         .class-name {
@@ -515,12 +518,14 @@
             font-size: 16px;
             font-weight: bold;
             margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
         }
 
         .class-desc {
             color: var(--text-muted);
             font-size: 11px;
             line-height: 1.4;
+            font-family: 'Courier New', monospace;
         }
 
         .stat-preview {
@@ -591,6 +596,7 @@
             font-size: 24px;
             letter-spacing: 4px;
             margin-right: auto;
+            font-family: 'Courier New', monospace;
         }
 
         .header-stat {
@@ -599,6 +605,7 @@
             gap: 8px;
             font-size: 14px;
             color: var(--text-light);
+            font-family: 'Courier New', monospace;
         }
 
         .header-stat span {
@@ -627,6 +634,7 @@
             color: #555;
             letter-spacing: 2px;
             margin-top: 15px;
+            font-family: 'Courier New', monospace;
         }
 
         .sidebar-item {
@@ -639,6 +647,7 @@
             align-items: center;
             gap: 12px;
             border-left: 4px solid transparent;
+            font-family: 'Courier New', monospace;
         }
 
         .sidebar-item:hover {
@@ -676,6 +685,7 @@
             margin-bottom: 15px;
             padding-bottom: 8px;
             border-bottom: 2px solid #2a2a3a;
+            font-family: 'Courier New', monospace;
         }
 
         .char-card-large {
@@ -687,8 +697,10 @@
         }
 
         .char-icon-large {
-            font-size: 64px;
-            margin-bottom: 10px;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 10px;
+            image-rendering: pixelated;
         }
 
         .char-name-large {
@@ -696,12 +708,14 @@
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
         }
 
         .char-class-large {
             color: var(--text-muted);
             font-size: 13px;
             margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
         }
 
         .stat-row {
@@ -710,6 +724,7 @@
             padding: 8px 0;
             border-bottom: 1px solid #2a2a3a;
             font-size: 13px;
+            font-family: 'Courier New', monospace;
         }
 
         .stat-label {
@@ -743,6 +758,7 @@
             left: 0;
             width: 100%;
             height: 100%;
+            image-rendering: pixelated;
         }
 
         /* HUD */
@@ -750,6 +766,7 @@
             position: absolute;
             pointer-events: all;
             z-index: 200;
+            font-family: 'Courier New', monospace;
         }
 
         #hud-player {
@@ -779,6 +796,7 @@
             color: var(--gold);
             font-size: 16px;
             font-weight: bold;
+            font-family: 'Courier New', monospace;
         }
 
         .hud-role {
@@ -787,6 +805,7 @@
             background: rgba(255,255,255,0.1);
             padding: 2px 8px;
             border-radius: 0;
+            font-family: 'Courier New', monospace;
         }
 
         .hud-bar {
@@ -799,6 +818,7 @@
             margin-bottom: 3px;
             display: flex;
             justify-content: space-between;
+            font-family: 'Courier New', monospace;
         }
 
         .bar {
@@ -852,6 +872,7 @@
             font-size: 11px;
             color: white;
             text-shadow: 1px 1px 2px black;
+            font-family: 'Courier New', monospace;
         }
 
         .hud-stats-row {
@@ -860,6 +881,7 @@
             margin-top: 10px;
             font-size: 12px;
             color: var(--text-muted);
+            font-family: 'Courier New', monospace;
         }
 
         .hud-stats-row span {
@@ -871,6 +893,8 @@
             left: 330px;
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
+            max-width: 600px;
         }
 
         .hud-btn {
@@ -914,6 +938,7 @@
         #minimap-canvas {
             width: 160px;
             height: 160px;
+            image-rendering: pixelated;
         }
 
         #hud-skills {
@@ -944,21 +969,23 @@
             z-index: 10;
         }
 
-        .skill-slot.on-cooldown::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
+        .skill-slot.on-cooldown {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .skill-icon {
-            font-size: 26px;
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated;
+            margin-bottom: 2px;
         }
 
         .skill-key {
             font-size: 10px;
             color: var(--text-muted);
             margin-top: 2px;
+            font-family: 'Courier New', monospace;
         }
 
         .skill-cd {
@@ -973,7 +1000,7 @@
             font-size: 16px;
             color: white;
             z-index: 1;
-            display: none;
+            background: rgba(0,0,0,0.7);
         }
 
         #hud-quests {
@@ -1008,12 +1035,14 @@
             color: var(--gold);
             font-size: 13px;
             font-weight: bold;
+            font-family: 'Courier New', monospace;
         }
 
         .quest-desc {
             color: var(--text-muted);
             font-size: 11px;
             margin-top: 3px;
+            font-family: 'Courier New', monospace;
         }
 
         .quest-progress {
@@ -1045,6 +1074,7 @@
             display: flex;
             border-bottom: 2px solid #2a2a3a;
             flex-shrink: 0;
+            overflow-x: auto;
         }
 
         .chat-tab {
@@ -1053,6 +1083,8 @@
             cursor: pointer;
             color: var(--text-muted);
             border-right: 2px solid #2a2a3a;
+            font-family: 'Courier New', monospace;
+            white-space: nowrap;
         }
 
         .chat-tab:hover {
@@ -1070,12 +1102,14 @@
             overflow-y: auto;
             padding: 10px;
             font-size: 12px;
+            font-family: 'Courier New', monospace;
         }
 
         .chat-message {
             margin: 4px 0;
             line-height: 1.4;
             animation: fadeIn 0.3s;
+            font-family: 'Courier New', monospace;
         }
 
         @keyframes fadeIn {
@@ -1128,6 +1162,7 @@
             align-items: center;
             border-right: 2px solid #2a2a3a;
             background: rgba(255,215,0,0.05);
+            font-family: 'Courier New', monospace;
         }
 
         #chat-input {
@@ -1182,6 +1217,7 @@
             max-width: 1000px;
             box-shadow: 0 0 50px rgba(0,0,0,0.9);
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Courier New', monospace;
         }
 
         @keyframes popIn {
@@ -1202,6 +1238,7 @@
             color: var(--gold);
             font-size: 20px;
             letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
         }
 
         .popup-close {
@@ -1243,7 +1280,6 @@
             cursor: pointer;
             position: relative;
             transition: all 0.15s;
-            font-size: 24px;
         }
 
         .inv-slot:hover {
@@ -1267,12 +1303,19 @@
             50% { box-shadow: 0 0 40px var(--rarity-legendary); }
         }
 
+        .inv-item-icon {
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated;
+        }
+
         .inv-quantity {
             position: absolute;
             bottom: 2px;
             right: 3px;
             font-size: 10px;
             color: var(--gold);
+            font-family: 'Courier New', monospace;
         }
 
         .inv-name {
@@ -1288,6 +1331,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-family: 'Courier New', monospace;
         }
 
         /* Skill Tree */
@@ -1309,6 +1353,7 @@
             letter-spacing: 2px;
             text-align: center;
             margin-bottom: 12px;
+            font-family: 'Courier New', monospace;
         }
 
         .skill-node {
@@ -1340,7 +1385,9 @@
         }
 
         .skill-node-icon {
-            font-size: 28px;
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated;
         }
 
         .skill-node-info {
@@ -1351,15 +1398,17 @@
             color: var(--text-light);
             font-size: 13px;
             font-weight: bold;
+            font-family: 'Courier New', monospace;
         }
 
         .skill-node-desc {
             color: var(--text-muted);
             font-size: 11px;
             margin-top: 2px;
+            font-family: 'Courier New', monospace;
         }
 
-        /* Combat Popup with Animations */
+        /* Combat Popup */
         #combat-popup .popup-box {
             width: 700px;
         }
@@ -1427,9 +1476,10 @@
         }
 
         .combatant-icon {
-            font-size: 80px;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
+            image-rendering: pixelated;
         }
 
         .combatant-icon.player-icon {
@@ -1462,12 +1512,14 @@
         .combatant-stats {
             font-size: 12px;
             color: var(--text-muted);
+            font-family: 'Courier New', monospace;
         }
 
         .combatant-level {
             color: var(--gold);
             font-size: 11px;
             margin-top: 5px;
+            font-family: 'Courier New', monospace;
         }
 
         .combat-vs {
@@ -1490,6 +1542,7 @@
             text-shadow: 2px 2px 0 #aa0000;
             pointer-events: none;
             animation: floatUp 1s forwards;
+            font-family: 'Courier New', monospace;
         }
 
         @keyframes floatUp {
@@ -1505,6 +1558,7 @@
             overflow-y: auto;
             font-size: 12px;
             margin-top: 15px;
+            font-family: 'Courier New', monospace;
         }
 
         .combat-log-entry {
@@ -1592,8 +1646,10 @@
         }
 
         .pvp-icon {
-            font-size: 64px;
-            margin-bottom: 10px;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 10px;
+            image-rendering: pixelated;
         }
 
         .pvp-vs {
@@ -1628,140 +1684,11 @@
             margin: 20px 0;
         }
 
-        /* Legendary Weapons */
-        .weapon-showcase {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .legendary-weapon {
-            background: var(--bg-item);
-            border: 2px solid var(--rarity-legendary);
-            padding: 15px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .legendary-weapon::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,215,0,0.1), transparent);
-            transform: rotate(45deg);
-            animation: weaponGlow 3s infinite;
-        }
-
-        @keyframes weaponGlow {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) rotate(45deg); }
-        }
-
-        .legendary-weapon:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px var(--rarity-legendary);
-        }
-
-        .weapon-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-            animation: weaponFloat 2s infinite;
-        }
-
-        @keyframes weaponFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .weapon-name {
-            color: var(--rarity-legendary);
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .weapon-stats {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .weapon-damage {
-            color: #ffaa00;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .weapon-effect {
-            font-size: 11px;
-            color: #88aaff;
-            margin-top: 5px;
-            font-style: italic;
-        }
-
-        /* Auction House */
-        .auction-tabs {
-            display: flex;
-            gap: 0;
-            border-bottom: 2px solid #2a2a3a;
-            margin-bottom: 15px;
-        }
-
-        .auction-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 13px;
-            color: var(--text-muted);
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-        }
-
-        .auction-tab:hover {
-            color: var(--text-light);
-            background: rgba(255,255,255,0.02);
-        }
-
-        .auction-tab.active {
-            color: var(--gold);
-            border-bottom-color: var(--gold);
-        }
-
-        .auction-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .auction-card {
-            background: var(--bg-item);
-            border: 2px solid #3a3a50;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .auction-card:hover {
-            border-color: var(--gold);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .auction-card.legendary {
-            border-color: var(--rarity-legendary);
-            animation: auctionPulse 2s infinite;
-        }
-
-        @keyframes auctionPulse {
-            0%, 100% { box-shadow: 0 0 10px var(--rarity-legendary); }
-            50% { box-shadow: 0 0 20px var(--rarity-legendary); }
+        /* Buildings */
+        .building-icon {
+            width: 64px;
+            height: 64px;
+            image-rendering: pixelated;
         }
 
         /* Tooltip */
@@ -1776,23 +1703,27 @@
             pointer-events: none;
             display: none;
             box-shadow: 0 5px 25px rgba(0,0,0,0.9);
+            font-family: 'Courier New', monospace;
         }
 
         .tooltip-name {
             font-size: 15px;
             font-weight: bold;
             margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
         }
 
         .tooltip-type {
             color: var(--text-muted);
             font-size: 11px;
             margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
         }
 
         .tooltip-stats {
             color: #88ff88;
             font-size: 12px;
+            font-family: 'Courier New', monospace;
         }
 
         .tooltip-desc {
@@ -1800,6 +1731,7 @@
             font-size: 11px;
             margin-top: 8px;
             font-style: italic;
+            font-family: 'Courier New', monospace;
         }
 
         /* Notifications */
@@ -1821,6 +1753,7 @@
             font-size: 13px;
             color: var(--text-light);
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-family: 'Courier New', monospace;
         }
 
         @keyframes notificationSlide {
@@ -1889,48 +1822,12 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--border-brown);
         }
-
-        /* Owner/Admin Badges */
-        .owner-badge {
-            background: var(--gold);
-            color: #000;
-            padding: 2px 6px;
-            font-size: 10px;
-            font-weight: bold;
-            border: 1px solid #b8860b;
-        }
-        
-        .admin-badge {
-            background: #44aaff;
-            color: #000;
-            padding: 2px 6px;
-            font-size: 10px;
-            border: 1px solid #2277cc;
-        }
-        
-        .mod-badge {
-            background: #88aa88;
-            color: #000;
-            padding: 2px 6px;
-            font-size: 10px;
-            border: 1px solid #557755;
-        }
-
-        /* Pixel Art Canvas */
-        .pixel-art {
-            image-rendering: pixelated;
-            image-rendering: crisp-edges;
-        }
     </style>
-    <!-- Pixel Fonts and Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- LOADING SCREEN -->
     <div id="loading-screen">
-        <div class="pixel-logo">⚔ PIXEL RPG ⚔</div>
+        <div class="pixel-logo">⚔️ PIXEL RPG ⚔️</div>
         <div class="loading-bar-wrap">
             <div class="loading-bar-fill" id="loading-bar"></div>
         </div>
@@ -1941,18 +1838,18 @@
     <div id="login-screen">
         <div class="stars" id="stars"></div>
         <div class="login-box">
-            <div class="login-logo">⚔ PIXEL RPG ⚔</div>
+            <div class="login-logo">⚔️ PIXEL RPG ⚔️</div>
             <div class="form-group">
                 <span class="form-icon">👤</span>
-                <input type="text" id="login-username" class="login-input" placeholder="Username" autocomplete="username">
+                <input type="text" id="login-username" class="login-input" placeholder="Username">
             </div>
             <div class="form-group">
                 <span class="form-icon">🔒</span>
-                <input type="password" id="login-password" class="login-input" placeholder="Password" autocomplete="current-password">
+                <input type="password" id="login-password" class="login-input" placeholder="Password">
             </div>
             <div class="error-box" id="login-error"></div>
-            <button class="login-btn btn-login" id="login-btn" onclick="handleLogin()">▶ ENTER THE REALM</button>
-            <button class="login-btn btn-register" id="register-btn" onclick="handleRegister()">+ CREATE ACCOUNT</button>
+            <button class="login-btn btn-login" id="login-btn">▶ ENTER THE REALM</button>
+            <button class="login-btn btn-register" id="register-btn">+ CREATE ACCOUNT</button>
             <div class="server-status">
                 <div class="status-dot" id="status-dot"></div>
                 <span id="status-text">Checking server...</span>
@@ -1963,7 +1860,7 @@
     <!-- CHARACTER SELECT SCREEN -->
     <div id="char-select-screen">
         <div class="char-select-box">
-            <h2>CHOOSE YOUR LEGEND</h2>
+            <h2>CHOOSE YOUR HERO</h2>
             <div class="char-grid" id="char-grid"></div>
             <button class="login-btn new-char-btn" onclick="showCharacterCreation()">+ CREATE NEW HERO</button>
             <button class="login-btn" onclick="logout()" style="background: #2a2a3a; border-color: #5a5a7a;">← BACK</button>
@@ -1979,7 +1876,7 @@
             </div>
             <div class="class-grid" id="class-grid"></div>
             <div class="error-box" id="char-create-error"></div>
-            <button class="login-btn btn-login" onclick="createCharacter()">⚔ BEGIN ADVENTURE</button>
+            <button class="login-btn btn-login" onclick="createCharacter()">⚔️ BEGIN ADVENTURE</button>
         </div>
     </div>
 
@@ -1989,31 +1886,25 @@
         <div class="lobby-container">
             <div class="lobby-header">
                 <div class="lobby-title">PIXEL RPG</div>
-                <div class="header-stat">👤 <span id="lobby-username">Admin</span></div>
-                <div class="header-stat" id="lobby-role-display">🏅 <span id="lobby-role">👑 OWNER</span></div>
-                <div class="header-stat">⚔ <span id="lobby-charname">Hero</span></div>
+                <div class="header-stat">👤 <span id="lobby-username"></span></div>
+                <div class="header-stat" id="lobby-role-display">🏅 <span id="lobby-role"></span></div>
+                <div class="header-stat">⚔️ <span id="lobby-charname"></span></div>
                 <div class="header-stat">⭐ <span id="lobby-level">1</span></div>
-                <div class="header-stat">💰 <span id="lobby-gold">100000</span>g</div>
+                <div class="header-stat">💰 <span id="lobby-gold">100</span>g</div>
                 <button class="action-btn" onclick="enterGame()" style="background: #ffd700; color: #000;">▶ ENTER WORLD</button>
                 <button class="action-btn" onclick="logout()">EXIT</button>
             </div>
             <div class="lobby-content">
                 <div class="lobby-sidebar">
                     <div class="sidebar-section">MAIN</div>
-                    <div class="sidebar-item active" data-tab="characters" onclick="switchLobbyTab(this, 'characters')">🗡 CHARACTER</div>
+                    <div class="sidebar-item active" data-tab="characters" onclick="switchLobbyTab(this, 'characters')">🗡️ CHARACTER</div>
                     <div class="sidebar-item" data-tab="story" onclick="switchLobbyTab(this, 'story')">📜 STORY</div>
-                    <div class="sidebar-item" data-tab="quests" onclick="switchLobbyTab(this, 'quests')">⚔ QUESTS</div>
+                    <div class="sidebar-item" data-tab="quests" onclick="switchLobbyTab(this, 'quests')">⚔️ QUESTS</div>
                     <div class="sidebar-section">SOCIAL</div>
-                    <div class="sidebar-item" data-tab="guilds" onclick="switchLobbyTab(this, 'guilds')">⚔ GUILDS</div>
+                    <div class="sidebar-item" data-tab="guilds" onclick="switchLobbyTab(this, 'guilds')">⚔️ GUILDS</div>
                     <div class="sidebar-item" data-tab="leaderboard" onclick="switchLobbyTab(this, 'leaderboard')">🏆 LEADERBOARD</div>
                     <div class="sidebar-section">PVP</div>
-                    <div class="sidebar-item" data-tab="pvp" onclick="switchLobbyTab(this, 'pvp')" style="color: #ffaa00;">⚔ PVP ARENA</div>
-                    <div class="sidebar-item" data-tab="ranked" onclick="switchLobbyTab(this, 'ranked')">🏆 RANKED</div>
-                    <div class="sidebar-section" style="color: #ffd700;">ADMIN</div>
-                    <div class="sidebar-item" data-tab="admin" onclick="switchLobbyTab(this, 'admin')" style="color: #ffd700;">👑 ADMIN PANEL</div>
-                    <div class="sidebar-item" data-tab="mod" onclick="switchLobbyTab(this, 'mod')" style="color: #88aaff;">🛡️ MOD PANEL</div>
-                    <div class="sidebar-section">SYSTEM</div>
-                    <div class="sidebar-item" data-tab="settings" onclick="switchLobbyTab(this, 'settings')">⚙ SETTINGS</div>
+                    <div class="sidebar-item" data-tab="pvp" onclick="switchLobbyTab(this, 'pvp')" style="color: #ffaa00;">⚔️ PVP ARENA</div>
                 </div>
                 <div class="lobby-main" id="lobby-main-content"></div>
                 <div class="lobby-right">
@@ -2038,7 +1929,7 @@
         <div class="hud-element" id="hud-player">
             <div class="hud-header">
                 <span class="hud-name" id="hud-name">Hero</span>
-                <span class="hud-role" id="hud-role">👑 OWNER</span>
+                <span class="hud-role" id="hud-role"></span>
             </div>
             <div class="hud-bar">
                 <div class="bar-label"><span>❤️ HP</span><span id="hud-hp-text">100/100</span></div>
@@ -2054,8 +1945,8 @@
             </div>
             <div class="hud-stats-row">
                 <span>Lv.<span id="hud-level">1</span></span>
-                <span>💰 <span id="hud-gold">100000</span>g</span>
-                <span>⚔ <span id="hud-attack">12</span></span>
+                <span>💰 <span id="hud-gold">100</span>g</span>
+                <span>⚔️ <span id="hud-attack">12</span></span>
                 <span>🛡️ <span id="hud-defense">8</span></span>
             </div>
         </div>
@@ -2064,11 +1955,9 @@
             <button class="hud-btn" onclick="openInventory()">🎒 BAG (I)</button>
             <button class="hud-btn" onclick="openSkills()">⚡ SKILLS (K)</button>
             <button class="hud-btn" onclick="openQuestLog()">📜 QUESTS (J)</button>
-            <button class="hud-btn" onclick="openGuild()">⚔ GUILD (G)</button>
+            <button class="hud-btn" onclick="openGuild()">⚔️ GUILD (G)</button>
             <button class="hud-btn" onclick="openAuction()">🏪 AH (H)</button>
-            <button class="hud-btn" onclick="openPVPArena()" style="border-color:#ffaa00;color:#ffaa00;">⚔ PVP ARENA</button>
-            <button class="hud-btn" id="cheat-btn" onclick="openCheatMenu()" style="border-color:var(--gold);color:var(--gold);background:#2a1a0a;">👑 CHEAT</button>
-            <button class="hud-btn" id="mod-btn" onclick="openModPanel()" style="border-color:#88aaff;color:#88aaff;">🛡️ MOD</button>
+            <button class="hud-btn" onclick="openPVPArena()" style="border-color:#ffaa00;color:#ffaa00;">⚔️ PVP ARENA</button>
             <button class="hud-btn" onclick="returnToLobby()">🏠 LOBBY</button>
         </div>
 
@@ -2090,8 +1979,6 @@
                 <div class="chat-tab" data-channel="party" onclick="switchChatChannel(this, 'party')">PARTY</div>
                 <div class="chat-tab" data-channel="trade" onclick="switchChatChannel(this, 'trade')">TRADE</div>
                 <div class="chat-tab" data-channel="pvp" onclick="switchChatChannel(this, 'pvp')" style="color:#ffaa00;">PVP</div>
-                <div class="chat-tab" id="mod-chat-tab" data-channel="mod" onclick="switchChatChannel(this, 'mod')" style="color:#ffd700;">MOD</div>
-                <div class="chat-tab" id="admin-chat-tab" data-channel="admin" onclick="switchChatChannel(this, 'admin')" style="color:#ffd700;">ADMIN</div>
             </div>
             <div class="chat-messages" id="chat-messages"></div>
             <div class="chat-input-area">
@@ -2140,10 +2027,7 @@
                 <span class="popup-title">📜 QUEST LOG</span>
                 <button class="popup-close" onclick="closePopup('questlog-popup')">×</button>
             </div>
-            <div class="quest-log-layout">
-                <div class="quest-list" id="quest-list"></div>
-                <div class="quest-detail" id="quest-detail"></div>
-            </div>
+            <div id="quest-log-content"></div>
         </div>
     </div>
 
@@ -2151,7 +2035,7 @@
     <div class="popup-overlay" id="guild-popup">
         <div class="popup-box" style="width:750px">
             <div class="popup-header">
-                <span class="popup-title">⚔ GUILD</span>
+                <span class="popup-title">⚔️ GUILD</span>
                 <button class="popup-close" onclick="closePopup('guild-popup')">×</button>
             </div>
             <div id="guild-content"></div>
@@ -2162,24 +2046,15 @@
     <div class="popup-overlay" id="auction-popup">
         <div class="popup-box" style="width:900px">
             <div class="popup-header">
-                <span class="popup-title">🏪 AUCTION HOUSE · LEGENDARY ITEMS</span>
+                <span class="popup-title">🏪 AUCTION HOUSE</span>
                 <button class="popup-close" onclick="closePopup('auction-popup')">×</button>
             </div>
             <div class="auction-tabs">
                 <div class="auction-tab active" onclick="switchAuctionTab(this, 'browse')">BROWSE</div>
                 <div class="auction-tab" onclick="switchAuctionTab(this, 'my-listings')">MY LISTINGS</div>
-                <div class="auction-tab" onclick="switchAuctionTab(this, 'my-bids')">MY BIDS</div>
-                <div class="auction-tab" onclick="switchAuctionTab(this, 'legendary')" style="color:var(--rarity-legendary);">👑 LEGENDARY</div>
             </div>
             <div style="margin:15px 0;display:flex;gap:10px">
                 <input type="text" id="auction-search" class="login-input" placeholder="Search items..." style="flex:1">
-                <select id="auction-sort" class="login-input" style="width:150px">
-                    <option value="">Sort by...</option>
-                    <option value="price_asc">Price: Low to High</option>
-                    <option value="price_desc">Price: High to Low</option>
-                    <option value="rarity">Rarity</option>
-                    <option value="time">Ending Soon</option>
-                </select>
                 <button class="action-btn" onclick="refreshAuctions()">🔄 REFRESH</button>
             </div>
             <div class="auction-grid" id="auction-grid"></div>
@@ -2193,27 +2068,7 @@
                 <span class="popup-title">🔄 TRADE</span>
                 <button class="popup-close" onclick="cancelTrade()">×</button>
             </div>
-            <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:15px;margin:20px 0">
-                <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:15px;min-height:200px">
-                    <h3 style="color:var(--gold);text-align:center;margin-bottom:10px">YOUR OFFER</h3>
-                    <div id="trade-your-items" style="min-height:100px"></div>
-                    <div style="margin-top:10px">
-                        <label>💰 Gold:</label>
-                        <input type="number" id="trade-your-gold" class="login-input" value="0" min="0" style="width:100%">
-                    </div>
-                </div>
-                <div style="display:flex;align-items:center;color:#555;font-size:24px">⇄</div>
-                <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:15px;min-height:200px">
-                    <h3 style="color:var(--gold);text-align:center;margin-bottom:10px" id="trade-partner">PARTNER</h3>
-                    <div id="trade-their-items" style="min-height:100px"></div>
-                    <div style="margin-top:10px;color:var(--gold)" id="trade-their-gold">💰 0g</div>
-                </div>
-            </div>
-            <div id="trade-status" style="text-align:center;padding:10px;background:rgba(0,0,0,0.3);margin:10px 0"></div>
-            <div style="display:flex;justify-content:center;gap:10px">
-                <button class="action-btn success" onclick="acceptTrade()" id="trade-accept-btn">✓ ACCEPT</button>
-                <button class="action-btn danger" onclick="cancelTrade()">✗ CANCEL</button>
-            </div>
+            <div id="trade-content"></div>
         </div>
     </div>
 
@@ -2221,92 +2076,37 @@
     <div class="popup-overlay" id="pvp-popup">
         <div class="popup-box" style="width:850px">
             <div class="popup-header">
-                <span class="popup-title">⚔ PVP ARENA · CHAMPIONS BATTLE</span>
+                <span class="popup-title">⚔️ PVP ARENA</span>
                 <button class="popup-close" onclick="closePvP()">×</button>
             </div>
-            <div class="pvp-battle-area">
-                <div class="pvp-layout">
-                    <div class="pvp-fighter" id="pvp-fighter1">
-                        <div class="pvp-icon" id="pvp-icon1">⚔️</div>
-                        <h3 id="pvp-player1-name">Player 1</h3>
-                        <div style="color:var(--text-muted);margin:5px 0" id="pvp-player1-class">Warrior</div>
-                        <div class="bar"><div class="bar-fill hp" id="pvp-player1-hp" style="width:100%"></div></div>
-                        <div id="pvp-player1-hp-text">100/100</div>
-                        <div class="pvp-rating" id="pvp-rating1">Rating: 1000</div>
-                    </div>
-                    <div>
-                        <div class="pvp-vs">VS</div>
-                        <div class="pvp-countdown" id="pvp-countdown"></div>
-                    </div>
-                    <div class="pvp-fighter" id="pvp-fighter2">
-                        <div class="pvp-icon" id="pvp-icon2">🛡️</div>
-                        <h3 id="pvp-player2-name">Player 2</h3>
-                        <div style="color:var(--text-muted);margin:5px 0" id="pvp-player2-class">Mage</div>
-                        <div class="bar"><div class="bar-fill hp" id="pvp-player2-hp" style="width:100%"></div></div>
-                        <div id="pvp-player2-hp-text">100/100</div>
-                        <div class="pvp-rating" id="pvp-rating2">Rating: 1000</div>
-                    </div>
-                </div>
-                <div class="combat-log" id="pvp-combat-log"></div>
-                <div style="display:flex;justify-content:center;gap:10px;margin-top:15px" id="pvp-buttons">
-                    <button class="action-btn success" onclick="acceptPvP()">⚔ ACCEPT BATTLE</button>
-                    <button class="action-btn danger" onclick="closePvP()">✗ DECLINE</button>
-                </div>
-            </div>
+            <div class="pvp-battle-area" id="pvp-content"></div>
         </div>
     </div>
 
-    <!-- PvP Queue Popup -->
-    <div class="popup-overlay" id="pvp-queue-popup">
-        <div class="popup-box" style="width:400px">
-            <div class="popup-header">
-                <span class="popup-title">⚔ JOIN PVP QUEUE</span>
-                <button class="popup-close" onclick="closePopup('pvp-queue-popup')">×</button>
-            </div>
-            <div style="text-align:center;padding:20px">
-                <div style="font-size:48px;margin-bottom:15px" id="queue-animation">⚔️</div>
-                <h3 style="color:var(--gold);margin-bottom:10px">QUEUEING FOR BATTLE</h3>
-                <div style="color:var(--text-muted);margin-bottom:20px">Looking for opponent...</div>
-                <div class="bar"><div class="bar-fill hp" id="queue-timer" style="width:0%"></div></div>
-                <div style="margin-top:20px;display:flex;gap:10px;justify-content:center">
-                    <button class="action-btn success" onclick="cancelPvPQueue()">CANCEL</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Combat Popup (PvE) -->
+    <!-- Combat Popup -->
     <div class="popup-overlay" id="combat-popup">
         <div class="popup-box" style="width:800px">
             <div class="popup-header">
-                <span class="popup-title">⚔ COMBAT · ANIMATED BATTLE</span>
+                <span class="popup-title">⚔️ COMBAT</span>
                 <button class="popup-close" onclick="closeCombat()">×</button>
             </div>
             <div class="combat-arena" id="combat-arena">
                 <div class="combatants">
                     <div class="combatant" id="combat-player">
-                        <div class="combatant-icon player-icon" id="combat-player-icon">⚔️</div>
+                        <canvas id="combat-player-icon" class="combatant-icon player-icon" width="64" height="64"></canvas>
                         <h3 id="combat-player-name">You</h3>
                         <div class="combatant-health">
                             <div class="bar-label"><span>❤️ HP</span><span id="combat-player-hp-text">100/100</span></div>
                             <div class="bar"><div class="bar-fill hp" id="combat-player-hp" style="width:100%"></div></div>
                         </div>
-                        <div class="combatant-stats">
-                            <span>⚔ <span id="combat-player-attack">12</span></span>
-                            <span> | 🛡️ <span id="combat-player-defense">8</span></span>
-                        </div>
                     </div>
                     <div class="combat-vs">VS</div>
                     <div class="combatant" id="combat-enemy">
-                        <div class="combatant-icon enemy-icon" id="combat-enemy-icon">👺</div>
+                        <canvas id="combat-enemy-icon" class="combatant-icon enemy-icon" width="64" height="64"></canvas>
                         <h3 id="combat-enemy-name">Goblin</h3>
                         <div class="combatant-health">
                             <div class="bar-label"><span>❤️ HP</span><span id="combat-enemy-hp-text">50/50</span></div>
                             <div class="bar"><div class="bar-fill hp" id="combat-enemy-hp" style="width:100%"></div></div>
-                        </div>
-                        <div class="combatant-stats">
-                            <span>⚔ <span id="combat-enemy-attack">5</span></span>
-                            <span> | 🛡️ <span id="combat-enemy-defense">2</span></span>
                         </div>
                         <div class="combatant-level" id="combat-enemy-level">Lv.1</div>
                     </div>
@@ -2314,92 +2114,6 @@
                 <div class="combat-log" id="combat-log"></div>
             </div>
             <div id="combat-actions"></div>
-        </div>
-    </div>
-
-    <!-- Legendary Weapons Showcase -->
-    <div class="popup-overlay" id="legendary-popup">
-        <div class="popup-box" style="width:800px">
-            <div class="popup-header">
-                <span class="popup-title" style="color:var(--rarity-legendary);">👑 LEGENDARY WEAPONS</span>
-                <button class="popup-close" onclick="closePopup('legendary-popup')">×</button>
-            </div>
-            <div class="weapon-showcase" id="weapon-showcase"></div>
-        </div>
-    </div>
-
-    <!-- Cheat Menu -->
-    <div class="popup-overlay" id="cheat-popup">
-        <div class="popup-box" style="width:700px;border-color:var(--gold)">
-            <div class="popup-header">
-                <span class="popup-title" style="color:var(--gold)">👑 OWNER CHEAT MENU</span>
-                <button class="popup-close" onclick="closePopup('cheat-popup')">×</button>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0; background: #1e1e28; padding: 15px; border: 2px solid #3a3a50;">
-                <input type="text" id="cheat-target" class="login-input" placeholder="Target (name or blank for self)">
-                <input type="number" id="cheat-amount" class="login-input" placeholder="Amount">
-                <input type="text" id="cheat-item" class="login-input" placeholder="Item ID">
-            </div>
-            <div class="cheat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0">
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="cheatCommand('give_gold')">💰 GIVE GOLD</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="cheatCommand('set_level')">⭐ SET LEVEL</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="cheatCommand('spawn_item')">🎁 SPAWN ITEM</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="cheatCommand('god_mode')">🛡️ GOD MODE</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="cheatCommand('heal')">💚 FULL HEAL</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="cheatCommand('kill')">💀 KILL</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="gameEvent('spawn_boss')">🔥 SPAWN BOSS</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="gameEvent('announce')">📢 ANNOUNCE</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="gameEvent('give_rewards')">🎉 GIVE REWARDS</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="openPromoteMenu()">⚡ PROMOTE USER</button>
-                <button class="cheat-btn" style="background:#2a1a0a;border:2px solid #b8860b;color:#ffd700;padding:12px;cursor:pointer;" onclick="spawnLegendaryWeapon()">⚔️ LEGENDARY WEAPON</button>
-            </div>
-            <div id="cheat-result" style="margin-top:15px;padding:10px;background:var(--bg-item);border:2px solid #3a3a50; min-height: 50px;"></div>
-        </div>
-    </div>
-
-    <!-- Mod Panel -->
-    <div class="popup-overlay" id="mod-popup">
-        <div class="popup-box" style="width:700px;border-color:#3a4a8a">
-            <div class="popup-header">
-                <span class="popup-title" style="color:#88aaff">🛡️ MODERATOR PANEL</span>
-                <button class="popup-close" onclick="closePopup('mod-popup')">×</button>
-            </div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:15px">
-                <span>Online Players: <span id="mod-online-count">0</span></span>
-                <button class="action-btn" onclick="refreshModPanel()">🔄 REFRESH</button>
-            </div>
-            <div id="mod-player-list" style="max-height:300px;overflow-y:auto"></div>
-            <div style="margin-top:15px">
-                <div style="color:var(--text-muted);margin-bottom:5px">ACTION LOG</div>
-                <div id="mod-log" style="background:var(--bg-item);border:2px solid #2a2a3a;padding:10px;max-height:150px;overflow-y:auto"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Leaderboard Popup -->
-    <div class="popup-overlay" id="leaderboard-popup">
-        <div class="popup-box" style="width:700px">
-            <div class="popup-header">
-                <span class="popup-title">🏆 LEADERBOARD</span>
-                <button class="popup-close" onclick="closePopup('leaderboard-popup')">×</button>
-            </div>
-            <div class="auction-tabs">
-                <div class="auction-tab active" onclick="switchLeaderboardTab(this, 'level')">LEVEL</div>
-                <div class="auction-tab" onclick="switchLeaderboardTab(this, 'gold')">GOLD</div>
-                <div class="auction-tab" onclick="switchLeaderboardTab(this, 'pvp')">PVP RATING</div>
-                <div class="auction-tab" onclick="switchLeaderboardTab(this, 'kills')">PVP KILLS</div>
-            </div>
-            <table style="width:100%;border-collapse:collapse;margin-top:15px">
-                <thead>
-                    <tr style="color:var(--text-muted);border-bottom:2px solid #2a2a3a">
-                        <th style="padding:8px;text-align:left">#</th>
-                        <th style="padding:8px;text-align:left">Name</th>
-                        <th style="padding:8px;text-align:left">Class</th>
-                        <th style="padding:8px;text-align:right">Score</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboard-body"></tbody>
-            </table>
         </div>
     </div>
 
@@ -2428,8 +2142,8 @@
 
     <script>
         // ==================== CONFIGURATION ====================
-        const API_URL = 'https://bot-hosting-b-ga04.onrender.com'; // REPLACE WITH YOUR BACKEND URL
-        const WS_URL = 'wss://bot-hosting-b-ga04.onrender.com'; // REPLACE WITH YOUR BACKEND WS URL
+        const API_URL = 'http://localhost:8000'; // Change to your backend URL
+        const WS_URL = 'ws://localhost:8000'; // Change to your backend WS URL
 
         // ==================== GAME STATE ====================
         let token = localStorage.getItem('rpg_token');
@@ -2442,7 +2156,6 @@
         let activeTrade = null;
         let activePvP = null;
         let pvpCountdown = null;
-        let pvpQueueTimer = null;
         let gameRenderer = null;
         let keysPressed = new Set();
         let skillPoints = 0;
@@ -2453,314 +2166,29 @@
         let questProgress = {};
         let activeQuests = new Set();
         let storyProgress = null;
-        let codexDiscovered = new Set();
         let companions = new Set();
         let currentCombat = null;
         let combatInterval = null;
-        let damageNumbers = [];
         let pvpQueueActive = false;
         let onlinePlayers = new Map();
+        let otherPlayers = new Map(); // For multiplayer movement
 
-        // Pixel Art Assets
-        const PIXEL_SPRITES = {
-            warrior: generateWarriorSprite(),
-            mage: generateMageSprite(),
-            rogue: generateRogueSprite(),
-            archer: generateArcherSprite(),
-            paladin: generatePaladinSprite(),
-            goblin: generateGoblinSprite(),
-            skeleton: generateSkeletonSprite(),
-            orc: generateOrcSprite(),
-            troll: generateTrollSprite(),
-            merchant: generateMerchantSprite(),
-            blacksmith: generateBlacksmithSprite()
-        };
-
-        // Sprite generation functions (16x16 pixel art)
-        function generateWarriorSprite() {
+        // ==================== PIXEL ART GENERATION ====================
+        
+        // Generate pixel art sprites
+        function generatePixelArt(width, height, pixels) {
             const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
+            canvas.width = width;
+            canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx.imageSmoothingEnabled = false;
             
-            // Pixel art warrior
-            ctx.fillStyle = '#4a4a8a'; // Helm
-            ctx.fillRect(4, 0, 8, 4);
-            ctx.fillStyle = '#6a6aaa'; // Body armor
-            ctx.fillRect(2, 4, 12, 8);
-            ctx.fillStyle = '#aa8a4a'; // Sword
-            ctx.fillRect(12, 4, 3, 10);
-            ctx.fillStyle = '#8a6a4a'; // Legs
-            ctx.fillRect(4, 12, 3, 4);
-            ctx.fillRect(9, 12, 3, 4);
-            ctx.fillStyle = '#ffaa00'; // Gold trim
-            ctx.fillRect(2, 2, 2, 2);
-            ctx.fillRect(12, 2, 2, 2);
-            
-            return canvas;
-        }
-
-        function generateMageSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            ctx.imageSmoothingEnabled = false;
-            
-            // Pixel art mage
-            ctx.fillStyle = '#4a2a8a'; // Hat
-            ctx.fillRect(4, 0, 8, 4);
-            ctx.fillRect(6, 4, 4, 2);
-            ctx.fillStyle = '#6a4aaa'; // Robe
-            ctx.fillRect(3, 6, 10, 8);
-            ctx.fillStyle = '#aa6a4a'; // Staff
-            ctx.fillRect(13, 2, 2, 12);
-            ctx.fillStyle = '#ffaa00'; // Magic glow
-            ctx.fillRect(14, 0, 2, 2);
-            ctx.fillStyle = '#aa88ff'; // Stars
-            ctx.fillRect(6, 8, 2, 2);
-            ctx.fillRect(10, 10, 2, 2);
-            
-            return canvas;
-        }
-
-        function generateRogueSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            
-            // Pixel art rogue
-            ctx.fillStyle = '#2a4a2a'; // Hood
-            ctx.fillRect(4, 0, 8, 4);
-            ctx.fillStyle = '#4a6a4a'; // Cloak
-            ctx.fillRect(2, 4, 12, 8);
-            ctx.fillStyle = '#aaaaaa'; // Daggers
-            ctx.fillRect(3, 6, 2, 8);
-            ctx.fillRect(11, 6, 2, 8);
-            ctx.fillStyle = '#ccaa00'; // Eyes
-            ctx.fillRect(5, 2, 2, 1);
-            ctx.fillRect(9, 2, 2, 1);
-            
-            return canvas;
-        }
-
-        function generateArcherSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            
-            // Pixel art archer
-            ctx.fillStyle = '#6a8a4a'; // Leather armor
-            ctx.fillRect(3, 2, 10, 10);
-            ctx.fillStyle = '#aa8a4a'; // Bow
-            ctx.fillRect(11, 4, 4, 8);
-            ctx.fillStyle = '#ffffff'; // Arrow
-            ctx.fillRect(13, 2, 2, 2);
-            ctx.fillStyle = '#8a6a4a'; // Quiver
-            ctx.fillRect(0, 6, 3, 6);
-            ctx.fillStyle = '#ffaa00'; // Feathers
-            ctx.fillRect(1, 4, 2, 2);
-            
-            return canvas;
-        }
-
-        function generatePaladinSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            
-            // Pixel art paladin
-            ctx.fillStyle = '#aaaaaa'; // Plate armor
-            ctx.fillRect(2, 0, 12, 4);
-            ctx.fillStyle = '#8a8aaa'; // Cape
-            ctx.fillRect(0, 4, 16, 8);
-            ctx.fillStyle = '#ffaa00'; // Holy symbol
-            ctx.fillRect(6, 2, 4, 4);
-            ctx.fillStyle = '#ffffff'; // Shield
-            ctx.fillRect(10, 6, 4, 6);
-            ctx.fillStyle = '#cccccc'; // Helmet
-            ctx.fillRect(4, 4, 8, 2);
-            
-            return canvas;
-        }
-
-        function generateGoblinSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            
-            // Pixel art goblin
-            ctx.fillStyle = '#4a8a4a'; // Green skin
-            ctx.fillRect(4, 2, 8, 4);
-            ctx.fillStyle = '#6aaa6a';
-            ctx.fillRect(3, 6, 10, 6);
-            ctx.fillStyle = '#aa4a4a'; // Red eyes
-            ctx.fillRect(5, 3, 2, 2);
-            ctx.fillRect(9, 3, 2, 2);
-            ctx.fillStyle = '#8a4a4a'; // Mouth
-            ctx.fillRect(6, 6, 4, 1);
-            ctx.fillStyle = '#6a4a2a'; // Club
-            ctx.fillRect(12, 4, 3, 8);
-            
-            return canvas;
-        }
-
-        function generateSkeletonSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            
-            // Pixel art skeleton
-            ctx.fillStyle = '#aaaaaa'; // Bones
-            ctx.fillRect(4, 2, 8, 4);
-            ctx.fillStyle = '#cccccc';
-            ctx.fillRect(3, 6, 10, 6);
-            ctx.fillStyle = '#000000'; // Eye sockets
-            ctx.fillRect(5, 3, 2, 2);
-            ctx.fillRect(9, 3, 2, 2);
-            ctx.fillStyle = '#888888'; // Ribs
-            for(let i = 0; i < 4; i++) {
-                ctx.fillRect(5 + i*2, 8, 1, 4);
-            }
-            
-            return canvas;
-        }
-
-        function generateOrcSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            
-            // Pixel art orc
-            ctx.fillStyle = '#4a6a2a'; // Dark green
-            ctx.fillRect(3, 1, 10, 5);
-            ctx.fillStyle = '#6a8a4a';
-            ctx.fillRect(2, 6, 12, 7);
-            ctx.fillStyle = '#aa4a2a'; // Tusks
-            ctx.fillRect(4, 5, 2, 2);
-            ctx.fillRect(10, 5, 2, 2);
-            ctx.fillStyle = '#8a4a2a'; // Axe
-            ctx.fillRect(12, 2, 3, 8);
-            ctx.fillStyle = '#ffaa00'; // Gold earring
-            ctx.fillRect(1, 3, 2, 2);
-            
-            return canvas;
-        }
-
-        function generateTrollSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            
-            // Pixel art troll
-            ctx.fillStyle = '#6a8a6a'; // Grey-green
-            ctx.fillRect(2, 0, 12, 5);
-            ctx.fillStyle = '#8aaa8a';
-            ctx.fillRect(1, 5, 14, 8);
-            ctx.fillStyle = '#aa6a6a'; // Club
-            ctx.fillRect(12, 4, 4, 10);
-            ctx.fillStyle = '#cc8866'; // Nose
-            ctx.fillRect(7, 3, 2, 4);
-            ctx.fillStyle = '#ffaa00'; // Gold teeth
-            ctx.fillRect(5, 7, 1, 1);
-            ctx.fillRect(10, 7, 1, 1);
-            
-            return canvas;
-        }
-
-        function generateMerchantSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            
-            // Pixel art merchant
-            ctx.fillStyle = '#8a6a4a'; // Brown robe
-            ctx.fillRect(4, 2, 8, 4);
-            ctx.fillStyle = '#aa8a6a';
-            ctx.fillRect(3, 6, 10, 6);
-            ctx.fillStyle = '#ffaa00'; // Gold coins
-            ctx.fillRect(5, 4, 2, 2);
-            ctx.fillRect(9, 4, 2, 2);
-            ctx.fillStyle = '#ffd700'; // More gold
-            ctx.fillRect(7, 8, 2, 2);
-            
-            return canvas;
-        }
-
-        function generateBlacksmithSprite() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            
-            // Pixel art blacksmith
-            ctx.fillStyle = '#6a6a6a'; // Grey apron
-            ctx.fillRect(3, 2, 10, 10);
-            ctx.fillStyle = '#8a8a8a';
-            ctx.fillRect(4, 0, 8, 2);
-            ctx.fillStyle = '#aa5500'; // Hammer
-            ctx.fillRect(12, 2, 3, 6);
-            ctx.fillStyle = '#ffaa00'; // Forge fire
-            ctx.fillRect(2, 8, 3, 3);
-            ctx.fillStyle = '#ff5500';
-            ctx.fillRect(2, 9, 3, 1);
-            
-            return canvas;
-        }
-
-        // Tilemap generator
-        function generateTilemap() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 256;
-            canvas.height = 256;
-            const ctx = canvas.getContext('2d');
-            ctx.imageSmoothingEnabled = false;
-            
-            // Generate 16x16 tiles
-            for (let y = 0; y < 16; y++) {
-                for (let x = 0; x < 16; x++) {
-                    const tileX = x * 16;
-                    const tileY = y * 16;
-                    
-                    // Ground tile variations
-                    if ((x + y) % 3 === 0) {
-                        // Grass
-                        ctx.fillStyle = '#3a6a3a';
-                        ctx.fillRect(tileX, tileY, 16, 16);
-                        // Grass tufts
-                        ctx.fillStyle = '#5a8a5a';
-                        ctx.fillRect(tileX + 4, tileY + 4, 2, 2);
-                        ctx.fillRect(tileX + 10, tileY + 10, 2, 2);
-                    } else if ((x + y) % 3 === 1) {
-                        // Dark grass
-                        ctx.fillStyle = '#2a5a2a';
-                        ctx.fillRect(tileX, tileY, 16, 16);
-                        // Flowers
-                        ctx.fillStyle = '#ffaa00';
-                        ctx.fillRect(tileX + 8, tileY + 8, 2, 2);
-                    } else {
-                        // Path
-                        ctx.fillStyle = '#6a5a4a';
-                        ctx.fillRect(tileX, tileY, 16, 16);
-                        // Path texture
-                        ctx.fillStyle = '#8a7a6a';
-                        ctx.fillRect(tileX + 4, tileY + 4, 2, 2);
-                        ctx.fillRect(tileX + 10, tileY + 10, 2, 2);
-                    }
-                    
-                    // Add random details
-                    if (Math.random() > 0.8) {
-                        ctx.fillStyle = '#ffd700';
-                        ctx.fillRect(tileX + 2, tileY + 2, 1, 1);
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const color = pixels[y][x];
+                    if (color) {
+                        ctx.fillStyle = color;
+                        ctx.fillRect(x, y, 1, 1);
                     }
                 }
             }
@@ -2768,122 +2196,512 @@
             return canvas;
         }
 
-        const tilemap = generateTilemap();
-
-        // Game Data
-        const CLASSES = {
-            warrior: { name: 'WARRIOR', icon: '⚔️', desc: 'High HP & Strength', stats: { str: 5, agi: 2, int: 1, vit: 4 } },
-            mage: { name: 'MAGE', icon: '🧙', desc: 'Powerful spells', stats: { str: 1, agi: 2, int: 5, vit: 2 } },
-            rogue: { name: 'ROGUE', icon: '🗡️', desc: 'Agile, critical hits', stats: { str: 3, agi: 5, int: 2, vit: 2 } },
-            archer: { name: 'ARCHER', icon: '🏹', desc: 'Ranged precision', stats: { str: 2, agi: 5, int: 2, vit: 3 } },
-            paladin: { name: 'PALADIN', icon: '🛡️', desc: 'Holy warrior', stats: { str: 4, agi: 2, int: 3, vit: 4 } }
+        // Player Classes
+        const PLAYER_SPRITES = {
+            warrior: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '08888ff8888ff880'.split(''),
+                '08888ff8888ff880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#8b8b8b';
+                if (c === 'f') return '#d4af37';
+                return 'transparent';
+            }))),
+            
+            mage: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '08888ffff8888880'.split(''),
+                '08888ffff8888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#4169e1';
+                if (c === 'f') return '#ffd700';
+                return 'transparent';
+            }))),
+            
+            rogue: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '08888ff8888ff880'.split(''),
+                '08888ff8888ff880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split(''),
+                '0000000000000000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#4a4a4a';
+                if (c === 'f') return '#c0c0c0';
+                return 'transparent';
+            }))),
+            
+            archer: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '088888ff88888880'.split(''),
+                '088888ff88888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#228b22';
+                if (c === 'f') return '#8b4513';
+                return 'transparent';
+            }))),
+            
+            paladin: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '08888ff8888ff880'.split(''),
+                '08888ff8888ff880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#cd7f32';
+                if (c === 'f') return '#ffffff';
+                return 'transparent';
+            })))
         };
 
-        const SKILLS = {
-            warrior: [
-                { id: 'power_strike', name: 'Power Strike', icon: '⚡', desc: 'Deal 150% damage', tier: 1, cooldown: 2, mana: 10 },
-                { id: 'cleave', name: 'Cleave', icon: '🌀', desc: 'Hit all enemies', tier: 1, cooldown: 3, mana: 15 },
-                { id: 'battle_cry', name: 'Battle Cry', icon: '📢', desc: 'Increase attack', tier: 2, cooldown: 5, mana: 20 },
-                { id: 'whirlwind', name: 'Whirlwind', icon: '💫', desc: 'Spin attack', tier: 2, cooldown: 4, mana: 20 }
-            ],
-            mage: [
-                { id: 'fireball', name: 'Fireball', icon: '🔥', desc: 'Deal fire damage', tier: 1, cooldown: 2, mana: 15 },
-                { id: 'frostbolt', name: 'Frostbolt', icon: '❄️', desc: 'Slow enemy', tier: 1, cooldown: 2, mana: 12 },
-                { id: 'arcane_explosion', name: 'Arcane Explosion', icon: '💥', desc: 'AoE magic', tier: 2, cooldown: 4, mana: 25 },
-                { id: 'polymorph', name: 'Polymorph', icon: '🐸', desc: 'Transform enemy', tier: 2, cooldown: 8, mana: 30 }
-            ],
-            rogue: [
-                { id: 'backstab', name: 'Backstab', icon: '🗡️', desc: '200% damage from behind', tier: 1, cooldown: 3, mana: 10 },
-                { id: 'poison', name: 'Poison', icon: '☠️', desc: 'Damage over time', tier: 1, cooldown: 4, mana: 15 },
-                { id: 'evasion', name: 'Evasion', icon: '💨', desc: 'Dodge next attack', tier: 2, cooldown: 6, mana: 20 },
-                { id: 'shadow_step', name: 'Shadow Step', icon: '🌑', desc: 'Teleport behind enemy', tier: 2, cooldown: 5, mana: 25 }
-            ],
-            archer: [
-                { id: 'multi_shot', name: 'Multi-shot', icon: '🏹', desc: 'Hit multiple enemies', tier: 1, cooldown: 3, mana: 15 },
-                { id: 'piercing', name: 'Piercing Arrow', icon: '➡️', desc: 'Ignore armor', tier: 1, cooldown: 4, mana: 20 },
-                { id: 'quick_shot', name: 'Quick Shot', icon: '⚡', desc: 'Attack twice', tier: 2, cooldown: 5, mana: 25 },
-                { id: 'aimed_shot', name: 'Aimed Shot', icon: '🎯', desc: 'High damage', tier: 2, cooldown: 6, mana: 30 }
-            ],
-            paladin: [
-                { id: 'holy_strike', name: 'Holy Strike', icon: '✨', desc: 'Holy damage', tier: 1, cooldown: 2, mana: 15 },
-                { id: 'heal', name: 'Heal', icon: '💚', desc: 'Restore HP', tier: 1, cooldown: 4, mana: 20 },
-                { id: 'divine_shield', name: 'Divine Shield', icon: '🛡️', desc: 'Block damage', tier: 2, cooldown: 8, mana: 30 },
-                { id: 'judgment', name: 'Judgment', icon: '⚖️', desc: 'Smite enemy', tier: 2, cooldown: 5, mana: 25 }
-            ]
+        // Enemy Sprites
+        const ENEMY_SPRITES = {
+            goblin: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0000888888888000'.split(''),
+                '0008888888888800'.split(''),
+                '0088888888888880'.split(''),
+                '0088888888888880'.split(''),
+                '00888ff8888ff880'.split(''),
+                '00888ff8888ff880'.split(''),
+                '0088888888888880'.split(''),
+                '0088888888888880'.split(''),
+                '0088888888888880'.split(''),
+                '0088888888888880'.split(''),
+                '0088888888888880'.split(''),
+                '0088888888888880'.split(''),
+                '0008888888888800'.split(''),
+                '0000888888888000'.split(''),
+                '0000000000000000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#228b22';
+                if (c === 'f') return '#8b0000';
+                return 'transparent';
+            }))),
+            
+            goblin_warrior: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '08888ff8888ff880'.split(''),
+                '08888ff8888ff880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#2e8b57';
+                if (c === 'f') return '#b22222';
+                return 'transparent';
+            }))),
+            
+            goblin_chief: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '08888ffff8ff8880'.split(''),
+                '08888ffff8ff8880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#3cb371';
+                if (c === 'f') return '#ffd700';
+                return 'transparent';
+            }))),
+            
+            enemy_soldier: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#8b4513';
+                return 'transparent';
+            }))),
+            
+            enemy_knight: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#c0c0c0';
+                return 'transparent';
+            }))),
+            
+            enemy_general: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#ffd700';
+                return 'transparent';
+            }))),
+            
+            corrupted_creature: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#800080';
+                return 'transparent';
+            }))),
+            
+            corrupted_beast: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#8b008b';
+                return 'transparent';
+            }))),
+            
+            the_corruptor: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#4b0082';
+                return 'transparent';
+            }))),
+            
+            time_wraith: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#4682b4';
+                return 'transparent';
+            }))),
+            
+            temporal_beast: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#5f9ea0';
+                return 'transparent';
+            }))),
+            
+            time_keeper: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#daa520';
+                return 'transparent';
+            }))),
+            
+            void_guardian: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#483d8b';
+                return 'transparent';
+            }))),
+            
+            void_lord: generatePixelArt(16, 16, [
+                '0000000000000000'.split(''),
+                '0008888888888000'.split(''),
+                '0088888888888800'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0888888888888880'.split(''),
+                '0088888888888800'.split(''),
+                '0008888888888000'.split('')
+            ].map(row => row.map(c => {
+                if (c === '8') return '#2f4f4f';
+                return 'transparent';
+            })))
         };
 
-        // Legendary Weapons
-        const LEGENDARY_WEAPONS = {
-            'dragon_blade': {
-                name: 'Dragon Blade',
-                icon: '⚔️',
-                rarity: 'legendary',
-                damage: 50,
-                stats: { strength: 40, fire_damage: 15 },
-                effect: 'Chance to breathe fire',
-                description: 'Wreathed in eternal flame'
-            },
-            'void_orb': {
-                name: 'Void Orb',
-                icon: '🔮',
-                rarity: 'legendary',
-                damage: 45,
-                stats: { intelligence: 60, void_damage: 30 },
-                effect: 'Summon void minions',
-                description: 'An orb of incomprehensible power'
-            },
-            'shadow_dagger': {
-                name: 'Shadow Dagger',
-                icon: '🗡️',
-                rarity: 'legendary',
-                damage: 35,
-                stats: { agility: 50, critical: 25 },
-                effect: 'Backstab deals 300% damage',
-                description: 'Forged in the shadow realm'
-            },
-            'thunder_hammer': {
-                name: 'Thunder Hammer',
-                icon: '🔨',
-                rarity: 'legendary',
-                damage: 60,
-                stats: { strength: 55, lightning_damage: 25 },
-                effect: 'Stuns enemies on critical',
-                description: 'Crackling with lightning'
-            },
-            'phoenix_bow': {
-                name: 'Phoenix Bow',
-                icon: '🏹',
-                rarity: 'legendary',
-                damage: 40,
-                stats: { agility: 55, fire_damage: 20 },
-                effect: 'Arrows explode on impact',
-                description: 'Fletched with phoenix feathers'
-            },
-            'soul_reaper': {
-                name: 'Soul Reaper',
-                icon: '💀',
-                rarity: 'legendary',
-                damage: 55,
-                stats: { strength: 45, life_steal: 15 },
-                effect: 'Heals for 20% of damage',
-                description: 'Feeds on enemy souls'
-            }
+        // Building Sprites
+        const BUILDING_SPRITES = {
+            village_house: generatePixelArt(32, 32, Array(32).fill().map(() => Array(32).fill('#8b4513'))),
+            blacksmith: generatePixelArt(32, 32, Array(32).fill().map(() => Array(32).fill('#b8860b'))),
+            tavern: generatePixelArt(32, 32, Array(32).fill().map(() => Array(32).fill('#8b4513'))),
+            guild_hall: generatePixelArt(32, 32, Array(32).fill().map(() => Array(32).fill('#556b2f'))),
+            castle: generatePixelArt(32, 32, Array(32).fill().map(() => Array(32).fill('#696969'))),
+            dungeon: generatePixelArt(32, 32, Array(32).fill().map(() => Array(32).fill('#2f4f4f')))
+        };
+
+        // Item Icons
+        const ITEM_ICONS = {
+            'iron_sword': generatePixelArt(16, 16, Array(16).fill().map(() => Array(16).fill('#c0c0c0'))),
+            'steel_sword': generatePixelArt(16, 16, Array(16).fill().map(() => Array(16).fill('#a9a9a9'))),
+            'health_potion': generatePixelArt(16, 16, Array(16).fill().map(() => Array(16).fill('#ff4444'))),
+            'mana_potion': generatePixelArt(16, 16, Array(16).fill().map(() => Array(16).fill('#4444ff'))),
+            'leather_armor': generatePixelArt(16, 16, Array(16).fill().map(() => Array(16).fill('#8b4513'))),
+            'chain_mail': generatePixelArt(16, 16, Array(16).fill().map(() => Array(16).fill('#c0c0c0'))),
+            'iron_ore': generatePixelArt(16, 16, Array(16).fill().map(() => Array(16).fill('#696969')))
         };
 
         // World Entities
         let worldEntities = [
-            // Mobs
-            { id: 'goblin_1', type: 'mob', class: 'goblin', name: 'Goblin', x: 15, y: 10, hp: 30, maxHp: 30, level: 1, attack: 5, defense: 2, exp: 10, gold: 5 },
-            { id: 'goblin_2', type: 'mob', class: 'goblin', name: 'Goblin', x: 18, y: 12, hp: 30, maxHp: 30, level: 1, attack: 5, defense: 2, exp: 10, gold: 5 },
-            { id: 'skeleton_1', type: 'mob', class: 'skeleton', name: 'Skeleton', x: 25, y: 20, hp: 45, maxHp: 45, level: 2, attack: 8, defense: 3, exp: 15, gold: 8 },
-            { id: 'orc_1', type: 'mob', class: 'orc', name: 'Orc', x: 30, y: 25, hp: 60, maxHp: 60, level: 3, attack: 12, defense: 5, exp: 20, gold: 10 },
-            { id: 'troll_1', type: 'mob', class: 'troll', name: 'Troll', x: 40, y: 30, hp: 80, maxHp: 80, level: 4, attack: 15, defense: 8, exp: 25, gold: 15 },
-            
-            // NPCs
-            { id: 'merchant_1', type: 'npc', class: 'merchant', name: 'Merchant', x: 10, y: 5, dialog: 'Welcome to my shop! Would you like to see my wares?' },
-            { id: 'blacksmith_1', type: 'npc', class: 'blacksmith', name: 'Blacksmith', x: 12, y: 7, dialog: 'Need weapons? I forge the finest steel.' },
-            { id: 'healer_1', type: 'npc', class: 'merchant', name: 'Priestess', x: 8, y: 8, dialog: 'Let me heal your wounds.' }
+            // Buildings
+            { id: 'village_1', type: 'building', class: 'village_house', name: 'Village House', x: 10, y: 5, width: 2, height: 2 },
+            { id: 'blacksmith_1', type: 'building', class: 'blacksmith', name: 'Blacksmith', x: 15, y: 5, width: 2, height: 2 },
+            { id: 'tavern_1', type: 'building', class: 'tavern', name: 'Tavern', x: 20, y: 5, width: 2, height: 2 },
+            { id: 'guild_1', type: 'building', class: 'guild_hall', name: 'Guild Hall', x: 25, y: 5, width: 2, height: 2 },
+            { id: 'castle_1', type: 'building', class: 'castle', name: 'Castle', x: 30, y: 5, width: 3, height: 3 },
+            { id: 'dungeon_1', type: 'building', class: 'dungeon', name: 'Dungeon', x: 40, y: 5, width: 2, height: 2 },
+
+            // Mobs - Act 1
+            { id: 'goblin_1', type: 'mob', class: 'goblin', name: 'Goblin', x: 15, y: 10, hp: 50, maxHp: 50, level: 1, attack: 8, defense: 2, exp: 25, gold: 10 },
+            { id: 'goblin_2', type: 'mob', class: 'goblin', name: 'Goblin', x: 18, y: 12, hp: 50, maxHp: 50, level: 1, attack: 8, defense: 2, exp: 25, gold: 10 },
+            { id: 'goblin_3', type: 'mob', class: 'goblin', name: 'Goblin', x: 16, y: 15, hp: 50, maxHp: 50, level: 1, attack: 8, defense: 2, exp: 25, gold: 10 },
+            { id: 'goblin_warrior_1', type: 'mob', class: 'goblin_warrior', name: 'Goblin Warrior', x: 20, y: 18, hp: 80, maxHp: 80, level: 2, attack: 12, defense: 5, exp: 40, gold: 20 },
+            { id: 'goblin_chief_1', type: 'mob', class: 'goblin_chief', name: 'Goblin Chief', x: 25, y: 20, hp: 150, maxHp: 150, level: 3, attack: 18, defense: 8, exp: 100, gold: 50, isBoss: true },
+
+            // Mobs - Act 2
+            { id: 'enemy_soldier_1', type: 'mob', class: 'enemy_soldier', name: 'Enemy Soldier', x: 35, y: 25, hp: 120, maxHp: 120, level: 4, attack: 15, defense: 8, exp: 60, gold: 30 },
+            { id: 'enemy_soldier_2', type: 'mob', class: 'enemy_soldier', name: 'Enemy Soldier', x: 38, y: 28, hp: 120, maxHp: 120, level: 4, attack: 15, defense: 8, exp: 60, gold: 30 },
+            { id: 'enemy_knight_1', type: 'mob', class: 'enemy_knight', name: 'Enemy Knight', x: 42, y: 30, hp: 180, maxHp: 180, level: 5, attack: 22, defense: 15, exp: 90, gold: 50 },
+            { id: 'enemy_general_1', type: 'mob', class: 'enemy_general', name: 'Enemy General', x: 45, y: 35, hp: 250, maxHp: 250, level: 6, attack: 30, defense: 20, exp: 150, gold: 100, isBoss: true },
+
+            // Mobs - Act 3
+            { id: 'corrupted_creature_1', type: 'mob', class: 'corrupted_creature', name: 'Corrupted Creature', x: 50, y: 40, hp: 200, maxHp: 200, level: 7, attack: 25, defense: 10, exp: 80, gold: 40 },
+            { id: 'corrupted_creature_2', type: 'mob', class: 'corrupted_creature', name: 'Corrupted Creature', x: 52, y: 42, hp: 200, maxHp: 200, level: 7, attack: 25, defense: 10, exp: 80, gold: 40 },
+            { id: 'corrupted_beast_1', type: 'mob', class: 'corrupted_beast', name: 'Corrupted Beast', x: 55, y: 45, hp: 280, maxHp: 280, level: 8, attack: 32, defense: 15, exp: 110, gold: 60 },
+            { id: 'the_corruptor_1', type: 'mob', class: 'the_corruptor', name: 'The Corruptor', x: 60, y: 50, hp: 500, maxHp: 500, level: 10, attack: 40, defense: 20, exp: 500, gold: 300, isBoss: true },
+
+            // Mobs - Act 4
+            { id: 'time_wraith_1', type: 'mob', class: 'time_wraith', name: 'Time Wraith', x: 65, y: 55, hp: 350, maxHp: 350, level: 12, attack: 35, defense: 18, exp: 150, gold: 80 },
+            { id: 'time_wraith_2', type: 'mob', class: 'time_wraith', name: 'Time Wraith', x: 68, y: 58, hp: 350, maxHp: 350, level: 12, attack: 35, defense: 18, exp: 150, gold: 80 },
+            { id: 'temporal_beast_1', type: 'mob', class: 'temporal_beast', name: 'Temporal Beast', x: 72, y: 60, hp: 500, maxHp: 500, level: 14, attack: 45, defense: 25, exp: 200, gold: 120 },
+            { id: 'time_keeper_1', type: 'mob', class: 'time_keeper', name: 'Time Keeper', x: 75, y: 65, hp: 1000, maxHp: 1000, level: 15, attack: 50, defense: 30, exp: 800, gold: 600, isBoss: true },
+
+            // Mobs - Act 5
+            { id: 'void_guardian_1', type: 'mob', class: 'void_guardian', name: 'Void Guardian', x: 80, y: 70, hp: 800, maxHp: 800, level: 18, attack: 55, defense: 35, exp: 400, gold: 250 },
+            { id: 'void_guardian_2', type: 'mob', class: 'void_guardian', name: 'Void Guardian', x: 82, y: 72, hp: 800, maxHp: 800, level: 18, attack: 55, defense: 35, exp: 400, gold: 250 },
+            { id: 'void_lord_1', type: 'mob', class: 'void_lord', name: 'Void Lord', x: 85, y: 75, hp: 2000, maxHp: 2000, level: 20, attack: 70, defense: 40, exp: 2000, gold: 1000, isBoss: true, isFinalBoss: true }
         ];
+
+        // NPCs
+        const NPCS = [
+            { id: 'elder_1', type: 'npc', class: 'elder', name: 'Elder', x: 12, y: 8, dialog: 'Strange creatures have been seen near the forest. Please investigate.' },
+            { id: 'merchant_1', type: 'npc', class: 'merchant', name: 'Merchant', x: 14, y: 6, dialog: 'Welcome to my shop! Would you like to see my wares?' },
+            { id: 'healer_1', type: 'npc', class: 'healer', name: 'Healer', x: 16, y: 7, dialog: 'Let me heal your wounds for a small fee.' },
+            { id: 'guard_1', type: 'npc', class: 'guard', name: 'Guard', x: 18, y: 9, dialog: 'Stay alert! The forest is dangerous.' },
+            { id: 'king_1', type: 'npc', class: 'king', name: 'King', x: 32, y: 6, dialog: 'Our kingdom is at war. We need heroes like you.' },
+            { id: 'wizard_1', type: 'npc', class: 'wizard', name: 'Wizard', x: 34, y: 8, dialog: 'The fabric of time is unraveling!' },
+            { id: 'druid_1', type: 'npc', class: 'druid', name: 'Druid', x: 52, y: 42, dialog: 'The corruption spreads through the forest.' }
+        ];
+
+        worldEntities = [...worldEntities, ...NPCS];
 
         // ==================== UTILITY FUNCTIONS ====================
         function showNotification(message, type = 'info', duration = 4000) {
@@ -3014,7 +2832,7 @@
                 token = data.access_token;
                 localStorage.setItem('rpg_token', token);
                 currentUser = { username, role: data.role, is_owner: data.is_owner };
-                showNotification(`Welcome back, ${username}! ${data.is_owner ? '👑 Owner' : ''}`, 'success');
+                showNotification(`Welcome back, ${username}!`, 'success');
                 await loadCharacters();
             } catch (error) {
                 errorEl.textContent = error.message;
@@ -3098,14 +2916,14 @@
             const grid = document.getElementById('char-grid');
             grid.innerHTML = '';
             characters.forEach(char => {
-                const sprite = PIXEL_SPRITES[char.class_name] || PIXEL_SPRITES.warrior;
+                const sprite = PLAYER_SPRITES[char.class_name] || PLAYER_SPRITES.warrior;
                 const spriteUrl = sprite.toDataURL();
                 
                 const card = document.createElement('div');
                 card.className = 'char-card';
                 card.onclick = () => selectCharacter(char.id);
                 card.innerHTML = `
-                    <img src="${spriteUrl}" class="char-icon" style="width: 64px; height: 64px; image-rendering: pixelated;">
+                    <img src="${spriteUrl}" class="char-icon">
                     <div class="char-name">${char.name}</div>
                     <div class="char-class">${char.class_name.toUpperCase()}</div>
                     <div class="char-level">Level <span>${char.level}</span></div>
@@ -3139,12 +2957,6 @@
                     }
                 });
 
-                // Load codex
-                if (data.codex) {
-                    codexDiscovered = new Set(data.codex.map(c => c.entry_id));
-                }
-
-                // Update UI
                 updateLobbyStats();
             } catch (error) {
                 showNotification('Failed to load character data', 'error');
@@ -3159,24 +2971,28 @@
         function renderClassGrid() {
             const grid = document.getElementById('class-grid');
             grid.innerHTML = '';
-            Object.entries(CLASSES).forEach(([key, cls]) => {
+            
+            const classes = [
+                { id: 'warrior', name: 'WARRIOR', desc: 'High HP & Strength' },
+                { id: 'mage', name: 'MAGE', desc: 'Powerful spells' },
+                { id: 'rogue', name: 'ROGUE', desc: 'Agile, critical hits' },
+                { id: 'archer', name: 'ARCHER', desc: 'Ranged precision' },
+                { id: 'paladin', name: 'PALADIN', desc: 'Holy warrior' }
+            ];
+            
+            classes.forEach(cls => {
+                const sprite = PLAYER_SPRITES[cls.id];
+                const spriteUrl = sprite.toDataURL();
+                
                 const card = document.createElement('div');
                 card.className = 'class-card';
-                card.dataset.class = key;
-                card.onclick = () => selectClass(key, card);
-                
-                const stats = cls.stats;
+                card.dataset.class = cls.id;
+                card.onclick = () => selectClass(cls.id, card);
                 
                 card.innerHTML = `
-                    <div class="class-icon">${cls.icon}</div>
+                    <img src="${spriteUrl}" class="class-icon">
                     <div class="class-name">${cls.name}</div>
                     <div class="class-desc">${cls.desc}</div>
-                    <div class="stat-preview">
-                        <div class="stat-dot ${stats.str >= 4 ? 'filled' : ''}"></div>
-                        <div class="stat-dot ${stats.agi >= 4 ? 'filled' : ''}"></div>
-                        <div class="stat-dot ${stats.int >= 4 ? 'filled' : ''}"></div>
-                        <div class="stat-dot ${stats.vit >= 4 ? 'filled' : ''}"></div>
-                    </div>
                 `;
                 grid.appendChild(card);
             });
@@ -3238,10 +3054,12 @@
             const card = document.getElementById('lobby-stats-card');
             if (!currentCharacter) return;
             
-            const cls = CLASSES[currentCharacter.class_name] || {};
+            const sprite = PLAYER_SPRITES[currentCharacter.class_name] || PLAYER_SPRITES.warrior;
+            const spriteUrl = sprite.toDataURL();
+            
             card.innerHTML = `
                 <div class="char-card-large">
-                    <img src="${PIXEL_SPRITES[currentCharacter.class_name]?.toDataURL()}" class="char-icon-large" style="width: 64px; height: 64px; image-rendering: pixelated;">
+                    <img src="${spriteUrl}" class="char-icon-large">
                     <div class="char-name-large">${currentCharacter.name}</div>
                     <div class="char-class-large">${currentCharacter.class_name.toUpperCase()} · Level ${currentCharacter.level}</div>
                     <div class="stat-row">
@@ -3253,7 +3071,7 @@
                         <span class="stat-value">${currentCharacter.mana}/${currentCharacter.max_mana}</span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label">⚔ STR</span>
+                        <span class="stat-label">⚔️ STR</span>
                         <span class="stat-value">${currentCharacter.strength}</span>
                     </div>
                     <div class="stat-row">
@@ -3267,10 +3085,6 @@
                     <div class="stat-row">
                         <span class="stat-label">🛡️ VIT</span>
                         <span class="stat-value">${currentCharacter.vitality}</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">⚔️ PVP Rating</span>
-                        <span class="stat-value" id="pvp-rating">1000</span>
                     </div>
                 </div>
             `;
@@ -3308,14 +3122,14 @@
                 case 'leaderboard':
                     loadLeaderboard('level', content);
                     break;
-                case 'admin':
-                    renderAdminTab(content);
+                case 'guilds':
+                    renderGuildTab(content);
                     break;
-                case 'mod':
-                    renderModTab(content);
+                case 'story':
+                    renderStoryTab(content);
                     break;
-                case 'settings':
-                    renderSettingsTab(content);
+                case 'quests':
+                    renderQuestsTab(content);
                     break;
             }
         }
@@ -3331,11 +3145,11 @@
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px">
                         <div style="background:var(--bg-panel);padding:15px;text-align:center">
-                            <div style="font-size:24px;color:#ffaa00">${Math.floor(Math.random() * 50) + 100}</div>
+                            <div style="font-size:24px;color:#ffaa00" id="pvp-active-players">0</div>
                             <div style="font-size:12px;color:var(--text-muted)">Active Players</div>
                         </div>
                         <div style="background:var(--bg-panel);padding:15px;text-align:center">
-                            <div style="font-size:24px;color:var(--gold)">${Math.floor(Math.random() * 20) + 50}</div>
+                            <div style="font-size:24px;color:var(--gold)" id="pvp-battles-today">0</div>
                             <div style="font-size:12px;color:var(--text-muted)">Battles Today</div>
                         </div>
                     </div>
@@ -3346,45 +3160,77 @@
             `;
         }
 
-        function renderAdminTab(container) {
+        function renderGuildTab(container) {
             container.innerHTML = `
-                <div class="panel-title" style="color:var(--gold);">👑 OWNER ADMIN PANEL</div>
-                <div style="background:var(--bg-item);border:2px solid var(--gold);padding:20px;">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">
-                        <button class="action-btn" onclick="openCheatMenu()" style="background:#ffd700;color:#000;">👑 OPEN CHEAT MENU</button>
-                        <button class="action-btn" onclick="refreshModPanel()">🔄 REFRESH SERVER</button>
-                        <button class="action-btn" onclick="gameEvent('announce')">📢 ANNOUNCE</button>
-                        <button class="action-btn" onclick="gameEvent('spawn_boss')">🔥 SPAWN BOSS</button>
-                        <button class="action-btn" onclick="spawnLegendaryWeapon()">⚔️ SPAWN LEGENDARY</button>
-                    </div>
-                    <div style="margin-top:15px;color:var(--text-muted);">
-                        Server Status: <span style="color:#44ff44;">● ONLINE</span>
+                <div class="panel-title">⚔️ GUILD</div>
+                <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:20px;">
+                    <div style="text-align:center;padding:30px">
+                        <div style="font-size:48px;margin-bottom:15px">⚔️</div>
+                        <h3 style="color:var(--gold);margin-bottom:10px">No Guild</h3>
+                        <p style="color:var(--text-muted);margin-bottom:20px">Join or create a guild to play together!</p>
+                        <input type="text" id="guild-name" class="login-input" placeholder="Guild Name" style="margin-bottom:10px">
+                        <input type="text" id="guild-tag" class="login-input" placeholder="Tag (2-5 chars)" maxlength="5" style="margin-bottom:10px">
+                        <button class="action-btn" onclick="createGuild()">CREATE GUILD</button>
                     </div>
                 </div>
             `;
         }
 
-        function renderModTab(container) {
+        function renderStoryTab(container) {
             container.innerHTML = `
-                <div class="panel-title" style="color:#88aaff;">🛡️ MODERATOR PANEL</div>
-                <div style="background:var(--bg-item);border:2px solid #88aaff;padding:20px;">
-                    <button class="action-btn" onclick="openModPanel()">OPEN MOD PANEL</button>
-                </div>
-            `;
-        }
-
-        function renderSettingsTab(container) {
-            container.innerHTML = `
-                <div class="panel-title">SETTINGS</div>
-                <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:20px">
+                <div class="panel-title">📜 STORY PROGRESS</div>
+                <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:20px;">
                     <div style="margin-bottom:15px">
-                        <div style="color:var(--text-muted);margin-bottom:5px">Account</div>
-                        <div>Username: <span style="color:var(--gold)">${currentUser?.username}</span></div>
-                        <div>Role: <span style="color:var(--gold)">${currentUser?.role || 'player'} ${currentUser?.is_owner ? '👑' : ''}</span></div>
+                        <h3 style="color:var(--gold);margin-bottom:10px">Act 1: Village Invasion</h3>
+                        <div style="color:var(--text-muted)">Defeat the goblin threat</div>
                     </div>
-                    <button class="action-btn danger" onclick="logout()">LOGOUT</button>
+                    <div style="margin-bottom:15px">
+                        <h3 style="color:var(--gold);margin-bottom:10px">Act 2: Kingdom War</h3>
+                        <div style="color:var(--text-muted)">Defend the kingdom from invasion</div>
+                    </div>
+                    <div style="margin-bottom:15px">
+                        <h3 style="color:var(--gold);margin-bottom:10px">Act 3: Corruption Spreads</h3>
+                        <div style="color:var(--text-muted)">Find the source of corruption</div>
+                    </div>
+                    <div style="margin-bottom:15px">
+                        <h3 style="color:var(--gold);margin-bottom:10px">Act 4: Time Fracture</h3>
+                        <div style="color:var(--text-muted)">Fix the broken timeline</div>
+                    </div>
+                    <div style="margin-bottom:15px">
+                        <h3 style="color:var(--gold);margin-bottom:10px">Act 5: Final Confrontation</h3>
+                        <div style="color:var(--text-muted)">Face the Void Lord</div>
+                    </div>
                 </div>
             `;
+        }
+
+        function renderQuestsTab(container) {
+            container.innerHTML = `
+                <div class="panel-title">⚔️ QUESTS</div>
+                <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:20px;">
+                    <div id="quest-list-tab"></div>
+                </div>
+            `;
+            
+            const questList = document.getElementById('quest-list-tab');
+            questList.innerHTML = '';
+            
+            const quests = [
+                { id: 'q1_1', title: 'The Dark Omen', act: 1, status: 'available' },
+                { id: 'q1_2', title: 'The Goblin Camp', act: 1, status: 'locked' },
+                { id: 'q1_3', title: 'Goblin Chief', act: 1, status: 'locked' },
+                { id: 'q2_1', title: 'The King\'s Summons', act: 2, status: 'locked' }
+            ];
+            
+            quests.forEach(quest => {
+                const div = document.createElement('div');
+                div.className = 'quest-entry';
+                div.innerHTML = `
+                    <div class="quest-title">${quest.title}</div>
+                    <div class="quest-desc">Act ${quest.act} · ${quest.status}</div>
+                `;
+                questList.appendChild(div);
+            });
         }
 
         async function loadLeaderboard(type, container) {
@@ -3462,9 +3308,6 @@
                     addChatMessage('🔥 BOSS', `${data.boss} has appeared!`, 'announce');
                     showNotification(`🔥 BOSS SPAWNED: ${data.boss}`, 'warning', 7000);
                     break;
-                case 'cheat':
-                    showNotification(data.message, 'info');
-                    break;
                 case 'error':
                     showNotification(data.message, 'error');
                     break;
@@ -3473,7 +3316,7 @@
 
         function handleOtherPlayerMove(data) {
             if (data.character_id !== currentCharacter?.id) {
-                onlinePlayers.set(data.character_id, {
+                otherPlayers.set(data.character_id, {
                     id: data.character_id,
                     x: data.x,
                     y: data.y,
@@ -3574,13 +3417,13 @@
                 this.tileSize = 32;
                 this.camera = { x: 0, y: 0 };
                 this.player = { 
-                    x: currentCharacter?.x_position || 50, 
-                    y: currentCharacter?.y_position || 50,
-                    targetX: currentCharacter?.x_position || 50,
-                    targetY: currentCharacter?.y_position || 50 
+                    x: currentCharacter?.x || 50, 
+                    y: currentCharacter?.y || 50,
+                    targetX: currentCharacter?.x || 50,
+                    targetY: currentCharacter?.y || 50 
                 };
                 this.entities = worldEntities;
-                this.onlinePlayers = onlinePlayers;
+                this.otherPlayers = otherPlayers;
                 this.frame = 0;
                 this.animations = [];
                 this.resize();
@@ -3619,7 +3462,12 @@
 
             render() {
                 const ctx = this.ctx;
-                ctx.fillStyle = '#1a332a';
+                
+                // Sky gradient
+                const gradient = ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+                gradient.addColorStop(0, '#0a1a2a');
+                gradient.addColorStop(1, '#1a2a3a');
+                ctx.fillStyle = gradient;
                 ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
                 const startX = Math.floor(this.camera.x / this.tileSize) - 2;
@@ -3627,14 +3475,20 @@
                 const endX = startX + Math.ceil(this.canvas.width / this.tileSize) + 4;
                 const endY = startY + Math.ceil(this.canvas.height / this.tileSize) + 4;
 
-                // Draw tilemap
+                // Draw ground tiles
                 for (let y = startY; y < endY; y++) {
                     for (let x = startX; x < endX; x++) {
                         const screenX = x * this.tileSize - this.camera.x;
                         const screenY = y * this.tileSize - this.camera.y;
                         
-                        // Draw ground tile
-                        ctx.fillStyle = (x + y) % 3 === 0 ? '#3a6a3a' : (x + y) % 3 === 1 ? '#2a5a2a' : '#6a5a4a';
+                        // Ground tile variations
+                        if ((x + y) % 3 === 0) {
+                            ctx.fillStyle = '#3a6a3a'; // Grass
+                        } else if ((x + y) % 3 === 1) {
+                            ctx.fillStyle = '#2a5a2a'; // Dark grass
+                        } else {
+                            ctx.fillStyle = '#6a5a4a'; // Path
+                        }
                         ctx.fillRect(screenX, screenY, this.tileSize, this.tileSize);
                         
                         // Add details
@@ -3645,50 +3499,102 @@
                     }
                 }
 
-                // Draw entities
-                const allEntities = [...this.entities, ...this.onlinePlayers.values()];
-                allEntities.forEach(entity => {
-                    if (entity.id === currentCharacter?.id) return;
+                // Draw buildings
+                this.entities.filter(e => e.type === 'building').forEach(building => {
+                    const screenX = building.x * this.tileSize - this.camera.x;
+                    const screenY = building.y * this.tileSize - this.camera.y;
                     
-                    const screenX = entity.x * this.tileSize - this.camera.x;
-                    const screenY = entity.y * this.tileSize - this.camera.y;
+                    if (screenX < -50 || screenX > this.canvas.width + 50 || 
+                        screenY < -50 || screenY > this.canvas.height + 50) return;
+                    
+                    // Draw building base
+                    ctx.fillStyle = '#8b4513';
+                    ctx.fillRect(screenX, screenY, this.tileSize * (building.width || 2), this.tileSize * (building.height || 2));
+                    
+                    // Draw roof
+                    ctx.fillStyle = '#a0522d';
+                    ctx.fillRect(screenX - 4, screenY - 8, this.tileSize * (building.width || 2) + 8, 8);
+                    
+                    // Draw door
+                    ctx.fillStyle = '#654321';
+                    ctx.fillRect(screenX + this.tileSize, screenY + this.tileSize, 16, 16);
+                    
+                    // Draw name
+                    ctx.font = '10px "Courier New"';
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText(building.name, screenX, screenY - 12);
+                });
+
+                // Draw mobs
+                this.entities.filter(e => e.type === 'mob').forEach(mob => {
+                    const screenX = mob.x * this.tileSize - this.camera.x;
+                    const screenY = mob.y * this.tileSize - this.camera.y;
                     
                     if (screenX < -50 || screenX > this.canvas.width + 50 || 
                         screenY < -50 || screenY > this.canvas.height + 50) return;
                     
                     // Get sprite
-                    let sprite;
-                    if (entity.type === 'mob' || entity.class) {
-                        sprite = PIXEL_SPRITES[entity.class] || PIXEL_SPRITES.goblin;
-                    } else if (entity.type === 'npc') {
-                        sprite = PIXEL_SPRITES[entity.class] || PIXEL_SPRITES.merchant;
-                    } else {
-                        sprite = PIXEL_SPRITES[entity.class] || PIXEL_SPRITES.warrior;
-                    }
+                    const sprite = ENEMY_SPRITES[mob.class] || ENEMY_SPRITES.goblin;
+                    ctx.drawImage(sprite, screenX, screenY, this.tileSize, this.tileSize);
                     
-                    if (sprite) {
-                        ctx.drawImage(sprite, screenX, screenY, this.tileSize, this.tileSize);
-                    } else {
-                        ctx.font = '24px "Courier New"';
-                        ctx.fillStyle = '#fff';
-                        ctx.fillText('?', screenX + 8, screenY + 24);
-                    }
-                    
-                    // Draw health bar for mobs
-                    if (entity.type === 'mob' && entity.hp < entity.maxHp) {
+                    // Draw health bar
+                    if (mob.hp < mob.maxHp) {
                         ctx.fillStyle = '#660000';
                         ctx.fillRect(screenX, screenY - 8, 32, 4);
                         ctx.fillStyle = '#ff4444';
-                        const hpPercent = entity.hp / entity.maxHp;
+                        const hpPercent = mob.hp / mob.maxHp;
                         ctx.fillRect(screenX, screenY - 8, 32 * hpPercent, 4);
                     }
                     
                     // Draw name
-                    if (entity.name) {
-                        ctx.font = '10px "Courier New"';
-                        ctx.fillStyle = '#fff';
-                        ctx.fillText(entity.name, screenX, screenY - 12);
-                    }
+                    ctx.font = '10px "Courier New"';
+                    ctx.fillStyle = mob.isBoss ? '#ffaa00' : '#fff';
+                    ctx.fillText(mob.name, screenX, screenY - 12);
+                    
+                    // Draw level
+                    ctx.font = '8px "Courier New"';
+                    ctx.fillStyle = '#aaa';
+                    ctx.fillText(`Lv.${mob.level}`, screenX + 20, screenY - 2);
+                });
+
+                // Draw NPCs
+                this.entities.filter(e => e.type === 'npc').forEach(npc => {
+                    const screenX = npc.x * this.tileSize - this.camera.x;
+                    const screenY = npc.y * this.tileSize - this.camera.y;
+                    
+                    if (screenX < -50 || screenX > this.canvas.width + 50 || 
+                        screenY < -50 || screenY > this.canvas.height + 50) return;
+                    
+                    // Draw NPC
+                    ctx.fillStyle = '#44aaff';
+                    ctx.fillRect(screenX + 8, screenY, 16, 24);
+                    ctx.fillStyle = '#88ccff';
+                    ctx.fillRect(screenX + 4, screenY - 4, 24, 8);
+                    
+                    // Draw name
+                    ctx.font = '10px "Courier New"';
+                    ctx.fillStyle = '#88aaff';
+                    ctx.fillText(npc.name, screenX, screenY - 12);
+                });
+
+                // Draw other players
+                this.otherPlayers.forEach(player => {
+                    const screenX = player.x * this.tileSize - this.camera.x;
+                    const screenY = player.y * this.tileSize - this.camera.y;
+                    
+                    if (screenX < -50 || screenX > this.canvas.width + 50 || 
+                        screenY < -50 || screenY > this.canvas.height + 50) return;
+                    
+                    // Draw player
+                    ctx.fillStyle = '#44ff44';
+                    ctx.fillRect(screenX + 8, screenY, 16, 24);
+                    ctx.fillStyle = '#88ff88';
+                    ctx.fillRect(screenX + 4, screenY - 4, 24, 8);
+                    
+                    // Draw name
+                    ctx.font = '10px "Courier New"';
+                    ctx.fillStyle = '#44ff44';
+                    ctx.fillText(player.name || 'Player', screenX, screenY - 12);
                 });
 
                 // Draw player
@@ -3700,12 +3606,10 @@
                 ctx.fillRect(playerX + 4, playerY + 28, 24, 4);
                 
                 // Player sprite
-                const playerSprite = PIXEL_SPRITES[currentCharacter?.class_name] || PIXEL_SPRITES.warrior;
-                if (playerSprite) {
-                    ctx.drawImage(playerSprite, playerX, playerY, this.tileSize, this.tileSize);
-                }
+                const playerSprite = PLAYER_SPRITES[currentCharacter?.class_name] || PLAYER_SPRITES.warrior;
+                ctx.drawImage(playerSprite, playerX, playerY, this.tileSize, this.tileSize);
                 
-                // Draw animations
+                // Draw damage numbers
                 this.animations.forEach(anim => {
                     ctx.font = '16px "Courier New"';
                     ctx.fillStyle = anim.critical ? '#ffaa00' : '#fff';
@@ -3723,32 +3627,46 @@
                 ctx.fillStyle = '#1a332a';
                 ctx.fillRect(0, 0, 160, 160);
                 
-                // Draw grid
-                ctx.strokeStyle = '#2a4a2a';
-                ctx.lineWidth = 1;
-                for (let i = 0; i <= 5; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(i * 32, 0);
-                    ctx.lineTo(i * 32, 160);
-                    ctx.stroke();
-                    ctx.moveTo(0, i * 32);
-                    ctx.lineTo(160, i * 32);
-                    ctx.stroke();
-                }
-                
-                // Draw entities on minimap
-                [...this.entities, ...this.onlinePlayers.values()].forEach(entity => {
-                    const dx = (entity.x - this.player.x) * 2 + 80;
-                    const dy = (entity.y - this.player.y) * 2 + 80;
+                // Draw buildings on minimap
+                this.entities.filter(e => e.type === 'building').forEach(building => {
+                    const dx = (building.x - this.player.x) * 2 + 80;
+                    const dy = (building.y - this.player.y) * 2 + 80;
                     
                     if (dx >= 0 && dx <= 160 && dy >= 0 && dy <= 160) {
-                        if (entity.type === 'mob') {
-                            ctx.fillStyle = '#ff4444';
-                        } else if (entity.type === 'npc') {
-                            ctx.fillStyle = '#44aaff';
-                        } else {
-                            ctx.fillStyle = '#44ff44';
-                        }
+                        ctx.fillStyle = '#8b4513';
+                        ctx.fillRect(dx - 2, dy - 2, 4, 4);
+                    }
+                });
+                
+                // Draw mobs on minimap
+                this.entities.filter(e => e.type === 'mob').forEach(mob => {
+                    const dx = (mob.x - this.player.x) * 2 + 80;
+                    const dy = (mob.y - this.player.y) * 2 + 80;
+                    
+                    if (dx >= 0 && dx <= 160 && dy >= 0 && dy <= 160) {
+                        ctx.fillStyle = mob.isBoss ? '#ffaa00' : '#ff4444';
+                        ctx.fillRect(dx - 2, dy - 2, 4, 4);
+                    }
+                });
+                
+                // Draw NPCs on minimap
+                this.entities.filter(e => e.type === 'npc').forEach(npc => {
+                    const dx = (npc.x - this.player.x) * 2 + 80;
+                    const dy = (npc.y - this.player.y) * 2 + 80;
+                    
+                    if (dx >= 0 && dx <= 160 && dy >= 0 && dy <= 160) {
+                        ctx.fillStyle = '#44aaff';
+                        ctx.fillRect(dx - 2, dy - 2, 4, 4);
+                    }
+                });
+                
+                // Draw other players on minimap
+                this.otherPlayers.forEach(player => {
+                    const dx = (player.x - this.player.x) * 2 + 80;
+                    const dy = (player.y - this.player.y) * 2 + 80;
+                    
+                    if (dx >= 0 && dx <= 160 && dy >= 0 && dy <= 160) {
+                        ctx.fillStyle = '#44ff44';
                         ctx.fillRect(dx - 2, dy - 2, 4, 4);
                     }
                 });
@@ -3759,23 +3677,35 @@
             }
 
             movePlayer(dx, dy) {
-                this.player.targetX += dx;
-                this.player.targetY += dy;
+                const newX = Math.round(this.player.targetX + dx);
+                const newY = Math.round(this.player.targetY + dy);
                 
-                // Send movement to server
-                if (ws && ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({
-                        type: 'move',
-                        character_id: currentCharacter?.id,
-                        x: Math.round(this.player.targetX),
-                        y: Math.round(this.player.targetY)
-                    }));
+                // Check for collisions with buildings
+                const collision = this.entities.find(e => 
+                    e.type === 'building' && 
+                    Math.abs(e.x - newX) < 2 && 
+                    Math.abs(e.y - newY) < 2
+                );
+                
+                if (!collision) {
+                    this.player.targetX += dx;
+                    this.player.targetY += dy;
+                    
+                    // Send movement to server
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({
+                            type: 'move',
+                            character_id: currentCharacter?.id,
+                            x: Math.round(this.player.targetX),
+                            y: Math.round(this.player.targetY)
+                        }));
+                    }
+                    
+                    // Update in database
+                    apiRequest(`/api/characters/${currentCharacter.id}/move?x=${Math.round(this.player.targetX)}&y=${Math.round(this.player.targetY)}`, {
+                        method: 'POST'
+                    }).catch(() => {});
                 }
-                
-                // Update in database
-                apiRequest(`/api/characters/${currentCharacter.id}/move?x=${Math.round(this.player.targetX)}&y=${Math.round(this.player.targetY)}`, {
-                    method: 'POST'
-                }).catch(() => {});
             }
 
             interact() {
@@ -3791,6 +3721,8 @@
                         showNotification(nearby.dialog || 'Hello!', 'info');
                     } else if (nearby.type === 'mob') {
                         startCombat(nearby);
+                    } else if (nearby.type === 'building') {
+                        showNotification(`You entered ${nearby.name}`, 'info');
                     }
                 }
             }
@@ -3801,8 +3733,8 @@
                 
                 const nearest = this.entities.find(e => 
                     e.type === 'mob' &&
-                    Math.abs(e.x - playerX) < 5 && 
-                    Math.abs(e.y - playerY) < 5
+                    Math.abs(e.x - playerX) < 3 && 
+                    Math.abs(e.y - playerY) < 3
                 );
                 
                 if (nearest) {
@@ -3963,57 +3895,43 @@
             const defense = Math.floor(currentCharacter.vitality * 1.5);
             document.getElementById('hud-attack').textContent = attack;
             document.getElementById('hud-defense').textContent = defense;
-            
-            // Show/hide admin buttons
-            if (currentUser?.is_owner || currentUser?.role === 'owner') {
-                document.getElementById('cheat-btn').style.display = 'inline-block';
-                document.getElementById('mod-btn').style.display = 'inline-block';
-                document.getElementById('mod-chat-tab').style.display = 'block';
-                document.getElementById('admin-chat-tab').style.display = 'block';
-            } else if (currentUser?.role === 'admin' || currentUser?.role === 'moderator') {
-                document.getElementById('mod-btn').style.display = 'inline-block';
-                document.getElementById('mod-chat-tab').style.display = 'block';
-            } else {
-                document.getElementById('cheat-btn').style.display = 'none';
-                document.getElementById('mod-btn').style.display = 'none';
-                document.getElementById('mod-chat-tab').style.display = 'none';
-                document.getElementById('admin-chat-tab').style.display = 'none';
-            }
         }
 
         function renderSkillBar() {
             const bar = document.getElementById('hud-skills');
             if (!currentCharacter) return;
             
-            const classSkills = SKILLS[currentCharacter.class_name] || SKILLS.warrior;
-            const skills = classSkills.slice(0, 4);
+            const skills = [
+                { id: 'power_strike', name: 'Power Strike', icon: PLAYER_SPRITES.warrior },
+                { id: 'cleave', name: 'Cleave', icon: PLAYER_SPRITES.warrior },
+                { id: 'battle_cry', name: 'Battle Cry', icon: PLAYER_SPRITES.warrior },
+                { id: 'whirlwind', name: 'Whirlwind', icon: PLAYER_SPRITES.warrior }
+            ];
+            
             const keys = ['1', '2', '3', '4'];
             
-            bar.innerHTML = skills.map((skill, i) => `
-                <div class="skill-slot" onclick="useSkill('${skill.id}')" title="${skill.name}: ${skill.desc}">
-                    <div class="skill-icon">${skill.icon}</div>
+            bar.innerHTML = skills.map((skill, i) => {
+                const iconUrl = skill.icon.toDataURL();
+                return `
+                <div class="skill-slot" onclick="useSkill('${skill.id}')" title="${skill.name}">
+                    <img src="${iconUrl}" class="skill-icon">
                     <div class="skill-key">${keys[i]}</div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function useSkill(skillId) {
             if (!currentCharacter) return;
             
-            const classSkills = SKILLS[currentCharacter.class_name] || SKILLS.warrior;
-            const skill = classSkills.find(s => s.id === skillId);
-            
-            if (!skill) return;
-            
-            if (currentCharacter.mana < skill.mana) {
+            if (currentCharacter.mana < 10) {
                 showNotification('Not enough mana!', 'error');
                 return;
             }
             
-            currentCharacter.mana -= skill.mana;
+            currentCharacter.mana -= 10;
             updateHUD();
             
-            showNotification(`Used ${skill.name}!`, 'success');
+            showNotification(`Used skill!`, 'success');
             
             // Find nearest enemy and attack
             if (gameRenderer) {
@@ -4022,8 +3940,8 @@
                 
                 const nearest = worldEntities.find(e => 
                     e.type === 'mob' &&
-                    Math.abs(e.x - playerX) < 5 && 
-                    Math.abs(e.y - playerY) < 5
+                    Math.abs(e.x - playerX) < 3 && 
+                    Math.abs(e.y - playerY) < 3
                 );
                 
                 if (nearest) {
@@ -4071,47 +3989,69 @@
         }
 
         function renderPVPArena() {
-            document.getElementById('pvp-player1-name').textContent = currentCharacter?.name || 'You';
-            document.getElementById('pvp-icon1').innerHTML = `<img src="${PIXEL_SPRITES[currentCharacter?.class_name]?.toDataURL()}" style="width:64px;height:64px;image-rendering:pixelated;">`;
-            document.getElementById('pvp-player1-class').textContent = currentCharacter?.class_name?.toUpperCase() || 'WARRIOR';
-            document.getElementById('pvp-rating1').textContent = `Rating: 1000`;
+            const content = document.getElementById('pvp-content');
+            const playerSprite = PLAYER_SPRITES[currentCharacter?.class_name] || PLAYER_SPRITES.warrior;
+            const playerSpriteUrl = playerSprite.toDataURL();
             
-            document.getElementById('pvp-player2-name').textContent = 'Waiting...';
-            document.getElementById('pvp-icon2').innerHTML = '❓';
-            document.getElementById('pvp-player2-class').textContent = '???';
-            document.getElementById('pvp-rating2').textContent = 'Rating: ???';
-            
-            document.getElementById('pvp-countdown').textContent = '';
-            document.getElementById('pvp-combat-log').innerHTML = '';
+            content.innerHTML = `
+                <div class="pvp-layout">
+                    <div class="pvp-fighter">
+                        <img src="${playerSpriteUrl}" class="pvp-icon">
+                        <h3>${currentCharacter?.name || 'You'}</h3>
+                        <div style="color:var(--text-muted);margin:5px 0">${currentCharacter?.class_name?.toUpperCase() || 'WARRIOR'}</div>
+                        <div class="bar"><div class="bar-fill hp" style="width:100%"></div></div>
+                        <div>${currentCharacter?.hp || 100}/${currentCharacter?.max_hp || 100}</div>
+                        <div class="pvp-rating">Rating: 1000</div>
+                    </div>
+                    <div>
+                        <div class="pvp-vs">VS</div>
+                        <div class="pvp-countdown" id="pvp-countdown"></div>
+                    </div>
+                    <div class="pvp-fighter" id="pvp-fighter2">
+                        <div class="pvp-icon" style="width:64px;height:64px;background:#333;margin:0 auto;"></div>
+                        <h3>Waiting...</h3>
+                        <div style="color:var(--text-muted);margin:5px 0">???</div>
+                        <div class="bar"><div class="bar-fill hp" style="width:100%"></div></div>
+                        <div>???</div>
+                        <div class="pvp-rating">Rating: ???</div>
+                    </div>
+                </div>
+                <div class="combat-log" id="pvp-combat-log"></div>
+                <div style="display:flex;justify-content:center;gap:10px;margin-top:15px">
+                    <button class="action-btn success" onclick="joinPvPQueue()">⚔️ JOIN QUEUE</button>
+                    <button class="action-btn danger" onclick="closePvP()">✗ CLOSE</button>
+                </div>
+            `;
         }
 
         function joinPvPQueue() {
             pvpQueueActive = true;
-            showPopup('pvp-queue-popup');
+            showNotification('Searching for opponent...', 'info');
             
-            let queueTime = 0;
-            pvpQueueTimer = setInterval(() => {
-                queueTime += 5;
-                document.getElementById('queue-timer').style.width = Math.min(100, queueTime) + '%';
-                
-                if (queueTime >= 100) {
-                    clearInterval(pvpQueueTimer);
-                    closePopup('pvp-queue-popup');
-                    
-                    // In a real implementation, this would be handled by the server
-                    showNotification('Match found!', 'success');
-                    openPVPArena();
-                }
-            }, 300);
+            setTimeout(() => {
+                showNotification('Match found!', 'success');
+                startPvPMatch();
+            }, 3000);
         }
 
-        function cancelPvPQueue() {
-            if (pvpQueueTimer) {
-                clearInterval(pvpQueueTimer);
-                pvpQueueTimer = null;
-            }
-            pvpQueueActive = false;
-            closePopup('pvp-queue-popup');
+        function startPvPMatch() {
+            let countdown = 3;
+            document.getElementById('pvp-countdown').textContent = countdown;
+            
+            const interval = setInterval(() => {
+                countdown--;
+                document.getElementById('pvp-countdown').textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    document.getElementById('pvp-countdown').textContent = 'FIGHT!';
+                    
+                    // Simulate PvP combat
+                    setTimeout(() => {
+                        showNotification('You won the battle! +50 Gold', 'success');
+                        closePvP();
+                    }, 2000);
+                }
+            }, 1000);
         }
 
         function handlePvPChallenge(data) {
@@ -4122,30 +4062,13 @@
             showPopup('pvp-popup');
         }
 
-        function acceptPvP() {
-            if (!activePvP) return;
-            
-            let countdown = 3;
-            document.getElementById('pvp-buttons').innerHTML = '<div style="color:var(--gold)">Battle starting...</div>';
-            
-            pvpCountdown = setInterval(() => {
-                countdown--;
-                document.getElementById('pvp-countdown').textContent = countdown;
-                if (countdown <= 0) {
-                    clearInterval(pvpCountdown);
-                }
-            }, 1000);
-        }
-
         function handlePvPResult(data) {
             showNotification(data.winner_id === currentCharacter?.id ? '🏆 PvP Victory!' : '💀 PvP Defeat', 
                 data.winner_id === currentCharacter?.id ? 'success' : 'error');
         }
 
         function handlePvPMatched(data) {
-            closePopup('pvp-queue-popup');
             showNotification('Match found!', 'success');
-            openPVPArena();
         }
 
         function closePvP() {
@@ -4174,8 +4097,12 @@
                 const item = inventory[i];
                 if (item) {
                     slot.classList.add(item.rarity || 'common');
+                    
+                    const itemIcon = ITEM_ICONS[item.item_id] || ITEM_ICONS.iron_sword;
+                    const iconUrl = itemIcon.toDataURL();
+                    
                     slot.innerHTML = `
-                        <span>${item.icon || '📦'}</span>
+                        <img src="${iconUrl}" class="inv-item-icon">
                         ${item.quantity > 1 ? `<span class="inv-quantity">${item.quantity}</span>` : ''}
                         <span class="inv-name">${item.name || 'Item'}</span>
                     `;
@@ -4200,25 +4127,33 @@
             const tree = document.getElementById('skill-tree');
             if (!currentCharacter) return;
             
-            const classSkills = SKILLS[currentCharacter.class_name] || SKILLS.warrior;
+            const skills = [
+                { id: 'power_strike', name: 'Power Strike', desc: 'Deal 150% damage', tier: 1, icon: PLAYER_SPRITES.warrior },
+                { id: 'cleave', name: 'Cleave', desc: 'Hit all enemies', tier: 1, icon: PLAYER_SPRITES.warrior },
+                { id: 'battle_cry', name: 'Battle Cry', desc: 'Increase attack', tier: 2, icon: PLAYER_SPRITES.warrior },
+                { id: 'whirlwind', name: 'Whirlwind', desc: 'Spin attack', tier: 2, icon: PLAYER_SPRITES.warrior }
+            ];
+            
             const tiers = [[], [], []];
-            classSkills.forEach(skill => {
+            skills.forEach(skill => {
                 tiers[skill.tier - 1].push(skill);
             });
             
             tree.innerHTML = tiers.map((tier, i) => `
                 <div class="skill-tier">
                     <div class="tier-label">TIER ${i + 1}</div>
-                    ${tier.map(skill => `
+                    ${tier.map(skill => {
+                        const iconUrl = skill.icon.toDataURL();
+                        return `
                         <div class="skill-node ${learnedSkills.has(skill.id) ? 'learned' : ''} ${skillPoints > 0 && !learnedSkills.has(skill.id) ? '' : 'locked'}"
                              onclick="learnSkill('${skill.id}')">
-                            <div class="skill-node-icon">${skill.icon}</div>
+                            <img src="${iconUrl}" class="skill-node-icon">
                             <div class="skill-node-info">
                                 <div class="skill-node-name">${skill.name}</div>
                                 <div class="skill-node-desc">${skill.desc}</div>
                             </div>
                         </div>
-                    `).join('')}
+                    `}).join('')}
                 </div>
             `).join('');
         }
@@ -4247,30 +4182,36 @@
         }
 
         function renderQuestLog() {
-            const list = document.getElementById('quest-list');
-            list.innerHTML = '';
+            const content = document.getElementById('quest-log-content');
+            content.innerHTML = `
+                <div class="panel-title">ACTIVE QUESTS</div>
+                <div id="active-quests-log"></div>
+                <div class="panel-title" style="margin-top:20px">COMPLETED QUESTS</div>
+                <div id="completed-quests-log"></div>
+            `;
+            
+            const activeEl = document.getElementById('active-quests-log');
+            const completedEl = document.getElementById('completed-quests-log');
             
             const quests = [
-                { id: 'q1_1', title: 'Goblin Menace', status: activeQuests.has('q1_1') ? 'active' : 'available' },
-                { id: 'q1_2', title: 'Goblin Camp', status: 'locked' },
-                { id: 'q1_3', title: 'Goblin Chief', status: 'locked' }
+                { id: 'q1_1', title: 'The Dark Omen', desc: 'Investigate the forest', progress: 3, max: 5, status: 'active' },
+                { id: 'q1_2', title: 'The Goblin Camp', desc: 'Find the goblin camp', progress: 0, max: 1, status: 'locked' }
             ];
             
-            quests.forEach(quest => {
+            quests.filter(q => q.status === 'active').forEach(quest => {
                 const div = document.createElement('div');
-                div.className = `quest-list-item ${quest.status}`;
-                div.textContent = quest.title;
-                div.onclick = () => showQuestDetail(quest.id);
-                list.appendChild(div);
+                div.className = 'quest-entry active';
+                div.innerHTML = `
+                    <div class="quest-title">${quest.title}</div>
+                    <div class="quest-desc">${quest.desc}</div>
+                    <div class="quest-progress">
+                        <div class="quest-progress-fill" style="width:${(quest.progress/quest.max)*100}%"></div>
+                    </div>
+                `;
+                activeEl.appendChild(div);
             });
-        }
-
-        function showQuestDetail(questId) {
-            document.getElementById('quest-detail').innerHTML = `
-                <h3 style="color:var(--gold);margin-bottom:10px">Quest Details</h3>
-                <p style="color:var(--text-muted);line-height:1.6">Defeat goblins in the forest. Progress: ${questProgress.q1_1 || 0}/5</p>
-                <p style="color:#44ff44;margin-top:10px">Rewards: 100 gold, 200 XP</p>
-            `;
+            
+            completedEl.innerHTML = '<div style="color:var(--text-muted)">No completed quests</div>';
         }
 
         // ==================== GUILD ====================
@@ -4354,14 +4295,16 @@
         function renderAuctions() {
             const grid = document.getElementById('auction-grid');
             grid.innerHTML = auctions.map(auction => {
+                const itemIcon = ITEM_ICONS[auction.item_id] || ITEM_ICONS.iron_sword;
+                const iconUrl = itemIcon.toDataURL();
+                
                 return `
-                    <div class="auction-card ${auction.rarity}" onclick="bidOnAuction(${auction.id})">
-                        <div style="font-size:32px;text-align:center;margin-bottom:5px">${auction.icon || '📦'}</div>
-                        <div style="font-weight:bold;color:${auction.rarity === 'legendary' ? 'var(--rarity-legendary)' : 'var(--text-light)'}">${auction.name}</div>
-                        <div style="font-size:11px;color:var(--text-muted)">Seller: ${auction.seller || 'Unknown'}</div>
+                    <div class="auction-card" onclick="bidOnAuction(${auction.id})">
+                        <img src="${iconUrl}" style="width:32px;height:32px;margin:0 auto;display:block;">
+                        <div style="font-weight:bold;color:var(--text-light)">Item ${auction.id}</div>
+                        <div style="font-size:11px;color:var(--text-muted)">Seller: ${auction.seller_name || 'Unknown'}</div>
                         <div style="margin-top:8px">
                             <div>💰 Current: <span style="color:var(--gold)">${auction.current_bid || auction.starting_bid || 0}g</span></div>
-                            ${auction.buyout_price ? `<div>⚡ Buyout: ${auction.buyout_price}g</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -4391,135 +4334,25 @@
                 from: data.from_character
             };
             showPopup('trade-popup');
-            document.getElementById('trade-partner').textContent = `PLAYER ${data.from_character}`;
-            document.getElementById('trade-status').textContent = '⏳ Waiting for trade to be accepted...';
+            document.getElementById('trade-content').innerHTML = `
+                <div style="text-align:center;padding:20px">
+                    <p>Trade request from ${data.from_character}</p>
+                    <button class="action-btn success" onclick="acceptTrade()">✓ ACCEPT</button>
+                    <button class="action-btn danger" onclick="cancelTrade()">✗ DECLINE</button>
+                </div>
+            `;
         }
 
         function acceptTrade() {
             if (!activeTrade) return;
-            document.getElementById('trade-status').textContent = '✓ Trade accepted! Waiting for partner...';
-            document.getElementById('trade-accept-btn').disabled = true;
+            showNotification('Trade accepted!', 'success');
+            closePopup('trade-popup');
+            activeTrade = null;
         }
 
         function cancelTrade() {
             closePopup('trade-popup');
             activeTrade = null;
-        }
-
-        // ==================== CHEAT MENU ====================
-        function openCheatMenu() {
-            showPopup('cheat-popup');
-        }
-
-        async function cheatCommand(command) {
-            const target = document.getElementById('cheat-target').value || null;
-            const amount = parseInt(document.getElementById('cheat-amount').value) || null;
-            const itemId = document.getElementById('cheat-item').value || null;
-            
-            document.getElementById('cheat-result').innerHTML = 'Executing...';
-            
-            try {
-                const result = await apiRequest('/api/admin/cheat', {
-                    method: 'POST',
-                    body: JSON.stringify({ command, target, amount, item_id: itemId })
-                });
-                document.getElementById('cheat-result').innerHTML = '✅ ' + (result.message || 'Success');
-                showNotification(result.message || 'Command executed', 'success');
-            } catch (error) {
-                document.getElementById('cheat-result').innerHTML = '❌ Error: ' + error.message;
-            }
-        }
-
-        async function gameEvent(type) {
-            let data = {};
-            if (type === 'announce') {
-                const msg = prompt('Announcement message:');
-                if (!msg) return;
-                data = { message: msg };
-            } else if (type === 'spawn_boss') {
-                data = { name: 'Dragon', location: 'Castle', level: 50 };
-            } else if (type === 'give_rewards') {
-                data = { gold: 1000 };
-            }
-                
-            try {
-                const result = await apiRequest('/api/admin/event', {
-                    method: 'POST',
-                    body: JSON.stringify({ event_type: type, data })
-                });
-                showNotification(result.message || 'Event triggered', 'success');
-            } catch (error) {
-                showNotification(error.message, 'error');
-            }
-        }
-
-        async function openPromoteMenu() {
-            const userId = prompt('Enter user ID to promote:');
-            if (!userId) return;
-            const role = prompt('Enter role (moderator/admin):');
-            if (!role) return;
-            
-            try {
-                const result = await apiRequest(`/api/admin/promote?target_user_id=${userId}&new_role=${role}`, { 
-                    method: 'POST' 
-                });
-                showNotification('User promoted', 'success');
-            } catch (error) {
-                showNotification('Failed to promote', 'error');
-            }
-        }
-
-        function spawnLegendaryWeapon() {
-            const weaponIds = Object.keys(LEGENDARY_WEAPONS);
-            const randomWeapon = weaponIds[Math.floor(Math.random() * weaponIds.length)];
-            const weapon = LEGENDARY_WEAPONS[randomWeapon];
-            
-            showNotification(`⚔️ LEGENDARY DROP: ${weapon.name}!`, 'legendary', 8000);
-        }
-
-        // ==================== MOD PANEL ====================
-        function openModPanel() {
-            refreshModPanel();
-            showPopup('mod-popup');
-        }
-
-        async function refreshModPanel() {
-            try {
-                const data = await apiRequest('/api/admin/online-players');
-                document.getElementById('mod-online-count').textContent = data.online_count || 0;
-                
-                const list = document.getElementById('mod-player-list');
-                list.innerHTML = (data.players || []).map(p => `
-                    <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:10px;margin:5px 0;">
-                        <div style="display:flex;justify-content:space-between">
-                            <div>
-                                <div style="color:var(--text-light)">${p.character_name}</div>
-                                <div style="font-size:11px;color:var(--text-muted)">Lv.${p.level} · ${p.role}</div>
-                            </div>
-                            <div>
-                                <button onclick="modAction('warn', ${p.user_id})" style="background:#aa8800;border:none;color:white;padding:5px;margin:2px;cursor:pointer;">WARN</button>
-                                <button onclick="modAction('kick', ${p.user_id})" style="background:#aa4444;border:none;color:white;padding:5px;margin:2px;cursor:pointer;">KICK</button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                showNotification('Failed to load players', 'error');
-            }
-        }
-
-        async function modAction(action, userId) {
-            const reason = prompt(`Reason for ${action}:`) || 'No reason';
-            try {
-                await apiRequest('/api/mod/action', {
-                    method: 'POST',
-                    body: JSON.stringify({ action, target_user_id: userId, reason })
-                });
-                showNotification(`${action} performed`, 'success');
-                refreshModPanel();
-            } catch (error) {
-                showNotification(error.message, 'error');
-            }
         }
 
         // ==================== INITIALIZATION ====================
@@ -4537,7 +4370,7 @@
             updateLoading(90, 'Almost ready...');
             await new Promise(r => setTimeout(r, 500));
             
-            updateLoading(100, 'Welcome to Ultimate Edition!');
+            updateLoading(100, 'Welcome to Pixel RPG!');
             await new Promise(r => setTimeout(r, 300));
             
             if (token) {
@@ -4552,13 +4385,15 @@
                 showScreen('login-screen');
             }
             
+            // Bind login buttons
+            document.getElementById('login-btn').addEventListener('click', handleLogin);
+            document.getElementById('register-btn').addEventListener('click', handleRegister);
+            
             // Periodic updates
             setInterval(loadOnlineCount, 30000);
         };
 
         // Make functions global
-        window.handleLogin = handleLogin;
-        window.handleRegister = handleRegister;
         window.logout = logout;
         window.showCharacterCreation = showCharacterCreation;
         window.createCharacter = createCharacter;
@@ -4572,29 +4407,19 @@
         window.openGuild = openGuild;
         window.openAuction = openAuction;
         window.openPVPArena = openPVPArena;
-        window.openCheatMenu = openCheatMenu;
-        window.openModPanel = openModPanel;
         window.closePopup = closePopup;
         window.sendChat = sendChat;
         window.switchChatChannel = switchChatChannel;
         window.joinPvPQueue = joinPvPQueue;
-        window.cancelPvPQueue = cancelPvPQueue;
-        window.acceptPvP = acceptPvP;
         window.closePvP = closePvP;
         window.acceptTrade = acceptTrade;
         window.cancelTrade = cancelTrade;
         window.switchAuctionTab = switchAuctionTab;
         window.refreshAuctions = refreshAuctions;
-        window.cheatCommand = cheatCommand;
-        window.gameEvent = gameEvent;
-        window.openPromoteMenu = openPromoteMenu;
-        window.spawnLegendaryWeapon = spawnLegendaryWeapon;
-        window.refreshModPanel = refreshModPanel;
-        window.modAction = modAction;
         window.learnSkill = learnSkill;
         window.useSkill = useSkill;
         window.startCombat = startCombat;
+        window.createGuild = createGuild;
     </script>
 </body>
 </html>
-
