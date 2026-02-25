@@ -1915,7 +1915,17 @@
             font-size: 10px;
             border: 1px solid #557755;
         }
+
+        /* Pixel Art Canvas */
+        .pixel-art {
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
     </style>
+    <!-- Pixel Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- LOADING SCREEN -->
@@ -1956,6 +1966,7 @@
             <h2>CHOOSE YOUR LEGEND</h2>
             <div class="char-grid" id="char-grid"></div>
             <button class="login-btn new-char-btn" onclick="showCharacterCreation()">+ CREATE NEW HERO</button>
+            <button class="login-btn" onclick="logout()" style="background: #2a2a3a; border-color: #5a5a7a;">← BACK</button>
         </div>
     </div>
 
@@ -2321,7 +2332,7 @@
     <div class="popup-overlay" id="cheat-popup">
         <div class="popup-box" style="width:700px;border-color:var(--gold)">
             <div class="popup-header">
-                <span class="popup-title" style="color:var(--gold)">👑 CHEAT MENU</span>
+                <span class="popup-title" style="color:var(--gold)">👑 OWNER CHEAT MENU</span>
                 <button class="popup-close" onclick="closePopup('cheat-popup')">×</button>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0; background: #1e1e28; padding: 15px; border: 2px solid #3a3a50;">
@@ -2417,8 +2428,8 @@
 
     <script>
         // ==================== CONFIGURATION ====================
-        const API_URL = 'https://bot-hosting-b-ga04.onrender.com';
-        const WS_URL = 'wss://bot-hosting-b-ga04.onrender.com';
+        const API_URL = 'https://your-backend-url.onrender.com'; // REPLACE WITH YOUR BACKEND URL
+        const WS_URL = 'wss://your-backend-url.onrender.com'; // REPLACE WITH YOUR BACKEND WS URL
 
         // ==================== GAME STATE ====================
         let token = localStorage.getItem('rpg_token');
@@ -2448,6 +2459,316 @@
         let combatInterval = null;
         let damageNumbers = [];
         let pvpQueueActive = false;
+        let onlinePlayers = new Map();
+
+        // Pixel Art Assets
+        const PIXEL_SPRITES = {
+            warrior: generateWarriorSprite(),
+            mage: generateMageSprite(),
+            rogue: generateRogueSprite(),
+            archer: generateArcherSprite(),
+            paladin: generatePaladinSprite(),
+            goblin: generateGoblinSprite(),
+            skeleton: generateSkeletonSprite(),
+            orc: generateOrcSprite(),
+            troll: generateTrollSprite(),
+            merchant: generateMerchantSprite(),
+            blacksmith: generateBlacksmithSprite()
+        };
+
+        // Sprite generation functions (16x16 pixel art)
+        function generateWarriorSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            // Pixel art warrior
+            ctx.fillStyle = '#4a4a8a'; // Helm
+            ctx.fillRect(4, 0, 8, 4);
+            ctx.fillStyle = '#6a6aaa'; // Body armor
+            ctx.fillRect(2, 4, 12, 8);
+            ctx.fillStyle = '#aa8a4a'; // Sword
+            ctx.fillRect(12, 4, 3, 10);
+            ctx.fillStyle = '#8a6a4a'; // Legs
+            ctx.fillRect(4, 12, 3, 4);
+            ctx.fillRect(9, 12, 3, 4);
+            ctx.fillStyle = '#ffaa00'; // Gold trim
+            ctx.fillRect(2, 2, 2, 2);
+            ctx.fillRect(12, 2, 2, 2);
+            
+            return canvas;
+        }
+
+        function generateMageSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            // Pixel art mage
+            ctx.fillStyle = '#4a2a8a'; // Hat
+            ctx.fillRect(4, 0, 8, 4);
+            ctx.fillRect(6, 4, 4, 2);
+            ctx.fillStyle = '#6a4aaa'; // Robe
+            ctx.fillRect(3, 6, 10, 8);
+            ctx.fillStyle = '#aa6a4a'; // Staff
+            ctx.fillRect(13, 2, 2, 12);
+            ctx.fillStyle = '#ffaa00'; // Magic glow
+            ctx.fillRect(14, 0, 2, 2);
+            ctx.fillStyle = '#aa88ff'; // Stars
+            ctx.fillRect(6, 8, 2, 2);
+            ctx.fillRect(10, 10, 2, 2);
+            
+            return canvas;
+        }
+
+        function generateRogueSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            
+            // Pixel art rogue
+            ctx.fillStyle = '#2a4a2a'; // Hood
+            ctx.fillRect(4, 0, 8, 4);
+            ctx.fillStyle = '#4a6a4a'; // Cloak
+            ctx.fillRect(2, 4, 12, 8);
+            ctx.fillStyle = '#aaaaaa'; // Daggers
+            ctx.fillRect(3, 6, 2, 8);
+            ctx.fillRect(11, 6, 2, 8);
+            ctx.fillStyle = '#ccaa00'; // Eyes
+            ctx.fillRect(5, 2, 2, 1);
+            ctx.fillRect(9, 2, 2, 1);
+            
+            return canvas;
+        }
+
+        function generateArcherSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            
+            // Pixel art archer
+            ctx.fillStyle = '#6a8a4a'; // Leather armor
+            ctx.fillRect(3, 2, 10, 10);
+            ctx.fillStyle = '#aa8a4a'; // Bow
+            ctx.fillRect(11, 4, 4, 8);
+            ctx.fillStyle = '#ffffff'; // Arrow
+            ctx.fillRect(13, 2, 2, 2);
+            ctx.fillStyle = '#8a6a4a'; // Quiver
+            ctx.fillRect(0, 6, 3, 6);
+            ctx.fillStyle = '#ffaa00'; // Feathers
+            ctx.fillRect(1, 4, 2, 2);
+            
+            return canvas;
+        }
+
+        function generatePaladinSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            
+            // Pixel art paladin
+            ctx.fillStyle = '#aaaaaa'; // Plate armor
+            ctx.fillRect(2, 0, 12, 4);
+            ctx.fillStyle = '#8a8aaa'; // Cape
+            ctx.fillRect(0, 4, 16, 8);
+            ctx.fillStyle = '#ffaa00'; // Holy symbol
+            ctx.fillRect(6, 2, 4, 4);
+            ctx.fillStyle = '#ffffff'; // Shield
+            ctx.fillRect(10, 6, 4, 6);
+            ctx.fillStyle = '#cccccc'; // Helmet
+            ctx.fillRect(4, 4, 8, 2);
+            
+            return canvas;
+        }
+
+        function generateGoblinSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            
+            // Pixel art goblin
+            ctx.fillStyle = '#4a8a4a'; // Green skin
+            ctx.fillRect(4, 2, 8, 4);
+            ctx.fillStyle = '#6aaa6a';
+            ctx.fillRect(3, 6, 10, 6);
+            ctx.fillStyle = '#aa4a4a'; // Red eyes
+            ctx.fillRect(5, 3, 2, 2);
+            ctx.fillRect(9, 3, 2, 2);
+            ctx.fillStyle = '#8a4a4a'; // Mouth
+            ctx.fillRect(6, 6, 4, 1);
+            ctx.fillStyle = '#6a4a2a'; // Club
+            ctx.fillRect(12, 4, 3, 8);
+            
+            return canvas;
+        }
+
+        function generateSkeletonSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            
+            // Pixel art skeleton
+            ctx.fillStyle = '#aaaaaa'; // Bones
+            ctx.fillRect(4, 2, 8, 4);
+            ctx.fillStyle = '#cccccc';
+            ctx.fillRect(3, 6, 10, 6);
+            ctx.fillStyle = '#000000'; // Eye sockets
+            ctx.fillRect(5, 3, 2, 2);
+            ctx.fillRect(9, 3, 2, 2);
+            ctx.fillStyle = '#888888'; // Ribs
+            for(let i = 0; i < 4; i++) {
+                ctx.fillRect(5 + i*2, 8, 1, 4);
+            }
+            
+            return canvas;
+        }
+
+        function generateOrcSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            
+            // Pixel art orc
+            ctx.fillStyle = '#4a6a2a'; // Dark green
+            ctx.fillRect(3, 1, 10, 5);
+            ctx.fillStyle = '#6a8a4a';
+            ctx.fillRect(2, 6, 12, 7);
+            ctx.fillStyle = '#aa4a2a'; // Tusks
+            ctx.fillRect(4, 5, 2, 2);
+            ctx.fillRect(10, 5, 2, 2);
+            ctx.fillStyle = '#8a4a2a'; // Axe
+            ctx.fillRect(12, 2, 3, 8);
+            ctx.fillStyle = '#ffaa00'; // Gold earring
+            ctx.fillRect(1, 3, 2, 2);
+            
+            return canvas;
+        }
+
+        function generateTrollSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            
+            // Pixel art troll
+            ctx.fillStyle = '#6a8a6a'; // Grey-green
+            ctx.fillRect(2, 0, 12, 5);
+            ctx.fillStyle = '#8aaa8a';
+            ctx.fillRect(1, 5, 14, 8);
+            ctx.fillStyle = '#aa6a6a'; // Club
+            ctx.fillRect(12, 4, 4, 10);
+            ctx.fillStyle = '#cc8866'; // Nose
+            ctx.fillRect(7, 3, 2, 4);
+            ctx.fillStyle = '#ffaa00'; // Gold teeth
+            ctx.fillRect(5, 7, 1, 1);
+            ctx.fillRect(10, 7, 1, 1);
+            
+            return canvas;
+        }
+
+        function generateMerchantSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            
+            // Pixel art merchant
+            ctx.fillStyle = '#8a6a4a'; // Brown robe
+            ctx.fillRect(4, 2, 8, 4);
+            ctx.fillStyle = '#aa8a6a';
+            ctx.fillRect(3, 6, 10, 6);
+            ctx.fillStyle = '#ffaa00'; // Gold coins
+            ctx.fillRect(5, 4, 2, 2);
+            ctx.fillRect(9, 4, 2, 2);
+            ctx.fillStyle = '#ffd700'; // More gold
+            ctx.fillRect(7, 8, 2, 2);
+            
+            return canvas;
+        }
+
+        function generateBlacksmithSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            
+            // Pixel art blacksmith
+            ctx.fillStyle = '#6a6a6a'; // Grey apron
+            ctx.fillRect(3, 2, 10, 10);
+            ctx.fillStyle = '#8a8a8a';
+            ctx.fillRect(4, 0, 8, 2);
+            ctx.fillStyle = '#aa5500'; // Hammer
+            ctx.fillRect(12, 2, 3, 6);
+            ctx.fillStyle = '#ffaa00'; // Forge fire
+            ctx.fillRect(2, 8, 3, 3);
+            ctx.fillStyle = '#ff5500';
+            ctx.fillRect(2, 9, 3, 1);
+            
+            return canvas;
+        }
+
+        // Tilemap generator
+        function generateTilemap() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            // Generate 16x16 tiles
+            for (let y = 0; y < 16; y++) {
+                for (let x = 0; x < 16; x++) {
+                    const tileX = x * 16;
+                    const tileY = y * 16;
+                    
+                    // Ground tile variations
+                    if ((x + y) % 3 === 0) {
+                        // Grass
+                        ctx.fillStyle = '#3a6a3a';
+                        ctx.fillRect(tileX, tileY, 16, 16);
+                        // Grass tufts
+                        ctx.fillStyle = '#5a8a5a';
+                        ctx.fillRect(tileX + 4, tileY + 4, 2, 2);
+                        ctx.fillRect(tileX + 10, tileY + 10, 2, 2);
+                    } else if ((x + y) % 3 === 1) {
+                        // Dark grass
+                        ctx.fillStyle = '#2a5a2a';
+                        ctx.fillRect(tileX, tileY, 16, 16);
+                        // Flowers
+                        ctx.fillStyle = '#ffaa00';
+                        ctx.fillRect(tileX + 8, tileY + 8, 2, 2);
+                    } else {
+                        // Path
+                        ctx.fillStyle = '#6a5a4a';
+                        ctx.fillRect(tileX, tileY, 16, 16);
+                        // Path texture
+                        ctx.fillStyle = '#8a7a6a';
+                        ctx.fillRect(tileX + 4, tileY + 4, 2, 2);
+                        ctx.fillRect(tileX + 10, tileY + 10, 2, 2);
+                    }
+                    
+                    // Add random details
+                    if (Math.random() > 0.8) {
+                        ctx.fillStyle = '#ffd700';
+                        ctx.fillRect(tileX + 2, tileY + 2, 1, 1);
+                    }
+                }
+            }
+            
+            return canvas;
+        }
+
+        const tilemap = generateTilemap();
 
         // Game Data
         const CLASSES = {
@@ -2455,8 +2776,7 @@
             mage: { name: 'MAGE', icon: '🧙', desc: 'Powerful spells', stats: { str: 1, agi: 2, int: 5, vit: 2 } },
             rogue: { name: 'ROGUE', icon: '🗡️', desc: 'Agile, critical hits', stats: { str: 3, agi: 5, int: 2, vit: 2 } },
             archer: { name: 'ARCHER', icon: '🏹', desc: 'Ranged precision', stats: { str: 2, agi: 5, int: 2, vit: 3 } },
-            paladin: { name: 'PALADIN', icon: '🛡️', desc: 'Holy warrior', stats: { str: 4, agi: 2, int: 3, vit: 4 } },
-            necromancer: { name: 'NECROMANCER', icon: '💀', desc: 'Dark summoner', stats: { str: 1, agi: 2, int: 5, vit: 2 } }
+            paladin: { name: 'PALADIN', icon: '🛡️', desc: 'Holy warrior', stats: { str: 4, agi: 2, int: 3, vit: 4 } }
         };
 
         const SKILLS = {
@@ -2464,17 +2784,31 @@
                 { id: 'power_strike', name: 'Power Strike', icon: '⚡', desc: 'Deal 150% damage', tier: 1, cooldown: 2, mana: 10 },
                 { id: 'cleave', name: 'Cleave', icon: '🌀', desc: 'Hit all enemies', tier: 1, cooldown: 3, mana: 15 },
                 { id: 'battle_cry', name: 'Battle Cry', icon: '📢', desc: 'Increase attack', tier: 2, cooldown: 5, mana: 20 },
-                { id: 'whirlwind', name: 'Whirlwind', icon: '💫', desc: 'Spin attack', tier: 2, cooldown: 4, mana: 20 },
-                { id: 'execute', name: 'Execute', icon: '💀', desc: 'Finish low HP enemies', tier: 3, cooldown: 6, mana: 30 },
-                { id: 'defensive_stance', name: 'Defensive Stance', icon: '🛡️', desc: 'Reduce damage', tier: 3, cooldown: 8, mana: 15 }
+                { id: 'whirlwind', name: 'Whirlwind', icon: '💫', desc: 'Spin attack', tier: 2, cooldown: 4, mana: 20 }
             ],
             mage: [
                 { id: 'fireball', name: 'Fireball', icon: '🔥', desc: 'Deal fire damage', tier: 1, cooldown: 2, mana: 15 },
                 { id: 'frostbolt', name: 'Frostbolt', icon: '❄️', desc: 'Slow enemy', tier: 1, cooldown: 2, mana: 12 },
                 { id: 'arcane_explosion', name: 'Arcane Explosion', icon: '💥', desc: 'AoE magic', tier: 2, cooldown: 4, mana: 25 },
-                { id: 'polymorph', name: 'Polymorph', icon: '🐸', desc: 'Transform enemy', tier: 2, cooldown: 8, mana: 30 },
-                { id: 'blink', name: 'Blink', icon: '✨', desc: 'Teleport', tier: 3, cooldown: 5, mana: 20 },
-                { id: 'meteor', name: 'Meteor', icon: '☄️', desc: 'Massive damage', tier: 3, cooldown: 10, mana: 50 }
+                { id: 'polymorph', name: 'Polymorph', icon: '🐸', desc: 'Transform enemy', tier: 2, cooldown: 8, mana: 30 }
+            ],
+            rogue: [
+                { id: 'backstab', name: 'Backstab', icon: '🗡️', desc: '200% damage from behind', tier: 1, cooldown: 3, mana: 10 },
+                { id: 'poison', name: 'Poison', icon: '☠️', desc: 'Damage over time', tier: 1, cooldown: 4, mana: 15 },
+                { id: 'evasion', name: 'Evasion', icon: '💨', desc: 'Dodge next attack', tier: 2, cooldown: 6, mana: 20 },
+                { id: 'shadow_step', name: 'Shadow Step', icon: '🌑', desc: 'Teleport behind enemy', tier: 2, cooldown: 5, mana: 25 }
+            ],
+            archer: [
+                { id: 'multi_shot', name: 'Multi-shot', icon: '🏹', desc: 'Hit multiple enemies', tier: 1, cooldown: 3, mana: 15 },
+                { id: 'piercing', name: 'Piercing Arrow', icon: '➡️', desc: 'Ignore armor', tier: 1, cooldown: 4, mana: 20 },
+                { id: 'quick_shot', name: 'Quick Shot', icon: '⚡', desc: 'Attack twice', tier: 2, cooldown: 5, mana: 25 },
+                { id: 'aimed_shot', name: 'Aimed Shot', icon: '🎯', desc: 'High damage', tier: 2, cooldown: 6, mana: 30 }
+            ],
+            paladin: [
+                { id: 'holy_strike', name: 'Holy Strike', icon: '✨', desc: 'Holy damage', tier: 1, cooldown: 2, mana: 15 },
+                { id: 'heal', name: 'Heal', icon: '💚', desc: 'Restore HP', tier: 1, cooldown: 4, mana: 20 },
+                { id: 'divine_shield', name: 'Divine Shield', icon: '🛡️', desc: 'Block damage', tier: 2, cooldown: 8, mana: 30 },
+                { id: 'judgment', name: 'Judgment', icon: '⚖️', desc: 'Smite enemy', tier: 2, cooldown: 5, mana: 25 }
             ]
         };
 
@@ -2539,25 +2873,16 @@
         // World Entities
         let worldEntities = [
             // Mobs
-            { id: 1, type: 'mob', subtype: 'goblin', x: 15, y: 10, hp: 30, maxHp: 30, level: 1, attack: 5, defense: 2, exp: 10, gold: 5, respawnTimer: 0 },
-            { id: 2, type: 'mob', subtype: 'wolf', x: 18, y: 12, hp: 45, maxHp: 45, level: 2, attack: 8, defense: 3, exp: 15, gold: 8, respawnTimer: 0 },
-            { id: 3, type: 'mob', subtype: 'skeleton', x: 12, y: 15, hp: 60, maxHp: 60, level: 3, attack: 12, defense: 5, exp: 20, gold: 10, respawnTimer: 0 },
-            { id: 4, type: 'mob', subtype: 'orc', x: 20, y: 18, hp: 80, maxHp: 80, level: 4, attack: 15, defense: 8, exp: 25, gold: 15, respawnTimer: 0 },
-            { id: 5, type: 'mob', subtype: 'troll', x: 22, y: 20, hp: 120, maxHp: 120, level: 5, attack: 20, defense: 10, exp: 35, gold: 20, respawnTimer: 0 },
+            { id: 'goblin_1', type: 'mob', class: 'goblin', name: 'Goblin', x: 15, y: 10, hp: 30, maxHp: 30, level: 1, attack: 5, defense: 2, exp: 10, gold: 5 },
+            { id: 'goblin_2', type: 'mob', class: 'goblin', name: 'Goblin', x: 18, y: 12, hp: 30, maxHp: 30, level: 1, attack: 5, defense: 2, exp: 10, gold: 5 },
+            { id: 'skeleton_1', type: 'mob', class: 'skeleton', name: 'Skeleton', x: 25, y: 20, hp: 45, maxHp: 45, level: 2, attack: 8, defense: 3, exp: 15, gold: 8 },
+            { id: 'orc_1', type: 'mob', class: 'orc', name: 'Orc', x: 30, y: 25, hp: 60, maxHp: 60, level: 3, attack: 12, defense: 5, exp: 20, gold: 10 },
+            { id: 'troll_1', type: 'mob', class: 'troll', name: 'Troll', x: 40, y: 30, hp: 80, maxHp: 80, level: 4, attack: 15, defense: 8, exp: 25, gold: 15 },
             
             // NPCs
-            { id: 6, type: 'npc', subtype: 'merchant', x: 10, y: 5, name: 'Merchant', icon: '🧔', dialog: 'Welcome to my shop! Would you like to see my wares?' },
-            { id: 7, type: 'npc', subtype: 'quest_giver', x: 8, y: 8, name: 'Elder Thomas', icon: '👴', dialog: 'The goblins have been causing trouble. Can you help?' },
-            { id: 8, type: 'npc', subtype: 'blacksmith', x: 12, y: 7, name: 'Blacksmith', icon: '🔨', dialog: 'Need weapons? I forge the finest steel.' },
-            { id: 9, type: 'npc', subtype: 'healer', x: 9, y: 9, name: 'Priestess', icon: '👩', dialog: 'Let me heal your wounds.' },
-            { id: 10, type: 'npc', subtype: 'pvp_master', x: 14, y: 14, name: 'PvP Master', icon: '⚔️', dialog: 'Ready to test your skills in the arena?' },
-            
-            // Structures
-            { id: 11, type: 'structure', subtype: 'house', x: 5, y: 5, name: 'Village House', icon: '🏠' },
-            { id: 12, type: 'structure', subtype: 'shop', x: 7, y: 7, name: 'General Store', icon: '🏪' },
-            { id: 13, type: 'structure', subtype: 'inn', x: 6, y: 6, name: 'Traveler\'s Inn', icon: '🏨' },
-            { id: 14, type: 'structure', subtype: 'castle', x: 20, y: 20, name: 'Castle', icon: '🏰' },
-            { id: 15, type: 'structure', subtype: 'pvp_arena', x: 15, y: 15, name: 'PvP Arena', icon: '⚔️' }
+            { id: 'merchant_1', type: 'npc', class: 'merchant', name: 'Merchant', x: 10, y: 5, dialog: 'Welcome to my shop! Would you like to see my wares?' },
+            { id: 'blacksmith_1', type: 'npc', class: 'blacksmith', name: 'Blacksmith', x: 12, y: 7, dialog: 'Need weapons? I forge the finest steel.' },
+            { id: 'healer_1', type: 'npc', class: 'merchant', name: 'Priestess', x: 8, y: 8, dialog: 'Let me heal your wounds.' }
         ];
 
         // ==================== UTILITY FUNCTIONS ====================
@@ -2773,11 +3098,14 @@
             const grid = document.getElementById('char-grid');
             grid.innerHTML = '';
             characters.forEach(char => {
+                const sprite = PIXEL_SPRITES[char.class_name] || PIXEL_SPRITES.warrior;
+                const spriteUrl = sprite.toDataURL();
+                
                 const card = document.createElement('div');
                 card.className = 'char-card';
                 card.onclick = () => selectCharacter(char.id);
                 card.innerHTML = `
-                    <div class="char-icon">${CLASSES[char.class_name]?.icon || '⚔️'}</div>
+                    <img src="${spriteUrl}" class="char-icon" style="width: 64px; height: 64px; image-rendering: pixelated;">
                     <div class="char-name">${char.name}</div>
                     <div class="char-class">${char.class_name.toUpperCase()}</div>
                     <div class="char-level">Level <span>${char.level}</span></div>
@@ -2913,7 +3241,7 @@
             const cls = CLASSES[currentCharacter.class_name] || {};
             card.innerHTML = `
                 <div class="char-card-large">
-                    <div class="char-icon-large">${cls.icon || '⚔️'}</div>
+                    <img src="${PIXEL_SPRITES[currentCharacter.class_name]?.toDataURL()}" class="char-icon-large" style="width: 64px; height: 64px; image-rendering: pixelated;">
                     <div class="char-name-large">${currentCharacter.name}</div>
                     <div class="char-class-large">${currentCharacter.class_name.toUpperCase()} · Level ${currentCharacter.level}</div>
                     <div class="stat-row">
@@ -2952,7 +3280,7 @@
             try {
                 const data = await apiRequest('/api/admin/online-players');
                 document.getElementById('online-count').textContent = data.online_count || 0;
-                document.getElementById('pvp-count').textContent = Math.floor(Math.random() * 5) || 0; // Simulated
+                document.getElementById('pvp-count').textContent = Math.floor(Math.random() * 5) || 0;
             } catch {}
         }
 
@@ -2967,27 +3295,15 @@
                     content.innerHTML = `
                         <div class="panel-title">YOUR HERO</div>
                         <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:20px">
-                            <p>Ready to begin your adventure? Enter the world to start your journey through 5 epic acts!</p>
+                            <p>Ready to begin your adventure? Enter the world to start your journey!</p>
                             <p>⚔️ PvP Arena awaits the brave!</p>
-                            <p>👑 Legendary weapons can be found in dungeons or bought at the Auction House.</p>
+                            <p>👑 Legendary weapons can be found in dungeons!</p>
                             <button class="action-btn" onclick="enterGame()" style="margin-top:15px">▶ ENTER WORLD</button>
                         </div>
                     `;
                     break;
-                case 'story':
-                    renderStoryTab(content);
-                    break;
-                case 'quests':
-                    content.innerHTML = '<div class="panel-title">ACTIVE QUESTS</div><div style="color:var(--text-muted)">View your quests in-game</div>';
-                    break;
-                case 'guilds':
-                    content.innerHTML = '<div class="panel-title">GUILDS</div><div style="color:var(--text-muted)">Join or create a guild in-game</div>';
-                    break;
                 case 'pvp':
                     renderPVPTab(content);
-                    break;
-                case 'ranked':
-                    renderRankedTab(content);
                     break;
                 case 'leaderboard':
                     loadLeaderboard('level', content);
@@ -3025,78 +3341,9 @@
                     </div>
                     <div style="display:flex;gap:10px;justify-content:center">
                         <button class="action-btn" onclick="joinPvPQueue()" style="background:#ffaa00;color:#000;border-color:#ffaa00;">⚔️ JOIN QUEUE</button>
-                        <button class="action-btn" onclick="openPVPArena()" style="background:var(--border-brown);">👑 SPECTATE</button>
-                    </div>
-                    <div style="margin-top:20px">
-                        <div style="color:var(--gold);margin-bottom:10px">TOP RANKED PLAYERS</div>
-                        <div style="background:var(--bg-panel);padding:10px">
-                            <div style="display:flex;justify-content:space-between;padding:5px;border-bottom:1px solid #2a2a3a">
-                                <span>1. <span style="color:var(--gold)">ShadowBlade</span></span>
-                                <span style="color:#ffaa00">2450 rating</span>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;padding:5px;border-bottom:1px solid #2a2a3a">
-                                <span>2. <span style="color:var(--gold)">FireMage</span></span>
-                                <span style="color:#ffaa00">2380 rating</span>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;padding:5px">
-                                <span>3. <span style="color:var(--gold)">IronKnight</span></span>
-                                <span style="color:#ffaa00">2310 rating</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             `;
-        }
-
-        function renderRankedTab(container) {
-            container.innerHTML = `
-                <div class="panel-title">🏆 RANKED LEADERBOARD</div>
-                <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:20px">
-                    <table style="width:100%">
-                        <thead>
-                            <tr style="color:var(--text-muted)">
-                                <th>Rank</th>
-                                <th>Player</th>
-                                <th>Rating</th>
-                                <th>W/L</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>1</td><td style="color:var(--gold)">ShadowBlade</td><td>2450</td><td>150-30</td></tr>
-                            <tr><td>2</td><td style="color:var(--gold)">FireMage</td><td>2380</td><td>142-28</td></tr>
-                            <tr><td>3</td><td style="color:var(--gold)">IronKnight</td><td>2310</td><td>135-25</td></tr>
-                            <tr><td>4</td><td style="color:var(--gold)">ShadowRogue</td><td>2250</td><td>128-32</td></tr>
-                            <tr><td>5</td><td style="color:var(--gold)">HolyPaladin</td><td>2190</td><td>120-40</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-
-        function renderStoryTab(container) {
-            const acts = ['The Village Invasion', 'The Kingdom War', 'The Corruption Spreads', 'The Time Fracture', 'The Final Confrontation'];
-            const currentAct = storyProgress?.current_act || 1;
-            
-            let html = '<div class="panel-title">YOUR JOURNEY</div>';
-            acts.forEach((act, index) => {
-                const actNum = index + 1;
-                const isCompleted = storyProgress?.completed_acts?.includes(actNum);
-                const isCurrent = actNum === currentAct;
-                
-                html += `
-                    <div style="background:var(--bg-item);border:2px solid ${isCurrent ? 'var(--gold)' : '#3a3a50'};padding:15px;margin-bottom:10px">
-                        <div style="display:flex;justify-content:space-between;align-items:center">
-                            <span style="color:${isCurrent ? 'var(--gold)' : 'var(--text-light)'};font-size:16px;font-weight:bold">
-                                Act ${actNum}: ${act}
-                            </span>
-                            ${isCompleted ? '<span style="color:#44ff44">✓ COMPLETED</span>' : ''}
-                            ${isCurrent ? '<span style="color:var(--gold)">⚔ IN PROGRESS</span>' : ''}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
         }
 
         function renderAdminTab(container) {
@@ -3108,14 +3355,10 @@
                         <button class="action-btn" onclick="refreshModPanel()">🔄 REFRESH SERVER</button>
                         <button class="action-btn" onclick="gameEvent('announce')">📢 ANNOUNCE</button>
                         <button class="action-btn" onclick="gameEvent('spawn_boss')">🔥 SPAWN BOSS</button>
-                        <button class="action-btn" onclick="openPromoteMenu()">⚡ PROMOTE USER</button>
-                        <button class="action-btn" onclick="gameEvent('give_rewards')">🎉 GIVE REWARDS</button>
                         <button class="action-btn" onclick="spawnLegendaryWeapon()">⚔️ SPAWN LEGENDARY</button>
-                        <button class="action-btn" onclick="startPVPTournament()">🏆 START PVP TOURNAMENT</button>
                     </div>
                     <div style="margin-top:15px;color:var(--text-muted);">
-                        Server Status: <span style="color:#44ff44;">● ONLINE</span><br>
-                        Use the cheat menu for full control over the game.
+                        Server Status: <span style="color:#44ff44;">● ONLINE</span>
                     </div>
                 </div>
             `;
@@ -3197,7 +3440,7 @@
                     addChatMessage('System', data.message, 'system');
                     break;
                 case 'movement':
-                    // Handle other player movement
+                    handleOtherPlayerMove(data);
                     break;
                 case 'trade_request':
                     handleTradeRequest(data);
@@ -3211,27 +3454,13 @@
                 case 'pvp_queue_matched':
                     handlePvPMatched(data);
                     break;
-                case 'guild_invite':
-                    handleGuildInvite(data);
-                    break;
-                case 'reward':
-                    showNotification(data.message || 'You received a reward!', 'success');
-                    if (data.gold && currentCharacter) {
-                        currentCharacter.gold += data.gold;
-                        updateHUD();
-                    }
-                    break;
                 case 'announcement':
                     addChatMessage('📢 ANNOUNCEMENT', data.message, 'announce');
                     showNotification('📢 ' + data.message, 'info', 7000);
                     break;
                 case 'boss_spawn':
-                    addChatMessage('🔥 BOSS', `${data.boss} has appeared at ${data.location}!`, 'announce');
+                    addChatMessage('🔥 BOSS', `${data.boss} has appeared!`, 'announce');
                     showNotification(`🔥 BOSS SPAWNED: ${data.boss}`, 'warning', 7000);
-                    break;
-                case 'tournament_start':
-                    showNotification(`🏆 PVP TOURNAMENT STARTING!`, 'success', 10000);
-                    addChatMessage('🏆 TOURNAMENT', 'PVP Tournament is starting! Join now!', 'announce');
                     break;
                 case 'cheat':
                     showNotification(data.message, 'info');
@@ -3239,6 +3468,17 @@
                 case 'error':
                     showNotification(data.message, 'error');
                     break;
+            }
+        }
+
+        function handleOtherPlayerMove(data) {
+            if (data.character_id !== currentCharacter?.id) {
+                onlinePlayers.set(data.character_id, {
+                    id: data.character_id,
+                    x: data.x,
+                    y: data.y,
+                    name: data.name
+                });
             }
         }
 
@@ -3330,10 +3570,17 @@
             constructor(canvas) {
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
+                this.ctx.imageSmoothingEnabled = false;
                 this.tileSize = 32;
                 this.camera = { x: 0, y: 0 };
-                this.player = { x: 50, y: 50, targetX: 50, targetY: 50 };
+                this.player = { 
+                    x: currentCharacter?.x_position || 50, 
+                    y: currentCharacter?.y_position || 50,
+                    targetX: currentCharacter?.x_position || 50,
+                    targetY: currentCharacter?.y_position || 50 
+                };
                 this.entities = worldEntities;
+                this.onlinePlayers = onlinePlayers;
                 this.frame = 0;
                 this.animations = [];
                 this.resize();
@@ -3368,79 +3615,79 @@
                     anim.progress += 0.05;
                     return anim.progress < 1;
                 });
-
-                // Respawn mobs
-                this.entities.forEach(entity => {
-                    if (entity.type === 'mob' && entity.hp <= 0) {
-                        entity.respawnTimer = (entity.respawnTimer || 300) - 1;
-                        if (entity.respawnTimer <= 0) {
-                            entity.hp = entity.maxHp;
-                            entity.respawnTimer = 300;
-                        }
-                    }
-                });
             }
 
             render() {
                 const ctx = this.ctx;
-                ctx.fillStyle = '#1a1d21';
+                ctx.fillStyle = '#1a332a';
                 ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-                const startX = Math.floor(this.camera.x / this.tileSize) - 1;
-                const startY = Math.floor(this.camera.y / this.tileSize) - 1;
-                const endX = startX + Math.ceil(this.canvas.width / this.tileSize) + 2;
-                const endY = startY + Math.ceil(this.canvas.height / this.tileSize) + 2;
+                const startX = Math.floor(this.camera.x / this.tileSize) - 2;
+                const startY = Math.floor(this.camera.y / this.tileSize) - 2;
+                const endX = startX + Math.ceil(this.canvas.width / this.tileSize) + 4;
+                const endY = startY + Math.ceil(this.canvas.height / this.tileSize) + 4;
 
-                // Draw ground
+                // Draw tilemap
                 for (let y = startY; y < endY; y++) {
                     for (let x = startX; x < endX; x++) {
                         const screenX = x * this.tileSize - this.camera.x;
                         const screenY = y * this.tileSize - this.camera.y;
                         
-                        ctx.fillStyle = (x + y) % 2 === 0 ? '#2e4a30' : '#334d35';
+                        // Draw ground tile
+                        ctx.fillStyle = (x + y) % 3 === 0 ? '#3a6a3a' : (x + y) % 3 === 1 ? '#2a5a2a' : '#6a5a4a';
                         ctx.fillRect(screenX, screenY, this.tileSize, this.tileSize);
                         
-                        ctx.strokeStyle = '#3a4a3a';
-                        ctx.strokeRect(screenX, screenY, this.tileSize, this.tileSize);
+                        // Add details
+                        if ((x * y) % 7 === 0) {
+                            ctx.fillStyle = '#ffd700';
+                            ctx.fillRect(screenX + 2, screenY + 2, 2, 2);
+                        }
                     }
                 }
 
                 // Draw entities
-                const visibleEntities = this.entities.filter(e => 
-                    e.x > startX && e.x < endX && e.y > startY && e.y < endY
-                );
-
-                visibleEntities.forEach(entity => {
+                const allEntities = [...this.entities, ...this.onlinePlayers.values()];
+                allEntities.forEach(entity => {
+                    if (entity.id === currentCharacter?.id) return;
+                    
                     const screenX = entity.x * this.tileSize - this.camera.x;
                     const screenY = entity.y * this.tileSize - this.camera.y;
                     
-                    if (entity.type === 'mob' && entity.hp > 0) {
-                        ctx.font = '24px "Courier New", monospace';
-                        ctx.fillStyle = '#ff4444';
-                        ctx.fillText(this.getMobIcon(entity.subtype), screenX + 4, screenY + 24);
-                        
-                        // Health bar
+                    if (screenX < -50 || screenX > this.canvas.width + 50 || 
+                        screenY < -50 || screenY > this.canvas.height + 50) return;
+                    
+                    // Get sprite
+                    let sprite;
+                    if (entity.type === 'mob' || entity.class) {
+                        sprite = PIXEL_SPRITES[entity.class] || PIXEL_SPRITES.goblin;
+                    } else if (entity.type === 'npc') {
+                        sprite = PIXEL_SPRITES[entity.class] || PIXEL_SPRITES.merchant;
+                    } else {
+                        sprite = PIXEL_SPRITES[entity.class] || PIXEL_SPRITES.warrior;
+                    }
+                    
+                    if (sprite) {
+                        ctx.drawImage(sprite, screenX, screenY, this.tileSize, this.tileSize);
+                    } else {
+                        ctx.font = '24px "Courier New"';
+                        ctx.fillStyle = '#fff';
+                        ctx.fillText('?', screenX + 8, screenY + 24);
+                    }
+                    
+                    // Draw health bar for mobs
+                    if (entity.type === 'mob' && entity.hp < entity.maxHp) {
                         ctx.fillStyle = '#660000';
-                        ctx.fillRect(screenX, screenY - 5, 32, 4);
+                        ctx.fillRect(screenX, screenY - 8, 32, 4);
                         ctx.fillStyle = '#ff4444';
                         const hpPercent = entity.hp / entity.maxHp;
-                        ctx.fillRect(screenX, screenY - 5, 32 * hpPercent, 4);
-                    } else if (entity.type === 'npc') {
-                        ctx.font = '24px "Courier New", monospace';
-                        ctx.fillStyle = '#44aaff';
-                        ctx.fillText(entity.icon || '👤', screenX + 4, screenY + 24);
-                        
-                        ctx.font = '10px "Courier New", monospace';
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillText(entity.name, screenX, screenY - 10);
-                    } else if (entity.type === 'structure') {
-                        ctx.font = '24px "Courier New", monospace';
-                        ctx.fillStyle = '#88aa88';
-                        ctx.fillText(entity.icon || '🏛️', screenX + 4, screenY + 24);
-                        
-                        ctx.font = '10px "Courier New", monospace';
-                        ctx.fillStyle = '#dddddd';
-                        ctx.fillText(entity.name, screenX, screenY - 10);
+                        ctx.fillRect(screenX, screenY - 8, 32 * hpPercent, 4);
+                    }
+                    
+                    // Draw name
+                    if (entity.name) {
+                        ctx.font = '10px "Courier New"';
+                        ctx.fillStyle = '#fff';
+                        ctx.fillText(entity.name, screenX, screenY - 12);
                     }
                 });
 
@@ -3448,50 +3695,37 @@
                 const playerX = this.player.x * this.tileSize - this.camera.x;
                 const playerY = this.player.y * this.tileSize - this.camera.y;
                 
+                // Shadow
                 ctx.fillStyle = 'rgba(0,0,0,0.3)';
-                ctx.fillRect(playerX + 4, playerY + 24, 24, 4);
+                ctx.fillRect(playerX + 4, playerY + 28, 24, 4);
                 
-                ctx.font = `${this.tileSize - 4}px 'Courier New', monospace`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                
-                const bob = Math.sin(this.frame * 0.1) * 2;
-                const classIcon = CLASSES[currentCharacter?.class_name]?.icon || '⚔️';
-                
-                if (currentUser?.is_owner) {
-                    ctx.shadowColor = 'var(--gold)';
-                    ctx.shadowBlur = 20;
-                } else {
-                    ctx.shadowColor = '#fff';
-                    ctx.shadowBlur = 10;
+                // Player sprite
+                const playerSprite = PIXEL_SPRITES[currentCharacter?.class_name] || PIXEL_SPRITES.warrior;
+                if (playerSprite) {
+                    ctx.drawImage(playerSprite, playerX, playerY, this.tileSize, this.tileSize);
                 }
-                ctx.fillStyle = 'white';
-                ctx.fillText(classIcon, playerX + 16, playerY + 16 + bob);
-                ctx.shadowBlur = 0;
+                
+                // Draw animations
+                this.animations.forEach(anim => {
+                    ctx.font = '16px "Courier New"';
+                    ctx.fillStyle = anim.critical ? '#ffaa00' : '#fff';
+                    ctx.fillText(anim.damage, anim.x - this.camera.x, anim.y - this.camera.y - anim.progress * 30);
+                });
                 
                 this.renderMinimap();
-            }
-
-            getMobIcon(subtype) {
-                const icons = {
-                    goblin: '👺',
-                    wolf: '🐺',
-                    skeleton: '💀',
-                    orc: '👹',
-                    troll: '🧌'
-                };
-                return icons[subtype] || '👾';
             }
 
             renderMinimap() {
                 const canvas = document.getElementById('minimap-canvas');
                 const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#0a0c10';
+                ctx.imageSmoothingEnabled = false;
+                
+                ctx.fillStyle = '#1a332a';
                 ctx.fillRect(0, 0, 160, 160);
                 
                 // Draw grid
-                ctx.strokeStyle = '#2a2a3a';
-                ctx.lineWidth = 0.5;
+                ctx.strokeStyle = '#2a4a2a';
+                ctx.lineWidth = 1;
                 for (let i = 0; i <= 5; i++) {
                     ctx.beginPath();
                     ctx.moveTo(i * 32, 0);
@@ -3502,42 +3736,88 @@
                     ctx.stroke();
                 }
                 
-                // Draw player
-                ctx.fillStyle = 'var(--gold)';
-                ctx.fillRect(80, 80, 4, 4);
-                
                 // Draw entities on minimap
-                this.entities.forEach(entity => {
+                [...this.entities, ...this.onlinePlayers.values()].forEach(entity => {
                     const dx = (entity.x - this.player.x) * 2 + 80;
                     const dy = (entity.y - this.player.y) * 2 + 80;
                     
                     if (dx >= 0 && dx <= 160 && dy >= 0 && dy <= 160) {
-                        if (entity.type === 'mob' && entity.hp > 0) {
+                        if (entity.type === 'mob') {
                             ctx.fillStyle = '#ff4444';
-                            ctx.fillRect(dx - 1, dy - 1, 3, 3);
                         } else if (entity.type === 'npc') {
                             ctx.fillStyle = '#44aaff';
-                            ctx.fillRect(dx - 1, dy - 1, 3, 3);
-                        } else if (entity.type === 'structure') {
-                            ctx.fillStyle = '#88aa88';
-                            ctx.fillRect(dx - 2, dy - 2, 5, 5);
+                        } else {
+                            ctx.fillStyle = '#44ff44';
                         }
+                        ctx.fillRect(dx - 2, dy - 2, 4, 4);
                     }
                 });
+                
+                // Draw player
+                ctx.fillStyle = '#ffd700';
+                ctx.fillRect(78, 78, 4, 4);
             }
 
             movePlayer(dx, dy) {
                 this.player.targetX += dx;
                 this.player.targetY += dy;
                 
+                // Send movement to server
                 if (ws && ws.readyState === WebSocket.OPEN) {
                     ws.send(JSON.stringify({
                         type: 'move',
                         character_id: currentCharacter?.id,
-                        x: this.player.targetX,
-                        y: this.player.targetY
+                        x: Math.round(this.player.targetX),
+                        y: Math.round(this.player.targetY)
                     }));
                 }
+                
+                // Update in database
+                apiRequest(`/api/characters/${currentCharacter.id}/move?x=${Math.round(this.player.targetX)}&y=${Math.round(this.player.targetY)}`, {
+                    method: 'POST'
+                }).catch(() => {});
+            }
+
+            interact() {
+                const playerX = Math.round(this.player.x);
+                const playerY = Math.round(this.player.y);
+                
+                const nearby = this.entities.find(e => 
+                    Math.abs(e.x - playerX) <= 1 && Math.abs(e.y - playerY) <= 1
+                );
+                
+                if (nearby) {
+                    if (nearby.type === 'npc') {
+                        showNotification(nearby.dialog || 'Hello!', 'info');
+                    } else if (nearby.type === 'mob') {
+                        startCombat(nearby);
+                    }
+                }
+            }
+
+            attackNearest() {
+                const playerX = Math.round(this.player.x);
+                const playerY = Math.round(this.player.y);
+                
+                const nearest = this.entities.find(e => 
+                    e.type === 'mob' &&
+                    Math.abs(e.x - playerX) < 5 && 
+                    Math.abs(e.y - playerY) < 5
+                );
+                
+                if (nearest) {
+                    startCombat(nearest);
+                }
+            }
+
+            addDamageNumber(x, y, damage, critical) {
+                this.animations.push({
+                    x: x * this.tileSize + 16,
+                    y: y * this.tileSize,
+                    damage,
+                    critical,
+                    progress: 0
+                });
             }
         }
 
@@ -3555,20 +3835,16 @@
                 gameRenderer?.movePlayer(-1, 0);
             } else if (key === 'd' || key === 'arrowright') {
                 gameRenderer?.movePlayer(1, 0);
-            } else if (key === 'e' || key === 'enter') {
-                interactWithEntity();
+            } else if (key === 'e' || key === ' ') {
+                gameRenderer?.interact();
             } else if (key === 'f') {
-                attackNearestEnemy();
+                gameRenderer?.attackNearest();
             } else if (key === 'i') {
-                toggleInventory();
+                openInventory();
             } else if (key === 'k') {
-                toggleSkills();
+                openSkills();
             } else if (key === 'j') {
-                toggleQuestLog();
-            } else if (key === 'g') {
-                toggleGuild();
-            } else if (key === 'h') {
-                toggleAuction();
+                openQuestLog();
             } else if (key === 'p') {
                 openPVPArena();
             } else if (key === 'escape') {
@@ -3580,500 +3856,77 @@
             keysPressed.delete(event.key.toLowerCase());
         }
 
-        function interactWithEntity() {
-            if (!gameRenderer) return;
-            
-            const playerX = Math.floor(gameRenderer.player.targetX);
-            const playerY = Math.floor(gameRenderer.player.targetY);
-            
-            const nearbyEntity = worldEntities.find(e => 
-                Math.abs(e.x - playerX) <= 1 && Math.abs(e.y - playerY) <= 1 && e.hp > 0
-            );
-            
-            if (nearbyEntity) {
-                if (nearbyEntity.type === 'mob') {
-                    startCombat(nearbyEntity);
-                } else if (nearbyEntity.type === 'npc') {
-                    talkToNPC(nearbyEntity);
-                } else if (nearbyEntity.type === 'structure') {
-                    enterStructure(nearbyEntity);
-                }
-            }
-        }
-
-        function attackNearestEnemy() {
-            if (!gameRenderer) return;
-            
-            const playerX = Math.floor(gameRenderer.player.targetX);
-            const playerY = Math.floor(gameRenderer.player.targetY);
-            
-            const nearestEnemy = worldEntities.find(e => 
-                e.type === 'mob' && 
-                e.hp > 0 &&
-                Math.abs(e.x - playerX) < 5 && 
-                Math.abs(e.y - playerY) < 5
-            );
-            
-            if (nearestEnemy) {
-                startCombat(nearestEnemy);
-            } else {
-                showNotification('No enemies nearby', 'info');
-            }
-        }
-
-        function talkToNPC(npc) {
-            showNotification(npc.dialog || 'Hello traveler!', 'info');
-            
-            if (npc.subtype === 'merchant') {
-                openShop();
-            } else if (npc.subtype === 'quest_giver') {
-                showQuestDialog(npc);
-            } else if (npc.subtype === 'healer') {
-                healFromNPC();
-            } else if (npc.subtype === 'pvp_master') {
-                openPVPArena();
-            } else if (npc.subtype === 'blacksmith') {
-                openBlacksmith();
-            }
-        }
-
-        function healFromNPC() {
-            if (!currentCharacter) return;
-            
-            const cost = Math.floor(currentCharacter.max_hp * 0.1);
-            if (currentCharacter.gold >= cost) {
-                currentCharacter.hp = currentCharacter.max_hp;
-                currentCharacter.mana = currentCharacter.max_mana;
-                currentCharacter.gold -= cost;
-                updateHUD();
-                showNotification(`Healed for ${cost} gold`, 'success');
-            } else {
-                showNotification('Not enough gold!', 'error');
-            }
-        }
-
-        function openShop() {
-            showNotification('Shop opened - feature coming soon!', 'info');
-        }
-
-        function openBlacksmith() {
-            showNotification('Blacksmith - feature coming soon!', 'info');
-        }
-
-        function showQuestDialog(npc) {
-            const popup = document.getElementById('story-choice-popup');
-            document.getElementById('story-choice-text').innerHTML = `
-                <p>${npc.dialog}</p>
-                <p style="color:var(--gold);margin-top:10px">Quest: Goblin Menace</p>
-                <p style="color:var(--text-muted)">Defeat 5 goblins in the forest.</p>
-            `;
-            document.getElementById('story-choice-buttons').innerHTML = `
-                <button class="action-btn" onclick="acceptQuest()">Accept Quest</button>
-                <button class="action-btn danger" onclick="closePopup('story-choice-popup')">Decline</button>
-            `;
-            showPopup('story-choice-popup');
-        }
-
-        function acceptQuest() {
-            closePopup('story-choice-popup');
-            activeQuests.add('q1_1');
-            questProgress.q1_1 = 0;
-            renderActiveQuests();
-            showNotification('Quest accepted: Goblin Menace', 'success');
-        }
-
-        function enterStructure(structure) {
-            if (structure.subtype === 'pvp_arena') {
-                openPVPArena();
-            } else if (structure.subtype === 'shop') {
-                openShop();
-            } else if (structure.subtype === 'inn') {
-                healFromNPC();
-            } else {
-                showNotification(`Entering ${structure.name}...`, 'info');
-            }
-        }
-
         // ==================== COMBAT SYSTEM ====================
-        function startCombat(enemy) {
+        async function startCombat(enemy) {
             if (!currentCharacter) return;
             
-            currentCombat = {
-                enemy: enemy,
-                playerHp: currentCharacter.hp,
-                playerMaxHp: currentCharacter.max_hp,
-                enemyHp: enemy.hp,
-                enemyMaxHp: enemy.maxHp,
-                log: [],
-                turn: 'player',
-                skillCooldowns: {}
-            };
-            
-            // Update combat UI
-            document.getElementById('combat-player-name').textContent = currentCharacter.name;
-            document.getElementById('combat-player-icon').textContent = CLASSES[currentCharacter.class_name]?.icon || '⚔️';
-            document.getElementById('combat-player-attack').textContent = currentCharacter.strength * 2;
-            document.getElementById('combat-player-defense').textContent = Math.floor(currentCharacter.vitality * 1.5);
-            
-            document.getElementById('combat-enemy-name').textContent = getEnemyName(enemy.subtype);
-            document.getElementById('combat-enemy-icon').textContent = getEnemyIcon(enemy.subtype);
-            document.getElementById('combat-enemy-attack').textContent = enemy.attack;
-            document.getElementById('combat-enemy-defense').textContent = enemy.defense;
-            document.getElementById('combat-enemy-level').textContent = `Lv.${enemy.level}`;
-            
-            updateCombatUI();
-            renderCombatActions();
-            
-            showPopup('combat-popup');
-            
-            // Start combat loop
-            if (combatInterval) clearInterval(combatInterval);
-            combatInterval = setInterval(combatTick, 1000);
-        }
-
-        function getEnemyName(subtype) {
-            const names = {
-                goblin: 'Goblin',
-                wolf: 'Wolf',
-                skeleton: 'Skeleton',
-                orc: 'Orc',
-                troll: 'Troll'
-            };
-            return names[subtype] || 'Enemy';
-        }
-
-        function getEnemyIcon(subtype) {
-            const icons = {
-                goblin: '👺',
-                wolf: '🐺',
-                skeleton: '💀',
-                orc: '👹',
-                troll: '🧌'
-            };
-            return icons[subtype] || '👾';
-        }
-
-        function updateCombatUI() {
-            if (!currentCombat) return;
-            
-            const playerHpPercent = (currentCombat.playerHp / currentCombat.playerMaxHp) * 100;
-            const enemyHpPercent = (currentCombat.enemyHp / currentCombat.enemyMaxHp) * 100;
-            
-            document.getElementById('combat-player-hp').style.width = playerHpPercent + '%';
-            document.getElementById('combat-player-hp-text').textContent = `${Math.max(0, currentCombat.playerHp)}/${currentCombat.playerMaxHp}`;
-            
-            document.getElementById('combat-enemy-hp').style.width = enemyHpPercent + '%';
-            document.getElementById('combat-enemy-hp-text').textContent = `${Math.max(0, currentCombat.enemyHp)}/${currentCombat.enemyMaxHp}`;
-        }
-
-        function renderCombatActions() {
-            const container = document.getElementById('combat-actions');
-            if (!currentCharacter) return;
-            
-            const classSkills = SKILLS[currentCharacter.class_name] || SKILLS.warrior;
-            const basicSkills = classSkills.slice(0, 4);
-            
-            container.innerHTML = basicSkills.map(skill => {
-                const onCooldown = currentCombat.skillCooldowns[skill.id] > Date.now();
-                return `
-                    <button class="combat-skill-btn ${onCooldown ? 'cooldown' : ''}" 
-                            onclick="useCombatSkill('${skill.id}')"
-                            ${onCooldown ? 'disabled' : ''}>
-                        ${skill.icon} ${skill.name}<br>
-                        <small>${skill.mana} MP</small>
-                    </button>
-                `;
-            }).join('');
-            
-            container.innerHTML += `
-                <button class="combat-skill-btn" onclick="combatAttack()">⚔️ Attack</button>
-                <button class="combat-skill-btn" onclick="combatDefend()">🛡️ Defend</button>
-                <button class="combat-skill-btn danger" onclick="tryFlee()">🏃 Flee</button>
-            `;
-        }
-
-        function combatAttack() {
-            if (!currentCombat || currentCombat.turn !== 'player') return;
-            
-            const damage = Math.floor((currentCharacter.strength * 2) + Math.random() * 10);
-            const isCritical = Math.random() < 0.1;
-            const finalDamage = isCritical ? Math.floor(damage * 1.5) : damage;
-            
-            currentCombat.enemyHp -= finalDamage;
-            
-            // Animation
-            animateCombat('player', 'attack');
-            showDamageNumber(finalDamage, 'enemy', isCritical);
-            
-            addCombatLog(`You attack for ${finalDamage} damage${isCritical ? ' (CRITICAL!)' : ''}`);
-            
-            if (isCritical) addCombatLog('✨ CRITICAL HIT!', 'critical');
-            
-            if (currentCombat.enemyHp <= 0) {
-                combatVictory();
-                return;
-            }
-            
-            currentCombat.turn = 'enemy';
-            updateCombatUI();
-            
-            // Enemy turn after delay
-            setTimeout(() => enemyTurn(), 800);
-        }
-
-        function combatDefend() {
-            if (!currentCombat || currentCombat.turn !== 'player') return;
-            
-            currentCombat.defending = true;
-            addCombatLog('You take a defensive stance');
-            animateCombat('player', 'defend');
-            
-            currentCombat.turn = 'enemy';
-            setTimeout(() => enemyTurn(), 800);
-        }
-
-        function useCombatSkill(skillId) {
-            if (!currentCombat || currentCombat.turn !== 'player') return;
-            
-            const classSkills = SKILLS[currentCharacter.class_name] || SKILLS.warrior;
-            const skill = classSkills.find(s => s.id === skillId);
-            
-            if (!skill) return;
-            
-            if (currentCharacter.mana < skill.mana) {
-                addCombatLog('Not enough mana!');
-                return;
-            }
-            
-            currentCharacter.mana -= skill.mana;
-            
-            let damage = 0;
-            let effect = '';
-            
-            switch(skillId) {
-                case 'power_strike':
-                    damage = Math.floor((currentCharacter.strength * 3) + Math.random() * 15);
-                    effect = 'devastating';
-                    break;
-                case 'fireball':
-                    damage = Math.floor((currentCharacter.intelligence * 4) + Math.random() * 20);
-                    effect = 'fiery';
-                    break;
-                case 'cleave':
-                    damage = Math.floor((currentCharacter.strength * 2.5) + Math.random() * 10);
-                    effect = 'sweeping';
-                    break;
-                case 'frostbolt':
-                    damage = Math.floor((currentCharacter.intelligence * 3) + Math.random() * 15);
-                    effect = 'freezing';
-                    break;
-                default:
-                    damage = Math.floor((currentCharacter.strength * 2) + Math.random() * 10);
-            }
-            
-            const isCritical = Math.random() < 0.15;
-            const finalDamage = isCritical ? Math.floor(damage * 1.5) : damage;
-            
-            currentCombat.enemyHp -= finalDamage;
-            
-            animateCombat('player', 'skill');
-            showDamageNumber(finalDamage, 'enemy', isCritical);
-            
-            addCombatLog(`You use ${skill.name} for ${finalDamage} ${effect} damage${isCritical ? ' (CRITICAL!)' : ''}`);
-            
-            // Set cooldown
-            currentCombat.skillCooldowns[skillId] = Date.now() + (skill.cooldown * 1000);
-            
-            if (currentCombat.enemyHp <= 0) {
-                combatVictory();
-                return;
-            }
-            
-            currentCombat.turn = 'enemy';
-            updateCombatUI();
-            renderCombatActions();
-            
-            setTimeout(() => enemyTurn(), 800);
-        }
-
-        function enemyTurn() {
-            if (!currentCombat || currentCombat.enemyHp <= 0) return;
-            
-            animateCombat('enemy', 'attack');
-            
-            let damage = currentCombat.enemy.attack + Math.floor(Math.random() * 5);
-            
-            if (currentCombat.defending) {
-                damage = Math.floor(damage * 0.5);
-                currentCombat.defending = false;
-                addCombatLog('Your defense reduces the damage!');
-            }
-            
-            currentCombat.playerHp -= damage;
-            showDamageNumber(damage, 'player', false);
-            
-            addCombatLog(`${currentCombat.enemy.name} attacks for ${damage} damage`);
-            
-            if (currentCombat.playerHp <= 0) {
-                combatDefeat();
-                return;
-            }
-            
-            currentCombat.turn = 'player';
-            updateCombatUI();
-        }
-
-        function animateCombat(entity, action) {
-            const element = document.getElementById(`combat-${entity}`);
-            element.classList.add(action === 'attack' ? 'attacking' : 'taking-damage');
-            setTimeout(() => {
-                element.classList.remove('attacking', 'taking-damage');
-            }, 300);
-        }
-
-        function showDamageNumber(amount, target, critical) {
-            const arena = document.getElementById('combat-arena');
-            const targetEl = document.getElementById(`combat-${target}`);
-            const rect = targetEl.getBoundingClientRect();
-            
-            const damageEl = document.createElement('div');
-            damageEl.className = 'damage-number';
-            damageEl.textContent = amount;
-            damageEl.style.color = critical ? '#ffaa00' : '#ffffff';
-            damageEl.style.left = rect.left + rect.width / 2 + 'px';
-            damageEl.style.top = rect.top + 'px';
-            
-            arena.appendChild(damageEl);
-            setTimeout(() => damageEl.remove(), 1000);
-        }
-
-        function addCombatLog(message, className = '') {
-            if (!currentCombat) return;
-            
-            currentCombat.log.push(message);
-            const logEl = document.getElementById('combat-log');
-            const entry = document.createElement('div');
-            entry.className = `combat-log-entry ${className}`;
-            entry.textContent = message;
-            logEl.appendChild(entry);
-            logEl.scrollTop = logEl.scrollHeight;
-            
-            while (logEl.children.length > 20) {
-                logEl.removeChild(logEl.firstChild);
+            try {
+                const result = await apiRequest(`/api/characters/${currentCharacter.id}/combat/${enemy.class}`, {
+                    method: 'POST'
+                });
+                
+                if (result.victory) {
+                    // Update character
+                    currentCharacter.hp = result.player_hp;
+                    currentCharacter.exp += result.exp_gained;
+                    currentCharacter.gold += result.gold_gained;
+                    
+                    // Remove enemy or reduce HP
+                    if (result.enemy_hp <= 0) {
+                        const index = worldEntities.findIndex(e => e.id === enemy.id);
+                        if (index !== -1) {
+                            worldEntities.splice(index, 1);
+                            
+                            // Respawn after delay
+                            setTimeout(() => {
+                                worldEntities.push({
+                                    ...enemy,
+                                    hp: enemy.maxHp
+                                });
+                            }, 30000);
+                        }
+                    } else {
+                        enemy.hp = result.enemy_hp;
+                    }
+                    
+                    // Add damage animation
+                    if (gameRenderer) {
+                        gameRenderer.addDamageNumber(enemy.x, enemy.y, result.combat_log[0]?.damage || 0, result.combat_log[0]?.critical || false);
+                    }
+                    
+                    checkLevelUp();
+                    updateHUD();
+                    
+                    showNotification(`Victory! +${result.exp_gained} XP, +${result.gold_gained} Gold`, 'success');
+                    
+                    // Check for loot
+                    if (result.loot && result.loot.length > 0) {
+                        showNotification(`Found: ${result.loot.join(', ')}`, 'success');
+                    }
+                } else {
+                    currentCharacter.hp = result.player_hp;
+                    updateHUD();
+                    showNotification('You were defeated!', 'error');
+                }
+            } catch (error) {
+                showNotification('Combat failed: ' + error.message, 'error');
             }
         }
 
-        function combatTick() {
-            // Auto-update UI, used for cooldowns etc
-            if (currentCombat) {
-                renderCombatActions();
-            }
-        }
-
-        function combatVictory() {
-            if (!currentCombat) return;
-            
-            const enemy = currentCombat.enemy;
-            const expGain = enemy.level * 20;
-            const goldGain = enemy.level * 10;
-            
-            currentCharacter.exp += expGain;
-            currentCharacter.gold += goldGain;
-            currentCharacter.hp = currentCombat.playerHp;
-            
-            // Check level up
+        function checkLevelUp() {
             const expNeeded = currentCharacter.level * 100;
             if (currentCharacter.exp >= expNeeded) {
-                levelUp();
-            }
-            
-            // Remove enemy or mark as dead
-            const worldEnemy = worldEntities.find(e => e.id === enemy.id);
-            if (worldEnemy) {
-                worldEnemy.hp = 0;
-                worldEnemy.respawnTimer = 300;
-            }
-            
-            // Update quest progress
-            if (activeQuests.has('q1_1') && enemy.subtype === 'goblin') {
-                questProgress.q1_1 = (questProgress.q1_1 || 0) + 1;
-                if (questProgress.q1_1 >= 5) {
-                    completeQuest('q1_1');
-                }
-            }
-            
-            addCombatLog(`🏆 Victory! Gained ${expGain} XP and ${goldGain} gold`);
-            
-            setTimeout(() => {
-                closeCombat();
-                showNotification(`Victory! +${expGain} XP, +${goldGain} gold`, 'success');
-            }, 2000);
-        }
-
-        function combatDefeat() {
-            addCombatLog('💀 You have been defeated...');
-            
-            setTimeout(() => {
-                closeCombat();
-                currentCharacter.hp = Math.floor(currentCharacter.max_hp * 0.5);
-                currentCharacter.gold = Math.floor(currentCharacter.gold * 0.9);
+                currentCharacter.level++;
+                currentCharacter.exp -= expNeeded;
+                currentCharacter.max_hp += 20;
+                currentCharacter.max_mana += 10;
+                currentCharacter.hp = currentCharacter.max_hp;
+                currentCharacter.mana = currentCharacter.max_mana;
+                skillPoints += 2;
+                
+                showNotification(`🌟 Level Up! Level ${currentCharacter.level}!`, 'success');
                 updateHUD();
-                showNotification('You were defeated! Lost 10% gold.', 'error');
-            }, 2000);
-        }
-
-        function tryFlee() {
-            if (!currentCombat) return;
-            
-            if (Math.random() < 0.5) {
-                addCombatLog('You successfully fled!');
-                setTimeout(() => {
-                    closeCombat();
-                }, 1000);
-            } else {
-                addCombatLog('Failed to flee!');
-                currentCombat.turn = 'enemy';
-                setTimeout(() => enemyTurn(), 800);
             }
-        }
-
-        function closeCombat() {
-            closePopup('combat-popup');
-            if (combatInterval) {
-                clearInterval(combatInterval);
-                combatInterval = null;
-            }
-            currentCombat = null;
-            updateHUD();
-            renderActiveQuests();
-        }
-
-        function levelUp() {
-            currentCharacter.level++;
-            currentCharacter.exp = 0;
-            currentCharacter.max_hp += 20;
-            currentCharacter.max_mana += 10;
-            currentCharacter.hp = currentCharacter.max_hp;
-            currentCharacter.mana = currentCharacter.max_mana;
-            currentCharacter.strength += 2;
-            currentCharacter.agility += 2;
-            currentCharacter.intelligence += 2;
-            currentCharacter.vitality += 2;
-            skillPoints += 2;
-            
-            showNotification(`🌟 Level Up! You are now level ${currentCharacter.level}!`, 'success');
-            updateHUD();
-        }
-
-        function completeQuest(questId) {
-            activeQuests.delete(questId);
-            showNotification(`Quest completed!`, 'success');
-            renderActiveQuests();
-            
-            // Grant rewards
-            currentCharacter.gold += 100;
-            currentCharacter.exp += 200;
-            showNotification(`Rewards: 100 gold, 200 XP`, 'success');
         }
 
         // ==================== HUD FUNCTIONS ====================
@@ -4082,10 +3935,11 @@
             
             const hpPercent = (currentCharacter.hp / currentCharacter.max_hp) * 100;
             const mpPercent = (currentCharacter.mana / currentCharacter.max_mana) * 100;
-            const xpNeeded = currentCharacter.level * 100;
-            const xpPercent = (currentCharacter.exp / xpNeeded) * 100;
+            const expNeeded = currentCharacter.level * 100;
+            const expPercent = (currentCharacter.exp / expNeeded) * 100;
             
             document.getElementById('hud-name').textContent = currentCharacter.name;
+            document.getElementById('hud-level').textContent = currentCharacter.level;
             
             if (currentUser?.is_owner) {
                 document.getElementById('hud-role').textContent = '👑 OWNER';
@@ -4101,9 +3955,8 @@
             document.getElementById('hud-hp-text').textContent = `${currentCharacter.hp}/${currentCharacter.max_hp}`;
             document.getElementById('hud-mp-bar').style.width = mpPercent + '%';
             document.getElementById('hud-mp-text').textContent = `${currentCharacter.mana}/${currentCharacter.max_mana}`;
-            document.getElementById('hud-xp-bar').style.width = xpPercent + '%';
-            document.getElementById('hud-xp-text').textContent = Math.floor(xpPercent) + '%';
-            document.getElementById('hud-level').textContent = currentCharacter.level;
+            document.getElementById('hud-xp-bar').style.width = expPercent + '%';
+            document.getElementById('hud-xp-text').textContent = Math.floor(expPercent) + '%';
             document.getElementById('hud-gold').textContent = currentCharacter.gold;
             
             const attack = currentCharacter.strength * 2;
@@ -4111,6 +3964,7 @@
             document.getElementById('hud-attack').textContent = attack;
             document.getElementById('hud-defense').textContent = defense;
             
+            // Show/hide admin buttons
             if (currentUser?.is_owner || currentUser?.role === 'owner') {
                 document.getElementById('cheat-btn').style.display = 'inline-block';
                 document.getElementById('mod-btn').style.display = 'inline-block';
@@ -4132,23 +3986,50 @@
             if (!currentCharacter) return;
             
             const classSkills = SKILLS[currentCharacter.class_name] || SKILLS.warrior;
-            const skills = classSkills.slice(0, 6);
-            const keys = ['1', '2', '3', '4', '5', '6'];
+            const skills = classSkills.slice(0, 4);
+            const keys = ['1', '2', '3', '4'];
             
             bar.innerHTML = skills.map((skill, i) => `
-                <div class="skill-slot ${learnedSkills.has(skill.id) ? '' : 'locked'}" 
-                     onclick="useSkill('${skill.id}')"
-                     title="${skill.name}: ${skill.desc}">
+                <div class="skill-slot" onclick="useSkill('${skill.id}')" title="${skill.name}: ${skill.desc}">
                     <div class="skill-icon">${skill.icon}</div>
                     <div class="skill-key">${keys[i]}</div>
-                    <div class="skill-cd" id="skill-cd-${i}"></div>
                 </div>
             `).join('');
         }
 
         function useSkill(skillId) {
             if (!currentCharacter) return;
-            showNotification(`Used ${skillId}!`, 'info');
+            
+            const classSkills = SKILLS[currentCharacter.class_name] || SKILLS.warrior;
+            const skill = classSkills.find(s => s.id === skillId);
+            
+            if (!skill) return;
+            
+            if (currentCharacter.mana < skill.mana) {
+                showNotification('Not enough mana!', 'error');
+                return;
+            }
+            
+            currentCharacter.mana -= skill.mana;
+            updateHUD();
+            
+            showNotification(`Used ${skill.name}!`, 'success');
+            
+            // Find nearest enemy and attack
+            if (gameRenderer) {
+                const playerX = Math.round(gameRenderer.player.x);
+                const playerY = Math.round(gameRenderer.player.y);
+                
+                const nearest = worldEntities.find(e => 
+                    e.type === 'mob' &&
+                    Math.abs(e.x - playerX) < 5 && 
+                    Math.abs(e.y - playerY) < 5
+                );
+                
+                if (nearest) {
+                    startCombat(nearest);
+                }
+            }
         }
 
         function renderActiveQuests() {
@@ -4167,7 +4048,7 @@
                 };
                 
                 const progress = questProgress[questId] || 0;
-                const maxProgress = questId === 'q1_1' ? 5 : 1;
+                const maxProgress = 5;
                 const percent = (progress / maxProgress) * 100;
                 
                 const div = document.createElement('div');
@@ -4191,12 +4072,12 @@
 
         function renderPVPArena() {
             document.getElementById('pvp-player1-name').textContent = currentCharacter?.name || 'You';
-            document.getElementById('pvp-icon1').textContent = CLASSES[currentCharacter?.class_name]?.icon || '⚔️';
+            document.getElementById('pvp-icon1').innerHTML = `<img src="${PIXEL_SPRITES[currentCharacter?.class_name]?.toDataURL()}" style="width:64px;height:64px;image-rendering:pixelated;">`;
             document.getElementById('pvp-player1-class').textContent = currentCharacter?.class_name?.toUpperCase() || 'WARRIOR';
-            document.getElementById('pvp-rating1').textContent = `Rating: ${Math.floor(1000 + Math.random() * 500)}`;
+            document.getElementById('pvp-rating1').textContent = `Rating: 1000`;
             
-            document.getElementById('pvp-player2-name').textContent = 'Waiting for opponent...';
-            document.getElementById('pvp-icon2').textContent = '❓';
+            document.getElementById('pvp-player2-name').textContent = 'Waiting...';
+            document.getElementById('pvp-icon2').innerHTML = '❓';
             document.getElementById('pvp-player2-class').textContent = '???';
             document.getElementById('pvp-rating2').textContent = 'Rating: ???';
             
@@ -4214,37 +4095,12 @@
                 document.getElementById('queue-timer').style.width = Math.min(100, queueTime) + '%';
                 
                 if (queueTime >= 100) {
-                    // Found match
                     clearInterval(pvpQueueTimer);
                     closePopup('pvp-queue-popup');
                     
-                    // Generate random opponent
-                    const opponentNames = ['ShadowBlade', 'FireMage', 'IronKnight', 'WindArcher', 'DarkRogue'];
-                    const opponentClasses = ['warrior', 'mage', 'rogue', 'archer', 'paladin'];
-                    const randomName = opponentNames[Math.floor(Math.random() * opponentNames.length)];
-                    const randomClass = opponentClasses[Math.floor(Math.random() * opponentClasses.length)];
-                    
-                    document.getElementById('pvp-player2-name').textContent = randomName;
-                    document.getElementById('pvp-icon2').textContent = CLASSES[randomClass]?.icon || '⚔️';
-                    document.getElementById('pvp-player2-class').textContent = randomClass.toUpperCase();
-                    document.getElementById('pvp-rating2').textContent = `Rating: ${Math.floor(900 + Math.random() * 600)}`;
-                    
-                    document.getElementById('pvp-fighter2').classList.add('challenged');
-                    
-                    showNotification(`Match found! Opponent: ${randomName}`, 'success');
-                    
-                    // Start countdown
-                    let countdown = 3;
-                    document.getElementById('pvp-countdown').textContent = countdown;
-                    const countdownInterval = setInterval(() => {
-                        countdown--;
-                        document.getElementById('pvp-countdown').textContent = countdown;
-                        
-                        if (countdown <= 0) {
-                            clearInterval(countdownInterval);
-                            startPvPBattle(randomName, randomClass);
-                        }
-                    }, 1000);
+                    // In a real implementation, this would be handled by the server
+                    showNotification('Match found!', 'success');
+                    openPVPArena();
                 }
             }, 300);
         }
@@ -4256,100 +4112,6 @@
             }
             pvpQueueActive = false;
             closePopup('pvp-queue-popup');
-        }
-
-        function startPvPBattle(opponentName, opponentClass) {
-            const log = document.getElementById('pvp-combat-log');
-            log.innerHTML = '';
-            
-            const playerRating = parseInt(document.getElementById('pvp-rating1').textContent.split(' ')[1]);
-            const opponentRating = parseInt(document.getElementById('pvp-rating2').textContent.split(' ')[1]);
-            
-            addPvPLog(`⚔️ Battle started: ${currentCharacter.name} vs ${opponentName}`, 'system');
-            
-            let playerHp = 100;
-            let opponentHp = 100;
-            let turn = 0;
-            
-            const battleInterval = setInterval(() => {
-                turn++;
-                
-                if (playerHp <= 0 || opponentHp <= 0) {
-                    clearInterval(battleInterval);
-                    
-                    const playerWon = playerHp > opponentHp;
-                    const ratingChange = playerWon ? 25 : -15;
-                    
-                    document.getElementById('pvp-fighter1').classList.remove('challenged');
-                    document.getElementById('pvp-fighter2').classList.remove('challenged');
-                    
-                    if (playerWon) {
-                        document.getElementById('pvp-fighter1').classList.add('ready');
-                        addPvPLog(`🏆 VICTORY! You gained ${ratingChange} rating!`, 'system');
-                        showNotification(`PVP Victory! +${ratingChange} rating`, 'success');
-                    } else {
-                        document.getElementById('pvp-fighter2').classList.add('ready');
-                        addPvPLog(`💀 Defeat... You lost ${Math.abs(ratingChange)} rating`, 'system');
-                        showNotification(`PVP Defeat! ${ratingChange} rating`, 'error');
-                    }
-                    
-                    // Update rating display
-                    const newRating = playerRating + ratingChange;
-                    document.getElementById('pvp-rating1').textContent = `Rating: ${newRating}`;
-                    
-                    document.getElementById('pvp-buttons').innerHTML = `
-                        <button class="action-btn" onclick="closePvP()">CLOSE</button>
-                        <button class="action-btn success" onclick="joinPvPQueue()">⚔️ QUEUE AGAIN</button>
-                    `;
-                    
-                    return;
-                }
-                
-                // Simulate combat
-                const isPlayerTurn = turn % 2 === 1;
-                
-                if (isPlayerTurn) {
-                    const damage = Math.floor(15 + Math.random() * 20);
-                    const isCritical = Math.random() < 0.2;
-                    const finalDamage = isCritical ? Math.floor(damage * 1.5) : damage;
-                    opponentHp = Math.max(0, opponentHp - finalDamage);
-                    
-                    document.getElementById('pvp-player2-hp').style.width = (opponentHp / 100) * 100 + '%';
-                    document.getElementById('pvp-player2-hp-text').textContent = `${opponentHp}/100`;
-                    
-                    document.getElementById('pvp-fighter1').classList.add('attacking');
-                    setTimeout(() => document.getElementById('pvp-fighter1').classList.remove('attacking'), 300);
-                    
-                    addPvPLog(`You hit ${opponentName} for ${finalDamage} damage${isCritical ? ' (CRITICAL!)' : ''}`, isCritical ? 'critical' : '');
-                } else {
-                    const damage = Math.floor(10 + Math.random() * 15);
-                    const isCritical = Math.random() < 0.1;
-                    const finalDamage = isCritical ? Math.floor(damage * 1.5) : damage;
-                    playerHp = Math.max(0, playerHp - finalDamage);
-                    
-                    document.getElementById('pvp-player1-hp').style.width = (playerHp / 100) * 100 + '%';
-                    document.getElementById('pvp-player1-hp-text').textContent = `${playerHp}/100`;
-                    
-                    document.getElementById('pvp-fighter2').classList.add('attacking');
-                    setTimeout(() => document.getElementById('pvp-fighter2').classList.remove('attacking'), 300);
-                    
-                    addPvPLog(`${opponentName} hits you for ${finalDamage} damage${isCritical ? ' (CRITICAL!)' : ''}`, isCritical ? 'critical' : '');
-                }
-                
-                // Update health bar colors
-                if (playerHp < 30) document.getElementById('pvp-player1-hp').style.background = '#ff0000';
-                if (opponentHp < 30) document.getElementById('pvp-player2-hp').style.background = '#ff0000';
-                
-            }, 1500);
-        }
-
-        function addPvPLog(message, className = '') {
-            const log = document.getElementById('pvp-combat-log');
-            const entry = document.createElement('div');
-            entry.className = `combat-log-entry ${className}`;
-            entry.textContent = message;
-            log.appendChild(entry);
-            log.scrollTop = log.scrollHeight;
         }
 
         function handlePvPChallenge(data) {
@@ -4398,42 +4160,24 @@
             showPopup('inventory-popup');
         }
 
-        function toggleInventory() {
-            const popup = document.getElementById('inventory-popup');
-            if (popup.classList.contains('show')) {
-                closePopup('inventory-popup');
-            } else {
-                openInventory();
-            }
-        }
-
         function renderInventory() {
             const grid = document.getElementById('inventory-grid');
             document.getElementById('inventory-gold').textContent = currentCharacter?.gold || 0;
             
             grid.innerHTML = '';
             
-            // Add legendary weapons to inventory
-            const demoInventory = [
-                { id: 1, name: 'Dragon Blade', icon: '⚔️', rarity: 'legendary', quantity: 1 },
-                { id: 2, name: 'Health Potion', icon: '🧪', rarity: 'common', quantity: 5 },
-                { id: 3, name: 'Steel Sword', icon: '🗡️', rarity: 'uncommon', quantity: 1 },
-                { id: 4, name: 'Chain Mail', icon: '🛡️', rarity: 'uncommon', quantity: 1 },
-                { id: 5, name: 'Magic Ring', icon: '💍', rarity: 'rare', quantity: 1 },
-                { id: 6, name: 'Void Orb', icon: '🔮', rarity: 'legendary', quantity: 1 }
-            ];
-            
+            // Create 24 slots
             for (let i = 0; i < 24; i++) {
                 const slot = document.createElement('div');
                 slot.className = 'inv-slot';
                 
-                const item = demoInventory[i];
+                const item = inventory[i];
                 if (item) {
-                    slot.classList.add(item.rarity);
+                    slot.classList.add(item.rarity || 'common');
                     slot.innerHTML = `
-                        <span>${item.icon}</span>
+                        <span>${item.icon || '📦'}</span>
                         ${item.quantity > 1 ? `<span class="inv-quantity">${item.quantity}</span>` : ''}
-                        <span class="inv-name">${item.name}</span>
+                        <span class="inv-name">${item.name || 'Item'}</span>
                     `;
                     
                     slot.onmouseover = (e) => showTooltip(e, item);
@@ -4448,15 +4192,6 @@
         function openSkills() {
             renderSkillTree();
             showPopup('skills-popup');
-        }
-
-        function toggleSkills() {
-            const popup = document.getElementById('skills-popup');
-            if (popup.classList.contains('show')) {
-                closePopup('skills-popup');
-            } else {
-                openSkills();
-            }
         }
 
         function renderSkillTree() {
@@ -4511,15 +4246,6 @@
             showPopup('questlog-popup');
         }
 
-        function toggleQuestLog() {
-            const popup = document.getElementById('questlog-popup');
-            if (popup.classList.contains('show')) {
-                closePopup('questlog-popup');
-            } else {
-                openQuestLog();
-            }
-        }
-
         function renderQuestLog() {
             const list = document.getElementById('quest-list');
             list.innerHTML = '';
@@ -4553,15 +4279,6 @@
             showPopup('guild-popup');
         }
 
-        function toggleGuild() {
-            const popup = document.getElementById('guild-popup');
-            if (popup.classList.contains('show')) {
-                closePopup('guild-popup');
-            } else {
-                openGuild();
-            }
-        }
-
         async function loadGuildData() {
             try {
                 const data = await apiRequest('/api/guilds/my-guild');
@@ -4580,21 +4297,10 @@
             }
             
             content.innerHTML = `
-                <div class="guild-header">
-                    <div class="guild-emblem">⚔️</div>
-                    <div class="guild-info">
-                        <h3>${guildData.name} [${guildData.tag}]</h3>
-                        <p>Level ${guildData.level} · ${guildData.members?.length || 0} members</p>
-                    </div>
-                </div>
-                <div class="member-list">
-                    ${(guildData.members || []).map(m => `
-                        <div class="member-row">
-                            <span class="rank-badge rank-${m.rank}">${m.rank.toUpperCase()}</span>
-                            <span style="flex:1">${m.name}</span>
-                            <span style="color:var(--text-muted)">Lv.${m.level}</span>
-                        </div>
-                    `).join('')}
+                <div style="text-align:center;padding:20px">
+                    <div style="font-size:48px;margin-bottom:15px">⚔️</div>
+                    <h3 style="color:var(--gold);margin-bottom:10px">${guildData.name} [${guildData.tag}]</h3>
+                    <p style="color:var(--text-muted);margin-bottom:20px">Level ${guildData.level} · ${guildData.members?.length || 0} members</p>
                 </div>
             `;
         }
@@ -4635,27 +4341,12 @@
             showPopup('auction-popup');
         }
 
-        function toggleAuction() {
-            const popup = document.getElementById('auction-popup');
-            if (popup.classList.contains('show')) {
-                closePopup('auction-popup');
-            } else {
-                openAuction();
-            }
-        }
-
         async function loadAuctions() {
             try {
                 auctions = await apiRequest('/api/auction/listings');
                 renderAuctions();
             } catch {
-                // Demo data
-                auctions = [
-                    { id: 1, name: 'Dragon Blade', icon: '⚔️', rarity: 'legendary', current_bid: 5000, buyout_price: 10000, seller: 'Admin' },
-                    { id: 2, name: 'Void Orb', icon: '🔮', rarity: 'legendary', current_bid: 4500, buyout_price: 9000, seller: 'Admin' },
-                    { id: 3, name: 'Steel Sword', icon: '🗡️', rarity: 'uncommon', current_bid: 150, buyout_price: 300, seller: 'Player1' },
-                    { id: 4, name: 'Health Potion', icon: '🧪', rarity: 'common', current_bid: 25, buyout_price: 50, seller: 'Player2' }
-                ];
+                auctions = [];
                 renderAuctions();
             }
         }
@@ -4693,62 +4384,11 @@
             loadAuctions();
         }
 
-        // ==================== LEGENDARY WEAPONS ====================
-        function showLegendaryWeapons() {
-            const showcase = document.getElementById('weapon-showcase');
-            showcase.innerHTML = Object.entries(LEGENDARY_WEAPONS).map(([id, weapon]) => `
-                <div class="legendary-weapon" onclick="claimLegendaryWeapon('${id}')">
-                    <div class="weapon-icon">${weapon.icon}</div>
-                    <div class="weapon-name">${weapon.name}</div>
-                    <div class="weapon-stats">⚔️ ${weapon.damage} damage</div>
-                    <div class="weapon-stats">${Object.entries(weapon.stats).map(([stat, val]) => `${stat}: +${val}`).join(' · ')}</div>
-                    <div class="weapon-effect">✨ ${weapon.effect}</div>
-                </div>
-            `).join('');
-            
-            showPopup('legendary-popup');
-        }
-
-        function claimLegendaryWeapon(weaponId) {
-            const weapon = LEGENDARY_WEAPONS[weaponId];
-            showNotification(`You received ${weapon.name}!`, 'success', 5000);
-            closePopup('legendary-popup');
-            
-            // Add to inventory (demo)
-            showNotification(`⚔️ ${weapon.name} added to inventory!`, 'legendary');
-        }
-
-        function spawnLegendaryWeapon() {
-            const weaponIds = Object.keys(LEGENDARY_WEAPONS);
-            const randomWeapon = weaponIds[Math.floor(Math.random() * weaponIds.length)];
-            const weapon = LEGENDARY_WEAPONS[randomWeapon];
-            
-            showNotification(`⚔️ LEGENDARY DROP: ${weapon.name}!`, 'legendary', 8000);
-            
-            // Add to world as a drop
-            if (gameRenderer) {
-                worldEntities.push({
-                    id: Date.now(),
-                    type: 'item',
-                    subtype: 'legendary',
-                    weaponId: randomWeapon,
-                    x: gameRenderer.player.targetX + 1,
-                    y: gameRenderer.player.targetY,
-                    name: weapon.name,
-                    icon: weapon.icon
-                });
-            }
-        }
-
         // ==================== TRADING ====================
         function handleTradeRequest(data) {
             activeTrade = {
                 id: data.trade_id,
-                from: data.from_character,
-                yourItems: [],
-                theirItems: [],
-                yourGold: 0,
-                theirGold: 0
+                from: data.from_character
             };
             showPopup('trade-popup');
             document.getElementById('trade-partner').textContent = `PLAYER ${data.from_character}`;
@@ -4764,43 +4404,6 @@
         function cancelTrade() {
             closePopup('trade-popup');
             activeTrade = null;
-        }
-
-        // ==================== LEADERBOARD ====================
-        function openLeaderboard() {
-            loadLeaderboardPopup('level');
-            showPopup('leaderboard-popup');
-        }
-
-        async function loadLeaderboardPopup(type) {
-            try {
-                const data = await apiRequest(`/api/leaderboard/${type}?limit=10`);
-                const tbody = document.getElementById('leaderboard-body');
-                tbody.innerHTML = data.map((entry, i) => `
-                    <tr>
-                        <td style="padding:8px">${i + 1}</td>
-                        <td style="padding:8px">${entry.name}</td>
-                        <td style="padding:8px">${entry.class_name}</td>
-                        <td style="padding:8px;text-align:right;color:var(--gold)">${entry[type === 'level' ? 'level' : 'gold']}</td>
-                    </tr>
-                `).join('');
-            } catch {
-                // Demo data
-                const tbody = document.getElementById('leaderboard-body');
-                tbody.innerHTML = `
-                    <tr><td>1</td><td>ShadowBlade</td><td>rogue</td><td style="color:var(--gold)">2450</td></tr>
-                    <tr><td>2</td><td>FireMage</td><td>mage</td><td style="color:var(--gold)">2380</td></tr>
-                    <tr><td>3</td><td>IronKnight</td><td>warrior</td><td style="color:var(--gold)">2310</td></tr>
-                    <tr><td>4</td><td>WindArcher</td><td>archer</td><td style="color:var(--gold)">2250</td></tr>
-                    <tr><td>5</td><td>HolyPaladin</td><td>paladin</td><td style="color:var(--gold)">2190</td></tr>
-                `;
-            }
-        }
-
-        function switchLeaderboardTab(element, type) {
-            document.querySelectorAll('#leaderboard-popup .auction-tab').forEach(t => t.classList.remove('active'));
-            element.classList.add('active');
-            loadLeaderboardPopup(type);
         }
 
         // ==================== CHEAT MENU ====================
@@ -4866,19 +4469,12 @@
             }
         }
 
-        function startPVPTournament() {
-            showNotification('🏆 PVP TOURNAMENT STARTED! All players invited!', 'success', 10000);
+        function spawnLegendaryWeapon() {
+            const weaponIds = Object.keys(LEGENDARY_WEAPONS);
+            const randomWeapon = weaponIds[Math.floor(Math.random() * weaponIds.length)];
+            const weapon = LEGENDARY_WEAPONS[randomWeapon];
             
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({
-                    type: 'tournament_start',
-                    message: 'PVP Tournament is starting!'
-                }));
-            }
-            
-            setTimeout(() => {
-                showNotification('Tournament bracket generated! 16 players registered.', 'info');
-            }, 3000);
+            showNotification(`⚔️ LEGENDARY DROP: ${weapon.name}!`, 'legendary', 8000);
         }
 
         // ==================== MOD PANEL ====================
@@ -4894,15 +4490,16 @@
                 
                 const list = document.getElementById('mod-player-list');
                 list.innerHTML = (data.players || []).map(p => `
-                    <div class="admin-player-row">
-                        <div>
-                            <div style="color:var(--text-light)">${p.character_name}</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Lv.${p.level} · ${p.role}</div>
-                        </div>
-                        <div class="admin-actions">
-                            <button class="mod-btn" onclick="modAction('warn', ${p.user_id})">WARN</button>
-                            <button class="mod-btn" onclick="modAction('mute', ${p.user_id})">MUTE</button>
-                            <button class="mod-btn" onclick="modAction('kick', ${p.user_id})">KICK</button>
+                    <div style="background:var(--bg-item);border:2px solid #3a3a50;padding:10px;margin:5px 0;">
+                        <div style="display:flex;justify-content:space-between">
+                            <div>
+                                <div style="color:var(--text-light)">${p.character_name}</div>
+                                <div style="font-size:11px;color:var(--text-muted)">Lv.${p.level} · ${p.role}</div>
+                            </div>
+                            <div>
+                                <button onclick="modAction('warn', ${p.user_id})" style="background:#aa8800;border:none;color:white;padding:5px;margin:2px;cursor:pointer;">WARN</button>
+                                <button onclick="modAction('kick', ${p.user_id})" style="background:#aa4444;border:none;color:white;padding:5px;margin:2px;cursor:pointer;">KICK</button>
+                            </div>
                         </div>
                     </div>
                 `).join('');
@@ -4931,12 +4528,15 @@
             checkServerStatus();
             
             // Loading animation
-            updateLoading(30, 'Loading game assets...');
+            updateLoading(30, 'Loading pixel assets...');
             await new Promise(r => setTimeout(r, 500));
+            
             updateLoading(60, 'Connecting to server...');
             await new Promise(r => setTimeout(r, 500));
+            
             updateLoading(90, 'Almost ready...');
             await new Promise(r => setTimeout(r, 500));
+            
             updateLoading(100, 'Welcome to Ultimate Edition!');
             await new Promise(r => setTimeout(r, 300));
             
@@ -4956,15 +4556,44 @@
             setInterval(loadOnlineCount, 30000);
         };
 
-        function escapeHtml(unsafe) {
-            return unsafe.replace(/[&<>"]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                if (m === '"') return '&quot;';
-                return m;
-            });
-        }
+        // Make functions global
+        window.handleLogin = handleLogin;
+        window.handleRegister = handleRegister;
+        window.logout = logout;
+        window.showCharacterCreation = showCharacterCreation;
+        window.createCharacter = createCharacter;
+        window.selectCharacter = selectCharacter;
+        window.enterGame = enterGame;
+        window.returnToLobby = returnToLobby;
+        window.switchLobbyTab = switchLobbyTab;
+        window.openInventory = openInventory;
+        window.openSkills = openSkills;
+        window.openQuestLog = openQuestLog;
+        window.openGuild = openGuild;
+        window.openAuction = openAuction;
+        window.openPVPArena = openPVPArena;
+        window.openCheatMenu = openCheatMenu;
+        window.openModPanel = openModPanel;
+        window.closePopup = closePopup;
+        window.sendChat = sendChat;
+        window.switchChatChannel = switchChatChannel;
+        window.joinPvPQueue = joinPvPQueue;
+        window.cancelPvPQueue = cancelPvPQueue;
+        window.acceptPvP = acceptPvP;
+        window.closePvP = closePvP;
+        window.acceptTrade = acceptTrade;
+        window.cancelTrade = cancelTrade;
+        window.switchAuctionTab = switchAuctionTab;
+        window.refreshAuctions = refreshAuctions;
+        window.cheatCommand = cheatCommand;
+        window.gameEvent = gameEvent;
+        window.openPromoteMenu = openPromoteMenu;
+        window.spawnLegendaryWeapon = spawnLegendaryWeapon;
+        window.refreshModPanel = refreshModPanel;
+        window.modAction = modAction;
+        window.learnSkill = learnSkill;
+        window.useSkill = useSkill;
+        window.startCombat = startCombat;
     </script>
 </body>
 </html>
