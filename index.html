@@ -3,3251 +3,1456 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚔️ PIXEL REALM · MULTIPLAYER RPG ⚔️</title>
+    <title>XBATCH RPG - Multiplayer Adventure</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            image-rendering: pixelated;
-            image-rendering: crisp-edges;
-        }
-
-        :root {
-            --gold: #ffd700;
-            --dark-gold: #b8860b;
-            --bg-deep: #0a0c0e;
-            --bg-dark: #1a1d21;
-            --bg-panel: #2a2a35;
-            --bg-item: #1e1e28;
-            --border-brown: #6b4f3c;
-            --border-gold: #8b7a5a;
-            --text-light: #e0d3b0;
-            --text-muted: #a0a0b0;
-            --hp-red: #ff4444;
-            --mana-blue: #4444ff;
-            --exp-green: #44ff44;
-            --rarity-common: #a0a0a0;
-            --rarity-uncommon: #00ff00;
-            --rarity-rare: #0070ff;
-            --rarity-epic: #a335ee;
-            --rarity-legendary: #ff8000;
         }
 
         body {
-            background: var(--bg-deep);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #fff;
-            overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-            font-family: 'Courier New', monospace;
+            min-height: 100vh;
         }
 
-        /* Loading Screen */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0a0c0e 0%, #1a0f2a 50%, #0a0c0e 100%);
+        /* Auth Styles */
+        .auth-container {
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            z-index: 9999;
-        }
-
-        .pixel-logo {
-            font-size: 72px;
-            color: var(--gold);
-            text-shadow: 0 0 30px var(--gold), 4px 4px 0 #4a2a00, 8px 8px 0 #2a1a00;
-            letter-spacing: 8px;
-            margin-bottom: 10px;
-            animation: glowPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { text-shadow: 0 0 30px var(--gold), 4px 4px 0 #4a2a00, 8px 8px 0 #2a1a00; transform: scale(1); }
-            50% { text-shadow: 0 0 60px var(--gold), 4px 4px 0 #4a2a00, 8px 8px 0 #2a1a00; transform: scale(1.05); }
-        }
-
-        .loading-bar-wrap {
-            width: 400px;
-            height: 12px;
-            background: #1a1a2a;
-            border: 2px solid var(--border-brown);
-            margin-bottom: 20px;
-        }
-
-        .loading-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--dark-gold), var(--gold));
-            width: 0%;
-            transition: width 0.3s;
-            box-shadow: 0 0 10px var(--gold);
-        }
-
-        .loading-text {
-            color: var(--text-muted);
-            font-size: 14px;
-            letter-spacing: 2px;
-        }
-
-        /* Login Screen */
-        #login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0d1117 0%, #1a1230 50%, #0d1117 100%);
-            display: none;
             justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            padding: 20px;
         }
 
-        #login-screen.active {
-            display: flex;
-        }
-
-        .stars {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .auth-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
             width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle var(--dur, 3s) infinite;
-            opacity: 0;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: var(--op, 0.8); transform: scale(1); }
-        }
-
-        .login-box {
-            position: relative;
-            background: rgba(20, 20, 35, 0.98);
-            border: 3px solid var(--border-gold);
-            padding: 50px 40px;
-            width: 460px;
+        .auth-card h1 {
             text-align: center;
-            box-shadow: 0 0 60px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            animation: floatIn 0.5s ease-out;
-        }
-
-        @keyframes floatIn {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .login-box::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: 30px;
-            right: 30px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
-
-        .login-logo {
-            font-size: 48px;
-            color: var(--gold);
-            text-shadow: 0 0 20px var(--gold);
             margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .login-sub {
-            color: var(--text-muted);
-            font-size: 12px;
-            letter-spacing: 4px;
+        .auth-card p {
+            text-align: center;
+            color: #aaa;
             margin-bottom: 30px;
         }
 
         .form-group {
-            position: relative;
-            margin: 15px 0;
+            margin-bottom: 20px;
         }
 
-        .form-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 16px;
-            pointer-events: none;
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+            font-size: 0.9em;
         }
 
-        .login-input {
+        .form-group input, .form-group select {
             width: 100%;
-            padding: 14px 14px 14px 40px;
-            background: #12121e;
-            border: 2px solid #3a3a50;
-            color: var(--text-light);
-            font-size: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        .form-group input:focus, .form-group select:focus {
             outline: none;
-            transition: all 0.2s;
+            border-color: #4ecdc4;
         }
 
-        .login-input:focus {
-            border-color: var(--dark-gold);
-            box-shadow: 0 0 15px rgba(184,134,11,0.3);
-        }
-
-        .login-btn {
+        .btn {
             width: 100%;
-            padding: 15px;
-            margin: 8px 0;
-            font-size: 16px;
+            padding: 12px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            font-weight: bold;
             cursor: pointer;
-            border: 2px solid;
-            letter-spacing: 3px;
-            transition: all 0.2s;
-            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #aaa;
+        }
+
+        .auth-switch a {
+            color: #4ecdc4;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        /* Game Styles */
+        .game-container {
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .stat-bar-container {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .stat-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        .stat-bar {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
             overflow: hidden;
         }
 
-        .login-btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
+        .stat-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.3s;
+            transition: width 0.3s ease;
         }
 
-        .login-btn:hover::after {
-            left: 100%;
-        }
+        .hp-fill { background: linear-gradient(90deg, #ff6b6b, #ff8e8e); }
+        .mp-fill { background: linear-gradient(90deg, #4ecdc4, #6ee7e7); }
+        .exp-fill { background: linear-gradient(90deg, #ffd93d, #ffe770); }
 
-        .btn-login {
-            background: #3a2a1a;
-            border-color: #b88a5a;
-            color: #fff0d0;
-        }
-
-        .btn-login:hover {
-            background: #5a3a2a;
-            border-color: var(--gold);
-        }
-
-        .btn-register {
-            background: #1a2a3a;
-            border-color: #5a8ab8;
-            color: #d0e8ff;
-        }
-
-        .btn-register:hover {
-            background: #2a3a5a;
-            border-color: #88aadd;
-        }
-
-        .error-box {
-            background: rgba(180,30,30,0.2);
-            border: 2px solid #ff4444;
-            padding: 12px;
-            margin: 10px 0;
-            font-size: 12px;
-            color: #ff9999;
-            text-align: left;
-            display: none;
-        }
-
-        .error-box.show {
-            display: block;
-        }
-
-        .server-status {
-            display: inline-flex;
+        .resource-badge {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 11px;
-            color: var(--text-muted);
+        }
+
+        /* Main Game Area */
+        .main-game-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 60px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 20px;
+        }
+
+        .sidebar-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .sidebar-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .sidebar-btn.active {
+            background: #4ecdc4;
+            color: #fff;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff6b6b;
+            color: #fff;
+            font-size: 0.7em;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .location-header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .location-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .location-desc {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .game-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Action Grid */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .action-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: #4ecdc4;
+        }
+
+        .action-card h3 {
+            margin-bottom: 10px;
+            color: #4ecdc4;
+        }
+
+        /* Combat Area */
+        .combat-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .combat-enemy, .combat-player {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .combat-enemy {
+            border: 2px solid #ff6b6b;
+        }
+
+        .combat-player {
+            border: 2px solid #4ecdc4;
+        }
+
+        .enemy-name {
+            font-size: 1.5em;
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .combat-log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 0.9em;
             margin-top: 20px;
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #555;
+        .combat-log div {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .status-dot.online {
-            background: #44ff44;
-            box-shadow: 0 0 10px #44ff44;
-            animation: pulse 1.5s infinite;
-        }
+        .player-attack { color: #4ecdc4; }
+        .enemy-attack { color: #ff6b6b; }
+        .system-message { color: #ffd93d; }
 
-        .status-dot.offline {
-            background: #ff4444;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-
-        /* Character Select Screen */
-        #char-select-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 900;
-        }
-
-        #char-select-screen.active {
-            display: flex;
-        }
-
-        .char-select-box {
-            background: var(--bg-panel);
-            border: 3px solid var(--border-gold);
-            padding: 40px;
-            width: 700px;
-            max-width: 95vw;
-            animation: slideUp 0.4s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .char-select-box h2 {
-            color: var(--gold);
-            font-size: 28px;
-            text-align: center;
-            letter-spacing: 4px;
-            margin-bottom: 30px;
-        }
-
-        .char-grid {
+        .combat-actions {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .char-card {
-            background: var(--bg-item);
-            border: 2px solid #3a3a50;
-            padding: 20px;
+        .combat-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
-            text-align: center;
-            animation: cardAppear 0.3s ease-out;
-            animation-fill-mode: both;
         }
 
-        .char-card:nth-child(1) { animation-delay: 0.1s; }
-        .char-card:nth-child(2) { animation-delay: 0.2s; }
-        .char-card:nth-child(3) { animation-delay: 0.3s; }
-
-        @keyframes cardAppear {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        .combat-btn.attack {
+            background: #4ecdc4;
+            color: #fff;
         }
 
-        .char-card:hover {
-            border-color: var(--dark-gold);
-            transform: translateY(-5px) scale(1.02);
-            background: #2a2a40;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        .combat-btn.skill {
+            background: #ffd93d;
+            color: #000;
         }
 
-        .char-card.selected {
-            border-color: var(--gold);
-            background: #2a2840;
-            box-shadow: 0 0 30px rgba(255,215,0,0.3);
+        .combat-btn.flee {
+            background: #ff6b6b;
+            color: #fff;
         }
 
-        .char-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 10px;
-            image-rendering: pixelated;
-        }
-
-        .char-name {
-            color: var(--gold);
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .char-class {
-            color: var(--text-muted);
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-
-        .char-level {
-            color: var(--text-light);
-            font-size: 14px;
-        }
-
-        .char-level span {
-            color: var(--gold);
-        }
-
-        .new-char-btn {
-            background: #2a3a2a;
-            border: 2px solid #5a8a5a;
-            color: #aaffaa;
-        }
-
-        .new-char-btn:hover {
-            background: #3a4a3a;
-            border-color: #88dd88;
-        }
-
-        /* Character Creation Screen */
-        #char-create-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 950;
-            overflow-y: auto;
-        }
-
-        #char-create-screen.active {
-            display: flex;
-        }
-
-        .create-box {
-            background: var(--bg-panel);
-            border: 3px solid var(--border-gold);
-            padding: 40px;
-            width: 800px;
-            max-width: 95vw;
-            animation: scaleIn 0.4s ease-out;
-        }
-
-        @keyframes scaleIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .create-box h2 {
-            color: var(--gold);
-            font-size: 28px;
-            text-align: center;
-            letter-spacing: 4px;
-            margin-bottom: 30px;
-        }
-
-        .class-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        .class-card {
-            background: var(--bg-item);
-            border: 2px solid #3a3a50;
-            padding: 20px 15px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .class-card:hover {
-            border-color: var(--dark-gold);
-            transform: translateY(-3px);
-            background: #2a2a40;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .class-card.selected {
-            border-color: var(--gold);
-            background: #2a2840;
-            box-shadow: 0 0 20px rgba(255,215,0,0.3);
-        }
-
-        .class-icon {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 10px;
-            image-rendering: pixelated;
-        }
-
-        .class-name {
-            color: var(--gold);
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .class-desc {
-            color: var(--text-muted);
-            font-size: 11px;
-            line-height: 1.4;
-        }
-
-        /* Game Screen */
-        #game-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-deep);
-            display: none;
-            z-index: 700;
-        }
-
-        #game-screen.active {
-            display: block;
-        }
-
-        #game-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-        }
-
-        /* HUD */
-        .hud-element {
-            position: absolute;
-            pointer-events: all;
-            z-index: 200;
-        }
-
-        #hud-player {
-            top: 15px;
-            left: 15px;
-            width: 300px;
-            background: rgba(10,12,18,0.95);
-            border: 2px solid var(--border-brown);
-            padding: 15px;
-            backdrop-filter: blur(2px);
-            animation: slideInLeft 0.3s ease-out;
-        }
-
-        @keyframes slideInLeft {
-            from { transform: translateX(-100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .hud-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .hud-name {
-            color: var(--gold);
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .hud-role {
-            font-size: 11px;
-            color: #aaa;
-            background: rgba(255,255,255,0.1);
-            padding: 2px 8px;
-            border-radius: 0;
-        }
-
-        .hud-bar {
-            margin: 8px 0;
-        }
-
-        .bar-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 3px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .bar {
-            height: 18px;
-            background: #1a1a2a;
-            border: 2px solid #3a3a4a;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .bar-fill {
-            height: 100%;
-            transition: width 0.3s ease;
-            position: relative;
-        }
-
-        .bar-fill.hp {
-            background: linear-gradient(90deg, #aa2222, #ff5555);
-        }
-
-        .bar-fill.hp::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .bar-fill.mp {
-            background: linear-gradient(90deg, #2222aa, #5555ff);
-        }
-
-        .bar-fill.xp {
-            background: linear-gradient(90deg, #226622, #55cc55);
-        }
-
-        .bar-text {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            color: white;
-            text-shadow: 1px 1px 2px black;
-        }
-
-        .hud-stats-row {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .hud-stats-row span {
-            color: var(--text-light);
-        }
-
-        #hud-actions {
-            top: 15px;
-            left: 330px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            max-width: 800px;
-        }
-
-        .hud-btn {
-            background: rgba(10,12,18,0.95);
-            border: 2px solid var(--border-brown);
-            color: var(--text-light);
-            padding: 8px 15px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.15s;
-            letter-spacing: 1px;
-        }
-
-        .hud-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
+        .combat-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            filter: brightness(1.1);
         }
 
-        .hud-btn:active {
-            transform: translateY(0);
+        .combat-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        #hud-minimap {
-            bottom: 20px;
-            right: 20px;
-            width: 200px;
-            height: 200px;
-            background: rgba(10,12,18,0.95);
-            border: 2px solid var(--border-brown);
-            animation: slideInRight 0.3s ease-out;
-        }
-
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        #minimap-canvas {
-            width: 200px;
-            height: 200px;
-            image-rendering: pixelated;
-        }
-
-        #hud-skills {
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-        }
-
-        .skill-slot {
-            width: 60px;
-            height: 60px;
-            background: rgba(10,12,18,0.95);
-            border: 2px solid var(--border-brown);
+        /* Chat Panel */
+        .chat-panel {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.15s;
         }
 
-        .skill-slot:hover {
-            border-color: var(--gold);
-            transform: translateY(-5px) scale(1.1);
-            z-index: 10;
-        }
-
-        .skill-slot.on-cooldown::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-        }
-
-        .skill-icon {
-            width: 32px;
-            height: 32px;
-            image-rendering: pixelated;
-            font-size: 24px;
-        }
-
-        .skill-key {
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .skill-cd {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: white;
-            z-index: 1;
-            display: none;
-        }
-
-        #hud-quests {
-            top: 15px;
-            right: 15px;
-            width: 260px;
-            background: rgba(10,12,18,0.95);
-            border: 2px solid var(--border-brown);
+        .chat-header {
             padding: 15px;
-            max-height: 300px;
-            overflow-y: auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .quest-entry {
-            margin: 8px 0;
-            padding: 10px;
-            background: rgba(255,255,255,0.03);
-            border-left: 3px solid var(--border-brown);
-            transition: all 0.2s;
-        }
-
-        .quest-entry:hover {
-            background: rgba(255,255,255,0.05);
-            transform: translateX(5px);
-        }
-
-        .quest-entry.active {
-            border-left-color: var(--gold);
-        }
-
-        .quest-title {
-            color: var(--gold);
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .quest-desc {
-            color: var(--text-muted);
-            font-size: 11px;
-            margin-top: 3px;
-        }
-
-        .quest-progress {
-            height: 4px;
-            background: #2a2a3a;
-            margin-top: 6px;
-            overflow: hidden;
-        }
-
-        .quest-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--gold), #ffaa00);
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        #hud-chat {
-            bottom: 10px;
-            left: 10px;
-            width: 400px;
-            height: 200px;
-            background: rgba(10,12,18,0.95);
-            border: 2px solid var(--border-brown);
+        .channel-tabs {
             display: flex;
-            flex-direction: column;
+            gap: 5px;
+            margin-top: 10px;
         }
 
-        .chat-tabs {
-            display: flex;
-            border-bottom: 2px solid #2a2a3a;
-            flex-shrink: 0;
-        }
-
-        .chat-tab {
-            padding: 6px 12px;
-            font-size: 12px;
+        .channel-tab {
+            flex: 1;
+            padding: 8px;
+            background: none;
+            border: none;
+            color: #aaa;
             cursor: pointer;
-            color: var(--text-muted);
-            border-right: 2px solid #2a2a3a;
+            border-radius: 5px;
         }
 
-        .chat-tab:hover {
-            color: var(--text-light);
-            background: rgba(255,255,255,0.02);
-        }
-
-        .chat-tab.active {
-            color: var(--gold);
-            background: rgba(255,215,0,0.1);
+        .channel-tab.active {
+            background: #4ecdc4;
+            color: #fff;
         }
 
         .chat-messages {
             flex: 1;
+            padding: 15px;
             overflow-y: auto;
-            padding: 10px;
-            font-size: 12px;
         }
 
         .chat-message {
-            margin: 4px 0;
-            line-height: 1.4;
-            animation: fadeIn 0.3s;
+            margin-bottom: 10px;
+            font-size: 0.9em;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .chat-message .timestamp {
-            color: #555;
-            margin-right: 6px;
-        }
-
-        .chat-message .sender {
+        .chat-username {
+            color: #4ecdc4;
             font-weight: bold;
-            margin-right: 6px;
         }
 
-        .chat-message.system {
-            color: #77cc77;
-            font-style: italic;
-        }
-
-        .chat-message.whisper .sender {
-            color: #cc77cc;
+        .chat-time {
+            color: #aaa;
+            font-size: 0.7em;
+            margin-left: 5px;
         }
 
         .chat-input-area {
-            display: flex;
-            border-top: 2px solid #2a2a3a;
-            flex-shrink: 0;
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        #chat-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-light);
-            padding: 8px 10px;
-            font-size: 12px;
-            outline: none;
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: #fff;
         }
 
-        #chat-send {
-            background: none;
-            border: none;
-            border-left: 2px solid #2a2a3a;
-            color: var(--text-muted);
-            padding: 0 15px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        #chat-send:hover {
-            color: var(--gold);
-        }
-
-        /* Popups */
-        .popup-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
+        /* Modal */
+        .modal {
             display: none;
-            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
             align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .popup-overlay.show {
+        .modal.active {
             display: flex;
         }
 
-        .popup-box {
-            background: var(--bg-panel);
-            border: 3px solid var(--border-gold);
-            padding: 25px;
-            position: relative;
-            max-height: 90vh;
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
             overflow-y: auto;
-            min-width: 400px;
-            max-width: 1000px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.9);
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes popIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .popup-header {
+        .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #2a2a3a;
         }
 
-        .popup-title {
-            color: var(--gold);
-            font-size: 20px;
-            letter-spacing: 2px;
-        }
-
-        .popup-close {
+        .modal-close {
             background: none;
-            border: 2px solid #662222;
-            color: #aa4444;
-            width: 32px;
-            height: 32px;
+            border: none;
+            color: #aaa;
+            font-size: 1.5em;
             cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s;
         }
 
-        .popup-close:hover {
-            background: #662222;
-            color: white;
-            transform: rotate(90deg);
+        .modal-close:hover {
+            color: #fff;
         }
 
-        /* Inventory */
-        .inv-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            margin: 15px 0;
-        }
-
-        .inv-slot {
-            aspect-ratio: 1;
-            background: var(--bg-item);
-            border: 2px solid #3a3a50;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.15s;
-        }
-
-        .inv-slot:hover {
-            border-color: var(--gold);
-            transform: scale(1.05);
-            z-index: 10;
-        }
-
-        .inv-slot.common { border-color: var(--rarity-common); }
-        .inv-slot.uncommon { border-color: var(--rarity-uncommon); }
-        .inv-slot.rare { border-color: var(--rarity-rare); }
-        .inv-slot.epic { border-color: var(--rarity-epic); }
-        .inv-slot.legendary { 
-            border-color: var(--rarity-legendary); 
-            box-shadow: 0 0 20px var(--rarity-legendary);
-            animation: legendaryGlow 2s infinite;
-        }
-
-        @keyframes legendaryGlow {
-            0%, 100% { box-shadow: 0 0 20px var(--rarity-legendary); }
-            50% { box-shadow: 0 0 40px var(--rarity-legendary); }
-        }
-
-        .inv-item-icon {
-            width: 32px;
-            height: 32px;
-            image-rendering: pixelated;
-            font-size: 24px;
-        }
-
-        .inv-quantity {
-            position: absolute;
-            bottom: 2px;
-            right: 3px;
-            font-size: 10px;
-            color: var(--gold);
-        }
-
-        .inv-name {
-            font-size: 9px;
-            color: var(--text-muted);
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: rgba(0,0,0,0.7);
-            padding: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Combat Popup */
-        #combat-popup .popup-box {
-            width: 700px;
-        }
-
-        .combat-arena {
-            background: #1a1a2a;
-            border: 3px solid #3a3a4a;
-            padding: 20px;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .combatants {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            position: relative;
-            min-height: 200px;
-        }
-
-        .combatant {
-            text-align: center;
-            width: 200px;
-            transition: all 0.3s;
-        }
-
-        .combatant.attacking {
-            animation: attackShake 0.3s;
-        }
-
-        @keyframes attackShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .combatant.taking-damage {
-            animation: damageFlash 0.3s;
-        }
-
-        @keyframes damageFlash {
-            0%, 100% { filter: brightness(1); }
-            50% { filter: brightness(1.5) hue-rotate(45deg); }
-        }
-
-        .combatant.defeated {
-            animation: defeat 0.5s forwards;
-        }
-
-        @keyframes defeat {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0.5); opacity: 0; }
-        }
-
-        .combatant-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 10px;
-            image-rendering: pixelated;
-            font-size: 64px;
-        }
-
-        .combatant-icon.player-icon {
-            animation: playerIdle 2s infinite;
-        }
-
-        .combatant-icon.enemy-icon {
-            animation: enemyIdle 2s infinite;
-        }
-
-        @keyframes playerIdle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        @keyframes enemyIdle {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-3px) rotate(-2deg); }
-            75% { transform: translateY(3px) rotate(2deg); }
-        }
-
-        .combatant-health {
-            margin: 10px 0;
-        }
-
-        .combatant-health .bar {
-            height: 10px;
-        }
-
-        .combat-vs {
-            font-size: 36px;
-            color: #8b0000;
-            text-shadow: 0 0 20px #ff0000;
-            animation: pulseVs 1.5s infinite;
-        }
-
-        @keyframes pulseVs {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        .damage-number {
-            position: absolute;
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffaa00;
-            text-shadow: 2px 2px 0 #aa0000;
-            pointer-events: none;
-            animation: floatUp 1s forwards;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-50px); opacity: 0; }
-        }
-
-        .combat-log {
-            background: var(--bg-item);
-            border: 2px solid #2a2a3a;
-            padding: 10px;
-            max-height: 150px;
-            overflow-y: auto;
-            font-size: 12px;
-            margin-top: 15px;
-        }
-
-        .combat-log-entry {
-            padding: 2px 0;
-            border-bottom: 1px solid #2a2a3a;
-            animation: logAppear 0.2s;
-        }
-
-        @keyframes logAppear {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .combat-log-entry.critical {
-            color: #ffaa00;
-        }
-
-        #combat-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .combat-skill-btn {
-            background: #2a2a3a;
-            border: 2px solid #3a3a4a;
-            color: var(--text-light);
-            padding: 8px 15px;
-            cursor: pointer;
-            transition: all 0.15s;
-            min-width: 100px;
-        }
-
-        .combat-skill-btn:hover:not(:disabled) {
-            border-color: var(--gold);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-        }
-
-        .combat-skill-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        /* Story Choice Popup */
-        #story-choice-popup .popup-box {
-            width: 500px;
-        }
-
-        .story-choice {
-            margin: 20px 0;
-            line-height: 1.6;
-        }
-
-        .story-choice-btn {
-            background: #2a2a3a;
-            border: 2px solid #3a3a4a;
-            color: var(--text-light);
-            padding: 12px;
-            margin: 5px 0;
-            cursor: pointer;
-            transition: all 0.15s;
-            width: 100%;
-            text-align: left;
-        }
-
-        .story-choice-btn:hover {
-            border-color: var(--gold);
-            background: rgba(255,215,0,0.1);
-            transform: translateX(5px);
-        }
-
-        /* Notifications */
-        #notifications {
+        /* Toast Notifications */
+        .toast-container {
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 300px;
-            z-index: 10000;
-            pointer-events: none;
+            z-index: 2000;
         }
 
-        .notification {
-            background: rgba(10,12,18,0.98);
-            border-left: 4px solid var(--gold);
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            animation: notificationSlide 0.3s ease;
-            font-size: 13px;
-            color: var(--text-light);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        .toast {
+            background: #1a1a2e;
+            border-left: 4px solid #4ecdc4;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
         }
 
-        @keyframes notificationSlide {
-            from { transform: translateX(30px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .toast.error {
+            border-left-color: #ff6b6b;
         }
 
-        .notification.error { border-left-color: #ff4444; }
-        .notification.success { border-left-color: #44ff44; }
-        .notification.warning { border-left-color: #ffaa00; }
-        .notification.info { border-left-color: #44aaff; }
-        .notification.legendary { border-left-color: var(--rarity-legendary); }
-
-        .action-btn {
-            background: var(--border-brown);
-            border: 2px solid #b88a5a;
-            color: #fff0d0;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.15s;
-            letter-spacing: 1px;
+        .toast.success {
+            border-left-color: #4ecdc4;
         }
 
-        .action-btn:hover {
-            background: #8b6f5c;
-            border-color: var(--gold);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
-        .action-btn.success {
-            background: #225a22;
-            border-color: #44aa44;
-            color: #aaffaa;
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4ecdc4;
+            animation: spin 1s ease-in-out infinite;
         }
 
-        .action-btn.success:hover {
-            background: #337a33;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .action-btn.danger {
-            background: #5a2222;
-            border-color: #aa4444;
-            color: #ffaaaa;
-        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
 
-        .action-btn.danger:hover {
-            background: #7a2222;
-        }
+            .main-game-area {
+                flex-direction: column;
+            }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                justify-content: center;
+                padding: 10px;
+            }
 
-        ::-webkit-scrollbar-track {
-            background: #1a1a2a;
-        }
+            .chat-panel {
+                width: 100%;
+                height: 300px;
+            }
 
-        ::-webkit-scrollbar-thumb {
-            background: #3a3a4a;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--border-brown);
+            .combat-area {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- LOADING SCREEN -->
-    <div id="loading-screen">
-        <div class="pixel-logo">⚔️ PIXEL REALM ⚔️</div>
-        <div class="loading-bar-wrap">
-            <div class="loading-bar-fill" id="loading-bar"></div>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div class="modal" id="loadingModal">
+        <div class="modal-content" style="text-align: center;">
+            <div class="loading-spinner" style="width: 40px; height: 40px; margin: 20px auto;"></div>
+            <p id="loadingMessage">Loading...</p>
         </div>
-        <div class="loading-text" id="loading-text">Connecting to server...</div>
     </div>
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen">
-        <div class="stars" id="stars"></div>
-        <div class="login-box">
-            <div class="login-logo">⚔️ PIXEL REALM ⚔️</div>
-            <div class="login-sub">REAL MULTIPLAYER RPG · 5 ACT STORY</div>
+    <!-- Auth Container -->
+    <div class="auth-container" id="authContainer">
+        <!-- Login Form -->
+        <div class="auth-card" id="loginForm">
+            <h1>⚔️ XBATCH RPG</h1>
+            <p>Continue your adventure</p>
             <div class="form-group">
-                <span class="form-icon">👤</span>
-                <input type="text" id="login-username" class="login-input" placeholder="Username" autocomplete="username">
+                <label>Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter username">
             </div>
             <div class="form-group">
-                <span class="form-icon">🔒</span>
-                <input type="password" id="login-password" class="login-input" placeholder="Password" autocomplete="current-password">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter password">
             </div>
-            <div class="error-box" id="login-error"></div>
-            <button class="login-btn btn-login" id="login-btn">▶ ENTER THE REALM</button>
-            <button class="login-btn btn-register" id="register-btn">+ CREATE ACCOUNT</button>
-            <div class="server-status">
-                <div class="status-dot" id="status-dot"></div>
-                <span id="status-text">Checking server...</span>
+            <button class="btn" onclick="login()">Login</button>
+            <div class="auth-switch">
+                Don't have an account? <a onclick="showRegister()">Register</a>
             </div>
         </div>
-    </div>
 
-    <!-- CHARACTER SELECT SCREEN -->
-    <div id="char-select-screen">
-        <div class="char-select-box">
-            <h2>CHOOSE YOUR HERO</h2>
-            <div class="char-grid" id="char-grid"></div>
-            <button class="login-btn new-char-btn" onclick="showCharacterCreation()">+ CREATE NEW HERO</button>
-            <button class="login-btn" onclick="logout()" style="background: #2a2a3a; border-color: #5a5a7a;">← BACK</button>
-        </div>
-    </div>
-
-    <!-- CHARACTER CREATION SCREEN -->
-    <div id="char-create-screen">
-        <div class="create-box">
-            <h2>FORGE YOUR DESTINY</h2>
+        <!-- Register Form -->
+        <div class="auth-card" id="registerForm" style="display: none;">
+            <h1>⚔️ XBATCH RPG</h1>
+            <p>Begin your journey</p>
             <div class="form-group">
-                <input type="text" id="new-char-name" class="login-input" placeholder="Character Name" maxlength="20" value="Hero">
+                <label>Username</label>
+                <input type="text" id="registerUsername" placeholder="Choose a username">
             </div>
-            <div class="class-grid" id="class-grid"></div>
-            <div class="error-box" id="char-create-error"></div>
-            <button class="login-btn btn-login" onclick="createCharacter()">⚔️ BEGIN ADVENTURE</button>
-        </div>
-    </div>
-
-    <!-- GAME SCREEN -->
-    <div id="game-screen">
-        <canvas id="game-canvas"></canvas>
-
-        <!-- HUD -->
-        <div class="hud-element" id="hud-player">
-            <div class="hud-header">
-                <span class="hud-name" id="hud-name">Hero</span>
-                <span class="hud-role" id="hud-role">ADVENTURER</span>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="registerPassword" placeholder="Create password">
             </div>
-            <div class="hud-bar">
-                <div class="bar-label"><span>❤️ HP</span><span id="hud-hp-text">100/100</span></div>
-                <div class="bar"><div class="bar-fill hp" id="hud-hp-bar" style="width:100%"></div></div>
+            <div class="form-group">
+                <label>Character Class</label>
+                <select id="registerClass">
+                    <option value="warrior">Warrior - High HP and defense</option>
+                    <option value="mage">Mage - Powerful magic</option>
+                    <option value="rogue">Rogue - High critical chance</option>
+                    <option value="paladin">Paladin - Balanced with healing</option>
+                    <option value="ranger">Ranger - Ranged attacks</option>
+                </select>
             </div>
-            <div class="hud-bar">
-                <div class="bar-label"><span>💙 MP</span><span id="hud-mp-text">50/50</span></div>
-                <div class="bar"><div class="bar-fill mp" id="hud-mp-bar" style="width:100%"></div></div>
-            </div>
-            <div class="hud-bar">
-                <div class="bar-label"><span>⭐ XP</span><span id="hud-xp-text">0%</span></div>
-                <div class="bar" style="height:10px"><div class="bar-fill xp" id="hud-xp-bar" style="width:0%"></div></div>
-            </div>
-            <div class="hud-stats-row">
-                <span>⚔️ <span id="hud-attack">12</span></span>
-                <span>🛡️ <span id="hud-defense">8</span></span>
-                <span>💰 <span id="hud-gold">100</span>g</span>
-                <span>🎒 <span id="hud-items">0</span></span>
-            </div>
-        </div>
-
-        <div class="hud-element" id="hud-actions">
-            <button class="hud-btn" onclick="openInventory()">🎒 INVENTORY (I)</button>
-            <button class="hud-btn" onclick="openQuestLog()">📜 QUESTS (J)</button>
-            <button class="hud-btn" onclick="returnToLobby()">🏠 LOBBY</button>
-        </div>
-
-        <div class="hud-element" id="hud-minimap">
-            <canvas id="minimap-canvas" width="200" height="200"></canvas>
-        </div>
-
-        <div class="hud-element" id="hud-skills"></div>
-
-        <div class="hud-element" id="hud-quests">
-            <div class="panel-title" style="font-size:14px;margin-bottom:10px">📜 ACTIVE QUESTS</div>
-            <div id="active-quests"></div>
-        </div>
-
-        <div class="hud-element" id="hud-chat">
-            <div class="chat-tabs" id="chat-tabs">
-                <div class="chat-tab active" onclick="switchChatChannel('global')">🌍 GLOBAL</div>
-                <div class="chat-tab" onclick="switchChatChannel('system')">📢 SYSTEM</div>
-            </div>
-            <div class="chat-messages" id="chat-messages"></div>
-            <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Type message... (/w name for whisper)" maxlength="200">
-                <button id="chat-send" onclick="sendChat()">➤</button>
+            <button class="btn" onclick="register()">Start Adventure</button>
+            <div class="auth-switch">
+                Already have an account? <a onclick="showLogin()">Login</a>
             </div>
         </div>
     </div>
 
-    <!-- POPUPS -->
-
-    <!-- Inventory Popup -->
-    <div class="popup-overlay" id="inventory-popup">
-        <div class="popup-box" style="width:700px">
-            <div class="popup-header">
-                <span class="popup-title">🎒 INVENTORY</span>
-                <button class="popup-close" onclick="closePopup('inventory-popup')">×</button>
+    <!-- Game Container -->
+    <div class="game-container" id="gameContainer">
+        <!-- Stats Bar -->
+        <div class="stats-bar" id="statsBar">
+            <div class="player-info">
+                <div class="player-icon">⚔️</div>
+                <div>
+                    <div id="playerName">Player</div>
+                    <div id="playerLevelClass">Level 1 Warrior</div>
+                </div>
             </div>
-            <div class="inv-grid" id="inventory-grid"></div>
-            <div class="inv-footer" style="display:flex;justify-content:space-between;align-items:center;margin-top:15px">
-                <span class="popup-title" style="font-size:16px">💰 <span id="inventory-gold">0</span> Gold</span>
-                <button class="action-btn" onclick="closePopup('inventory-popup')">CLOSE</button>
+
+            <div class="stat-bar-container">
+                <div class="stat-label">
+                    <span>❤️ HP</span>
+                    <span id="hpText">100/100</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill hp-fill" id="hpBar" style="width: 100%"></div>
+                </div>
+            </div>
+
+            <div class="stat-bar-container">
+                <div class="stat-label">
+                    <span>💙 MP</span>
+                    <span id="mpText">50/50</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill mp-fill" id="mpBar" style="width: 100%"></div>
+                </div>
+            </div>
+
+            <div class="stat-bar-container">
+                <div class="stat-label">
+                    <span>⭐ EXP</span>
+                    <span id="expText">0/100</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-bar-fill exp-fill" id="expBar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="resource-badge">
+                <span>🪙</span>
+                <span id="goldAmount">100</span>
+            </div>
+
+            <div class="resource-badge">
+                <span>👥</span>
+                <span id="onlineCount">0</span>
             </div>
         </div>
-    </div>
 
-    <!-- Quest Log Popup -->
-    <div class="popup-overlay" id="questlog-popup">
-        <div class="popup-box" style="width:700px">
-            <div class="popup-header">
-                <span class="popup-title">📜 QUEST LOG · 5 ACT STORY</span>
-                <button class="popup-close" onclick="closePopup('questlog-popup')">×</button>
+        <!-- Main Game Area -->
+        <div class="main-game-area">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <button class="sidebar-btn" onclick="togglePanel('character')" title="Character">
+                    👤
+                </button>
+                <button class="sidebar-btn" onclick="togglePanel('inventory')" title="Inventory">
+                    🎒
+                </button>
+                <button class="sidebar-btn" onclick="togglePanel('quests')" title="Quests">
+                    📜
+                </button>
+                <button class="sidebar-btn" onclick="togglePanel('map')" title="Map">
+                    🗺️
+                </button>
+                <button class="sidebar-btn" onclick="togglePanel('guild')" title="Guild" id="guildBtn">
+                    🏰
+                    <span class="notification-badge" id="guildNotification" style="display: none;">1</span>
+                </button>
+                <button class="sidebar-btn" onclick="logout()" title="Logout">
+                    🚪
+                </button>
             </div>
-            <div id="quest-log-content"></div>
-        </div>
-    </div>
 
-    <!-- Combat Popup -->
-    <div class="popup-overlay" id="combat-popup">
-        <div class="popup-box" style="width:800px">
-            <div class="popup-header">
-                <span class="popup-title">⚔️ COMBAT · ANIMATED BATTLE</span>
-                <button class="popup-close" onclick="closeCombat()">×</button>
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="location-header">
+                    <div class="location-name" id="locationName">Village of Beginnings</div>
+                    <div class="location-desc" id="locationDesc">A peaceful village where your journey starts.</div>
+                </div>
+
+                <div class="game-content" id="gameContent">
+                    <!-- Dynamic content loaded via JavaScript -->
+                </div>
             </div>
-            <div class="combat-arena" id="combat-arena">
-                <div class="combatants">
-                    <div class="combatant" id="combat-player">
-                        <div class="combatant-icon player-icon" id="combat-player-icon">⚔️</div>
-                        <h3 id="combat-player-name">You</h3>
-                        <div class="combatant-health">
-                            <div class="bar-label"><span>❤️ HP</span><span id="combat-player-hp-text">100/100</span></div>
-                            <div class="bar"><div class="bar-fill hp" id="combat-player-hp" style="width:100%"></div></div>
-                        </div>
-                        <div class="combatant-stats">
-                            <span>⚔️ <span id="combat-player-attack">12</span></span>
-                        </div>
-                    </div>
-                    <div class="combat-vs">VS</div>
-                    <div class="combatant" id="combat-enemy">
-                        <div class="combatant-icon enemy-icon" id="combat-enemy-icon">👹</div>
-                        <h3 id="combat-enemy-name">Goblin</h3>
-                        <div class="combatant-health">
-                            <div class="bar-label"><span>❤️ HP</span><span id="combat-enemy-hp-text">50/50</span></div>
-                            <div class="bar"><div class="bar-fill hp" id="combat-enemy-hp" style="width:100%"></div></div>
-                        </div>
-                        <div class="combatant-stats">
-                            <span>⚔️ <span id="combat-enemy-attack">5</span></span>
-                        </div>
+
+            <!-- Chat Panel -->
+            <div class="chat-panel">
+                <div class="chat-header">
+                    <h3>💬 Chat</h3>
+                    <div class="channel-tabs">
+                        <button class="channel-tab active" onclick="switchChannel('global')">🌍 Global</button>
+                        <button class="channel-tab" onclick="switchChannel('guild')">🏰 Guild</button>
+                        <button class="channel-tab" onclick="switchChannel('party')">👥 Party</button>
                     </div>
                 </div>
-                <div class="combat-log" id="combat-log"></div>
+
+                <div class="chat-messages" id="chatMessages"></div>
+
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeyPress(event)">
+                </div>
             </div>
-            <div id="combat-actions"></div>
         </div>
     </div>
 
-    <!-- Story Choice Popup -->
-    <div class="popup-overlay" id="story-choice-popup">
-        <div class="popup-box">
-            <div class="popup-header">
-                <span class="popup-title">📜 MAKE YOUR CHOICE</span>
-                <button class="popup-close" onclick="closePopup('story-choice-popup')">×</button>
+    <!-- Modals -->
+    <div class="modal" id="characterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👤 Character Stats</h2>
+                <button class="modal-close" onclick="closeModal('character')">&times;</button>
             </div>
-            <div class="story-choice" id="story-choice-text"></div>
-            <div id="story-choice-buttons"></div>
+            <div id="characterStats"></div>
         </div>
     </div>
 
-    <!-- Notifications -->
-    <div id="notifications"></div>
+    <div class="modal" id="inventoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎒 Inventory</h2>
+                <button class="modal-close" onclick="closeModal('inventory')">&times;</button>
+            </div>
+            <div id="inventoryContent"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="questModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📜 Quest Log</h2>
+                <button class="modal-close" onclick="closeModal('quests')">&times;</button>
+            </div>
+            <div id="questContent"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="mapModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🗺️ World Map</h2>
+                <button class="modal-close" onclick="closeModal('map')">&times;</button>
+            </div>
+            <div id="mapContent"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="guildModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🏰 Guild Hall</h2>
+                <button class="modal-close" onclick="closeModal('guild')">&times;</button>
+            </div>
+            <div id="guildContent"></div>
+        </div>
+    </div>
 
     <script>
-        // ==================== CONFIGURATION ====================
-        const API_URL = 'https://bot-hosting-b-ga04.onrender.com'; // Your backend URL
-        const WS_URL = 'wss://bot-hosting-b-ga04.onrender.com';    // Your WebSocket URL
-
-        // ==================== GAME STATE ====================
-        let token = localStorage.getItem('rpg_token');
+        // Game State
         let currentUser = null;
-        let currentCharacter = null;
-        let characters = [];
-        let ws = null;
-        let reconnectTimer = null;
-        let currentChatChannel = 'global';
+        let character = null;
+        let combat = null;
         let inventory = [];
-        let skillPoints = 0;
-        let learnedSkills = new Set();
-        let currentCombat = null;
-        let gameRenderer = null;
-        let otherPlayers = new Map();
         let quests = [];
-        let activeQuests = new Set();
-        let questProgress = {};
-        let storyAct = 1;
-        let completedActs = new Set();
-        let skillCooldowns = {};
+        let currentChannel = 'global';
+        let chatMessages = [];
+        let onlinePlayers = 0;
+        let ws = null;
+        let autoSaveInterval = null;
 
-        // Quest Database - 5 Act Story
-        const QUEST_DB = {
-            // Act 1: Village Invasion
-            "q1_1": {
-                id: "q1_1",
-                title: "🌿 The Dark Omen",
-                act: 1,
-                description: "Strange creatures have been seen near the village. Kill 5 Goblins.",
-                objectives: [{ type: "kill", target: "goblin", amount: 5 }],
-                rewards: { exp: 100, gold: 50, items: ["health_potion"] },
-                dialogue: "Elder: 'Strange howls have been coming from the forest. Please investigate, young hero.'",
-                nextQuest: "q1_2"
-            },
-            "q1_2": {
-                id: "q1_2",
-                title: "🏕️ The Goblin Camp",
-                act: 1,
-                description: "Find the goblin camp and discover who's leading them.",
-                objectives: [{ type: "explore", target: "goblin_camp", amount: 1 }],
-                rewards: { exp: 150, gold: 75, items: ["iron_ring"] },
-                dialogue: "Elder: 'We've tracked them to a camp in the hills. Find out what they're planning.'",
-                nextQuest: "q1_3"
-            },
-            "q1_3": {
-                id: "q1_3",
-                title: "👑 Goblin Chief",
-                act: 1,
-                description: "Defeat the Goblin Chief leading the invasion.",
-                objectives: [{ type: "kill", target: "goblin_chief", amount: 1 }],
-                rewards: { exp: 300, gold: 150, items: ["iron_sword"] },
-                dialogue: "Elder: 'The chief must be defeated if we're to save the village.'",
-                isBoss: true,
-                nextQuest: "q2_1"
-            },
-            
-            // Act 2: Kingdom War
-            "q2_1": {
-                id: "q2_1",
-                title: "👑 The King's Summons",
-                act: 2,
-                description: "The king has summoned all able warriors. Report to the capital.",
-                objectives: [{ type: "talk", target: "king", amount: 1 }],
-                rewards: { exp: 250, gold: 200, items: ["health_potion"] },
-                dialogue: "Messenger: 'By order of the King, all able-bodied warriors must report to the capital immediately!'",
-                nextQuest: "q2_2"
-            },
-            "q2_2": {
-                id: "q2_2",
-                title: "⚔️ Border Skirmish",
-                act: 2,
-                description: "The northern border is under attack. Defend it.",
-                objectives: [{ type: "kill", target: "enemy_soldier", amount: 10 }],
-                rewards: { exp: 350, gold: 250, items: ["leather_armor"] },
-                dialogue: "Captain: 'The enemy has breached our northern defenses! We need reinforcements!'",
-                nextQuest: "q2_3"
-            },
-            "q2_3": {
-                id: "q2_3",
-                title: "🏰 Siege of the Capital",
-                act: 2,
-                description: "The enemy army has reached the capital. Defend the city!",
-                objectives: [{ type: "kill", target: "enemy_general", amount: 1 }],
-                rewards: { exp: 600, gold: 500, items: ["steel_sword"] },
-                dialogue: "King: 'The enemy is at our gates! This is our darkest hour.'",
-                isBoss: true,
-                nextQuest: "q3_1"
-            },
-            
-            // Act 3: Corruption Spreads
-            "q3_1": {
-                id: "q3_1",
-                title: "💀 The Plague",
-                act: 3,
-                description: "A strange plague is spreading across the land. Find the source.",
-                objectives: [{ type: "investigate", target: "plague_origin", amount: 1 }],
-                rewards: { exp: 500, gold: 400, items: ["health_potion"] },
-                dialogue: "Healer: 'People are falling ill with a mysterious plague. It's like nothing I've seen.'",
-                nextQuest: "q3_2"
-            },
-            "q3_2": {
-                id: "q3_2",
-                title: "🌲 Corrupted Forest",
-                act: 3,
-                description: "The ancient forest is being corrupted. Purify it.",
-                objectives: [{ type: "kill", target: "corrupted_creature", amount: 15 }],
-                rewards: { exp: 550, gold: 450, items: ["magic_ring"] },
-                dialogue: "Druid: 'The corruption spreads through the forest. We must cleanse it.'",
-                nextQuest: "q3_3"
-            },
-            "q3_3": {
-                id: "q3_3",
-                title: "👾 The Corruptor",
-                act: 3,
-                description: "Defeat the Corruptor, a powerful being spreading the corruption.",
-                objectives: [{ type: "kill", target: "the_corruptor", amount: 1 }],
-                rewards: { exp: 800, gold: 600, items: ["shadow_cape"] },
-                dialogue: "Druid: 'The Corruptor awaits at the heart of the forest. Be careful.'",
-                isBoss: true,
-                nextQuest: "q4_1"
-            },
-            
-            // Act 4: Time Fracture
-            "q4_1": {
-                id: "q4_1",
-                title: "⏳ Temporal Distortion",
-                act: 4,
-                description: "Time is breaking apart. Investigate the temporal anomalies.",
-                objectives: [{ type: "explore", target: "time_rift", amount: 1 }],
-                rewards: { exp: 700, gold: 600, items: ["elixir"] },
-                dialogue: "Wizard: 'The fabric of time is unraveling! You must investigate the rifts.'",
-                nextQuest: "q4_2"
-            },
-            "q4_2": {
-                id: "q4_2",
-                title: "📜 Past Sins",
-                act: 4,
-                description: "You're thrown into the past. Witness the original corruption.",
-                objectives: [{ type: "survive", amount: 1 }],
-                rewards: { exp: 750, gold: 650, items: ["ancient_amulet"] },
-                dialogue: "Ancient Sage: 'You should not be here, traveler of time.'",
-                nextQuest: "q4_3"
-            },
-            "q4_3": {
-                id: "q4_3",
-                title: "⌛ Time Keeper",
-                act: 4,
-                description: "Defeat the Time Keeper to stabilize the timeline.",
-                objectives: [{ type: "kill", target: "time_keeper", amount: 1 }],
-                rewards: { exp: 1000, gold: 800, items: ["magic_ring"] },
-                dialogue: "Wizard: 'The Time Keeper guards the rift. Defeat it to return home.'",
-                isBoss: true,
-                nextQuest: "q5_1"
-            },
-            
-            // Act 5: Multiple Endings
-            "q5_1": {
-                id: "q5_1",
-                title: "🌌 The Final Confrontation",
-                act: 5,
-                description: "Face the source of all evil - The Void Lord.",
-                objectives: [{ type: "kill", target: "void_lord", amount: 1 }],
-                rewards: { exp: 2000, gold: 2000, items: ["void_orb"] },
-                dialogue: "Wizard: 'The Void Lord awaits. This is the final battle.'",
-                isBoss: true,
-                isFinal: true,
-                choices: [
-                    { id: "ending_hero", text: "✨ Sacrifice yourself to destroy the Void Lord", ending: "The Hero's Sacrifice - You become a legend, remembered for eternity." },
-                    { id: "ending_dark", text: "🌑 Embrace the void and become the new Void Lord", ending: "The Dark Ascension - You rule the void, feared by all." },
-                    { id: "ending_balance", text: "⚖️ Balance light and dark, seal the void away", ending: "The Balance - Peace is restored, but at a great cost." }
-                ]
-            }
-        };
+        // API Base URL
+        const API_BASE = 'https://bot-hosting-b-ga04.onrender.com';
 
-        // Enemy Database with emojis
-        const ENEMIES = {
-            goblin: { name: "👺 Goblin", hp: 50, maxHp: 50, attack: 8, defense: 2, exp: 25, gold: 10, emoji: "👺" },
-            goblin_warrior: { name: "👹 Goblin Warrior", hp: 80, maxHp: 80, attack: 12, defense: 5, exp: 40, gold: 20, emoji: "👹" },
-            goblin_chief: { name: "👑 Goblin Chief", hp: 150, maxHp: 150, attack: 18, defense: 8, exp: 100, gold: 50, emoji: "👑", isBoss: true },
-            enemy_soldier: { name: "⚔️ Enemy Soldier", hp: 120, maxHp: 120, attack: 15, defense: 8, exp: 60, gold: 30, emoji: "⚔️" },
-            enemy_general: { name: "🎖️ Enemy General", hp: 250, maxHp: 250, attack: 30, defense: 20, exp: 150, gold: 100, emoji: "🎖️", isBoss: true },
-            corrupted_creature: { name: "👾 Corrupted Creature", hp: 200, maxHp: 200, attack: 25, defense: 10, exp: 80, gold: 40, emoji: "👾" },
-            the_corruptor: { name: "💀 The Corruptor", hp: 500, maxHp: 500, attack: 40, defense: 20, exp: 500, gold: 300, emoji: "💀", isBoss: true },
-            time_keeper: { name: "⌛ Time Keeper", hp: 1000, maxHp: 1000, attack: 50, defense: 30, exp: 800, gold: 600, emoji: "⌛", isBoss: true },
-            void_lord: { name: "🌌 Void Lord", hp: 2000, maxHp: 2000, attack: 70, defense: 40, exp: 2000, gold: 1000, emoji: "🌌", isBoss: true }
-        };
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
 
-        // Item Database with emojis
-        const ITEMS = {
-            health_potion: { name: "❤️ Health Potion", icon: "🧪", type: "consumable", effect: { heal: 50 }, value: 25 },
-            mana_potion: { name: "💙 Mana Potion", icon: "💧", type: "consumable", effect: { restoreMana: 30 }, value: 25 },
-            iron_sword: { name: "⚔️ Iron Sword", icon: "🗡️", type: "weapon", stats: { attack: 12 }, value: 50 },
-            steel_sword: { name: "⚔️ Steel Sword", icon: "⚔️", type: "weapon", stats: { attack: 22 }, value: 150 },
-            leather_armor: { name: "🧥 Leather Armor", icon: "🛡️", type: "armor", stats: { defense: 10 }, value: 40 },
-            iron_ring: { name: "💍 Iron Ring", icon: "💍", type: "accessory", stats: { vitality: 5 }, value: 30 },
-            magic_ring: { name: "✨ Magic Ring", icon: "💍", type: "accessory", stats: { intelligence: 8 }, value: 200 },
-            shadow_cape: { name: "🌑 Shadow Cape", icon: "👕", type: "armor", stats: { agility: 20 }, value: 800 },
-            ancient_amulet: { name: "📿 Ancient Amulet", icon: "📿", type: "accessory", stats: { all: 10 }, value: 1200 },
-            elixir: { name: "✨ Elixir", icon: "🧪", type: "consumable", effect: { heal: 200, restoreMana: 100 }, value: 200 },
-            void_orb: { name: "🌌 Void Orb", icon: "🔮", type: "legendary", stats: { attack: 50, intelligence: 30 }, value: 5000 }
-        };
-
-        // World entities
-        const WORLD_SIZE = 500;
-        let worldEntities = [];
-
-        // ==================== UTILITY FUNCTIONS ====================
-        function showNotification(message, type = 'info', duration = 4000) {
-            const container = document.getElementById('notifications');
-            const notif = document.createElement('div');
-            notif.className = `notification ${type}`;
-            notif.textContent = message;
-            container.appendChild(notif);
-            setTimeout(() => {
-                notif.style.opacity = '0';
-                notif.style.transition = 'opacity 0.3s';
-                setTimeout(() => notif.remove(), 300);
-            }, duration);
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        function showPopup(id) {
-            document.getElementById(id).classList.add('show');
+        // Loading
+        function showLoading(message = 'Loading...') {
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingModal').classList.add('active');
         }
 
-        function closePopup(id) {
-            document.getElementById(id).classList.remove('show');
+        function hideLoading() {
+            document.getElementById('loadingModal').classList.remove('active');
         }
 
-        function closeAllPopups() {
-            document.querySelectorAll('.popup-overlay.show').forEach(p => p.classList.remove('show'));
+        // Auth Functions
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
         }
 
-        async function apiRequest(endpoint, options = {}) {
-            const headers = {
-                'Content-Type': 'application/json',
-                ...options.headers
-            };
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
             if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-            try {
-                const response = await fetch(API_URL + endpoint, {
-                    ...options,
-                    headers
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.detail || 'Request failed');
+                try {
+                    showLoading('Loading game...');
+                    const response = await fetch(`${API_BASE}/api/game/state`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        currentUser = data.user;
+                        character = data.character;
+                        inventory = data.inventory || [];
+                        quests = data.quests || [];
+                        startGame();
+                    } else {
+                        localStorage.removeItem('token');
+                    }
+                } catch (error) {
+                    console.error('Auth check failed:', error);
+                } finally {
+                    hideLoading();
                 }
-                return data;
-            } catch (error) {
-                showNotification(error.message, 'error');
-                throw error;
             }
         }
 
-        // ==================== LOADING SCREEN ====================
-        function updateLoading(progress, text) {
-            document.getElementById('loading-bar').style.width = progress + '%';
-            document.getElementById('loading-text').textContent = text;
-        }
+        async function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
 
-        // ==================== STARFIELD ====================
-        function createStarfield() {
-            const stars = document.getElementById('stars');
-            for (let i = 0; i < 150; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.setProperty('--dur', (Math.random() * 4 + 2) + 's');
-                star.style.setProperty('--op', Math.random() * 0.7 + 0.3);
-                star.style.animationDelay = Math.random() * 5 + 's';
-                stars.appendChild(star);
-            }
-        }
-
-        // ==================== SERVER STATUS ====================
-        async function checkServerStatus() {
-            const dot = document.getElementById('status-dot');
-            const text = document.getElementById('status-text');
-            try {
-                const response = await fetch(API_URL + '/health');
-                if (response.ok) {
-                    dot.className = 'status-dot online';
-                    text.textContent = 'Server Online';
-                } else {
-                    dot.className = 'status-dot offline';
-                    text.textContent = 'Server Error';
-                }
-            } catch {
-                dot.className = 'status-dot offline';
-                text.textContent = 'Server Offline';
-            }
-        }
-
-        // ==================== AUTH ====================
-        async function handleLogin() {
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-            const errorEl = document.getElementById('login-error');
-            
             if (!username || !password) {
-                errorEl.textContent = 'Please enter username and password';
-                errorEl.classList.add('show');
+                showToast('Please fill in all fields', 'error');
                 return;
             }
 
+            showLoading('Logging in...');
             try {
-                const data = await apiRequest('/api/login', {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-                token = data.access_token;
-                localStorage.setItem('rpg_token', token);
-                currentUser = { username, role: data.role, is_owner: data.is_owner };
-                showNotification(`Welcome back, ${username}! 👋`, 'success');
-                
-                await loadCharacters();
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    currentUser = data.user;
+                    character = data.character;
+                    inventory = data.inventory || [];
+                    quests = data.quests || [];
+                    startGame();
+                    showToast('Welcome back!');
+                } else {
+                    showToast(data.error || 'Login failed', 'error');
+                }
             } catch (error) {
-                errorEl.textContent = error.message;
-                errorEl.classList.add('show');
+                showToast('Connection failed', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        async function handleRegister() {
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-            const errorEl = document.getElementById('login-error');
+        async function register() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const characterClass = document.getElementById('registerClass').value;
 
-            if (username.length < 3) {
-                errorEl.textContent = 'Username must be at least 3 characters';
-                errorEl.classList.add('show');
-                return;
-            }
-            if (password.length < 6) {
-                errorEl.textContent = 'Password must be at least 6 characters';
-                errorEl.classList.add('show');
+            if (!username || !password) {
+                showToast('Please fill in all fields', 'error');
                 return;
             }
 
+            showLoading('Creating character...');
             try {
-                const data = await apiRequest('/api/register', {
+                const response = await fetch(`${API_BASE}/api/auth/register`, {
                     method: 'POST',
-                    body: JSON.stringify({ username, password })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, class: characterClass })
                 });
-                token = data.access_token;
-                localStorage.setItem('rpg_token', token);
-                currentUser = { username, role: data.role, is_owner: data.is_owner };
-                showNotification(`Account created! Welcome, ${username}! 🎉`, 'success');
-                await loadCharacters();
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast('Character created! Please login');
+                    showLogin();
+                } else {
+                    showToast(data.error || 'Registration failed', 'error');
+                }
             } catch (error) {
-                errorEl.textContent = error.message;
-                errorEl.classList.add('show');
+                showToast('Connection failed', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
         function logout() {
-            localStorage.removeItem('rpg_token');
-            token = null;
-            currentUser = null;
-            currentCharacter = null;
             if (ws) {
                 ws.close();
-                ws = null;
             }
-            if (reconnectTimer) {
-                clearTimeout(reconnectTimer);
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
             }
-            showScreen('login-screen');
+            localStorage.removeItem('token');
+            currentUser = null;
+            character = null;
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('gameContainer').style.display = 'none';
         }
 
-        // ==================== SCREEN MANAGEMENT ====================
-        function showScreen(screenId) {
-            document.querySelectorAll('#login-screen, #char-select-screen, #char-create-screen, #game-screen').forEach(s => {
-                s.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
-            document.getElementById('loading-screen').style.display = 'none';
-        }
-
-        // ==================== CHARACTER MANAGEMENT ====================
-        async function loadCharacters() {
-            try {
-                const data = await apiRequest('/api/characters');
-                characters = data;
-                if (characters.length > 0) {
-                    renderCharacterSelect();
-                    showScreen('char-select-screen');
-                } else {
-                    showCharacterCreation();
-                }
-            } catch (error) {
-                showNotification('Failed to load characters', 'error');
-            }
-        }
-
-        function renderCharacterSelect() {
-            const grid = document.getElementById('char-grid');
-            grid.innerHTML = '';
-            characters.forEach(char => {
-                const card = document.createElement('div');
-                card.className = 'char-card';
-                card.onclick = () => selectCharacter(char.id);
-                
-                const classEmoji = {
-                    warrior: '⚔️',
-                    mage: '🔮',
-                    rogue: '🗡️',
-                    archer: '🏹',
-                    paladin: '🛡️'
-                }[char.class_name] || '👤';
-                
-                card.innerHTML = `
-                    <div class="char-icon">${classEmoji}</div>
-                    <div class="char-name">${char.name}</div>
-                    <div class="char-class">${char.class_name.toUpperCase()}</div>
-                    <div class="char-level">Level <span>${char.level}</span></div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        async function selectCharacter(characterId) {
-            currentCharacter = characters.find(c => c.id === characterId);
-            if (currentCharacter) {
-                await loadFullCharacterData(characterId);
-                enterGame();
-            }
-        }
-
-        async function loadFullCharacterData(characterId) {
-            try {
-                const data = await apiRequest(`/api/characters/${characterId}`);
-                currentCharacter = data.character;
-                inventory = data.inventory || [];
-                skillPoints = currentCharacter.skill_points || 0;
-                
-                // Load quests
-                quests = data.quests || [];
-                activeQuests.clear();
-                quests.forEach(q => {
-                    if (q.status === 'in_progress') {
-                        activeQuests.add(q.quest_id);
-                        questProgress[q.quest_id] = q.progress || 0;
-                    }
-                });
-                
-                updateHUD();
-                renderActiveQuests();
-            } catch (error) {
-                showNotification('Failed to load character data', 'error');
-            }
-        }
-
-        function showCharacterCreation() {
-            renderClassGrid();
-            showScreen('char-create-screen');
-        }
-
-        function renderClassGrid() {
-            const grid = document.getElementById('class-grid');
-            grid.innerHTML = '';
+        // Game Initialization
+        function startGame() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'flex';
             
-            const classes = [
-                { id: 'warrior', name: '⚔️ WARRIOR', desc: 'High HP & Strength' },
-                { id: 'mage', name: '🔮 MAGE', desc: 'Powerful spells' },
-                { id: 'rogue', name: '🗡️ ROGUE', desc: 'Agile, critical hits' },
-                { id: 'archer', name: '🏹 ARCHER', desc: 'Ranged precision' },
-                { id: 'paladin', name: '🛡️ PALADIN', desc: 'Holy warrior' }
-            ];
-            
-            classes.forEach(cls => {
-                const card = document.createElement('div');
-                card.className = 'class-card';
-                card.dataset.class = cls.id;
-                card.onclick = () => selectClass(cls.id, card);
-                
-                card.innerHTML = `
-                    <div class="class-icon">${cls.id === 'warrior' ? '⚔️' : cls.id === 'mage' ? '🔮' : cls.id === 'rogue' ? '🗡️' : cls.id === 'archer' ? '🏹' : '🛡️'}</div>
-                    <div class="class-name">${cls.name}</div>
-                    <div class="class-desc">${cls.desc}</div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        let selectedClass = 'warrior';
-        function selectClass(className, element) {
-            document.querySelectorAll('.class-card').forEach(c => c.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedClass = className;
-        }
-
-        async function createCharacter() {
-            const name = document.getElementById('new-char-name').value.trim();
-            const errorEl = document.getElementById('char-create-error');
-
-            if (name.length < 3) {
-                errorEl.textContent = 'Name must be at least 3 characters';
-                errorEl.classList.add('show');
-                return;
-            }
-
-            try {
-                const data = await apiRequest('/api/characters', {
-                    method: 'POST',
-                    body: JSON.stringify({ name, class_name: selectedClass })
-                });
-                currentCharacter = data;
-                showNotification(`Hero ${name} created! ⚔️`, 'success');
-                await loadCharacters();
-            } catch (error) {
-                errorEl.textContent = error.message;
-                errorEl.classList.add('show');
-            }
-        }
-
-        // ==================== GAME ENTRY ====================
-        function enterGame() {
-            showScreen('game-screen');
-            initGame();
-            updateHUD();
-            renderSkillBar();
+            updateStats();
+            loadLocation(character.current_location || 'village');
             connectWebSocket();
-            loadWorldEntities();
-        }
-
-        function returnToLobby() {
-            showScreen('char-select-screen');
-            if (combatInterval) {
-                clearInterval(combatInterval);
-                combatInterval = null;
-            }
-        }
-
-        function loadWorldEntities() {
-            worldEntities = [];
             
-            // Spawn mobs
-            for (let i = 0; i < 30; i++) {
-                const x = 100 + Math.random() * 300;
-                const y = 100 + Math.random() * 300;
-                
-                let enemyType = 'goblin';
-                if (i > 25) enemyType = 'goblin_warrior';
-                else if (i > 20) enemyType = 'enemy_soldier';
-                
-                const enemy = ENEMIES[enemyType];
-                worldEntities.push({
-                    id: `mob_${i}`,
-                    type: 'mob',
-                    class: enemyType,
-                    name: enemy.name,
-                    x: x,
-                    y: y,
-                    hp: enemy.hp,
-                    maxHp: enemy.maxHp,
-                    level: Math.floor(enemy.hp / 50),
-                    attack: enemy.attack,
-                    defense: enemy.defense,
-                    exp: enemy.exp,
-                    gold: enemy.gold,
-                    emoji: enemy.emoji
-                });
-            }
-            
-            // Spawn bosses
-            const bosses = [
-                { type: 'goblin_chief', x: 200, y: 200 },
-                { type: 'enemy_general', x: 300, y: 150 },
-                { type: 'the_corruptor', x: 250, y: 350 },
-                { type: 'time_keeper', x: 400, y: 400 },
-                { type: 'void_lord', x: 450, y: 450 }
-            ];
-            
-            bosses.forEach((boss, i) => {
-                const enemy = ENEMIES[boss.type];
-                worldEntities.push({
-                    id: `boss_${i}`,
-                    type: 'mob',
-                    class: boss.type,
-                    name: enemy.name,
-                    x: boss.x,
-                    y: boss.y,
-                    hp: enemy.hp,
-                    maxHp: enemy.maxHp,
-                    level: Math.floor(enemy.hp / 50),
-                    attack: enemy.attack,
-                    defense: enemy.defense,
-                    exp: enemy.exp,
-                    gold: enemy.gold,
-                    emoji: enemy.emoji,
-                    isBoss: true
-                });
-            });
+            // Auto-save every 30 seconds
+            autoSaveInterval = setInterval(saveGame, 30000);
         }
 
-        function initGame() {
-            const canvas = document.getElementById('game-canvas');
-            gameRenderer = new GameRenderer(canvas);
-            gameRenderer.start();
-
-            window.addEventListener('keydown', handleKeyDown);
-            window.addEventListener('keyup', handleKeyUp);
-        }
-
-        class GameRenderer {
-            constructor(canvas) {
-                this.canvas = canvas;
-                this.ctx = canvas.getContext('2d');
-                this.ctx.imageSmoothingEnabled = false;
-                this.tileSize = 32;
-                this.camera = { x: 0, y: 0 };
-                this.player = { 
-                    x: currentCharacter?.x_position || 250, 
-                    y: currentCharacter?.y_position || 250,
-                    targetX: currentCharacter?.x_position || 250,
-                    targetY: currentCharacter?.y_position || 250 
-                };
-                this.entities = worldEntities;
-                this.otherPlayers = otherPlayers;
-                this.damageNumbers = [];
-                this.animations = [];
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
-            }
-
-            resize() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-            }
-
-            start() {
-                this.gameLoop();
-            }
-
-            gameLoop() {
-                this.update();
-                this.render();
-                requestAnimationFrame(() => this.gameLoop());
-            }
-
-            update() {
-                this.player.x += (this.player.targetX - this.player.x) * 0.1;
-                this.player.y += (this.player.targetY - this.player.y) * 0.1;
-                
-                this.camera.x = this.player.x * this.tileSize - this.canvas.width / 2;
-                this.camera.y = this.player.y * this.tileSize - this.canvas.height / 2;
-
-                // Update damage numbers
-                this.damageNumbers = this.damageNumbers.filter(d => {
-                    d.life -= 1;
-                    d.y -= 0.5;
-                    return d.life > 0;
-                });
-
-                // Update animations
-                this.animations = this.animations.filter(anim => {
-                    anim.progress += 0.05;
-                    return anim.progress < 1;
-                });
-            }
-
-            render() {
-                const ctx = this.ctx;
-                
-                // Sky gradient
-                const gradient = ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-                gradient.addColorStop(0, '#0a1a2a');
-                gradient.addColorStop(1, '#1a2a3a');
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-                const startX = Math.floor(this.camera.x / this.tileSize) - 2;
-                const startY = Math.floor(this.camera.y / this.tileSize) - 2;
-                const endX = startX + Math.ceil(this.canvas.width / this.tileSize) + 4;
-                const endY = startY + Math.ceil(this.canvas.height / this.tileSize) + 4;
-
-                // Draw ground tiles
-                for (let y = startY; y < endY; y++) {
-                    for (let x = startX; x < endX; x++) {
-                        if (x < 0 || x >= WORLD_SIZE || y < 0 || y >= WORLD_SIZE) continue;
-                        
-                        const screenX = x * this.tileSize - this.camera.x;
-                        const screenY = y * this.tileSize - this.camera.y;
-                        
-                        // Ground tile variations
-                        if (x < 200 && y < 200) {
-                            ctx.fillStyle = '#3a6a3a'; // Grass
-                        } else if (x > 300 && y < 200) {
-                            ctx.fillStyle = '#696969'; // Mountains
-                        } else if (x < 200 && y > 300) {
-                            ctx.fillStyle = '#2a5a2a'; // Forest
-                        } else if (x > 350 && y > 350) {
-                            ctx.fillStyle = '#4a2a4a'; // Void lands
-                        } else {
-                            ctx.fillStyle = '#6a5a4a'; // Plains
-                        }
-                        ctx.fillRect(screenX, screenY, this.tileSize, this.tileSize);
-                    }
-                }
-
-                // Draw mobs
-                this.entities.filter(e => e.type === 'mob').forEach(mob => {
-                    const screenX = mob.x * this.tileSize - this.camera.x;
-                    const screenY = mob.y * this.tileSize - this.camera.y;
-                    
-                    if (screenX < -50 || screenX > this.canvas.width + 50 || 
-                        screenY < -50 || screenY > this.canvas.height + 50) return;
-                    
-                    // Draw mob with emoji
-                    ctx.font = '28px "Courier New"';
-                    ctx.fillStyle = mob.isBoss ? '#ffaa00' : '#fff';
-                    ctx.fillText(mob.emoji || '👾', screenX, screenY + 24);
-                    
-                    // Draw health bar
-                    if (mob.hp < mob.maxHp) {
-                        ctx.fillStyle = '#660000';
-                        ctx.fillRect(screenX, screenY - 10, 32, 4);
-                        ctx.fillStyle = '#ff4444';
-                        const hpPercent = mob.hp / mob.maxHp;
-                        ctx.fillRect(screenX, screenY - 10, 32 * hpPercent, 4);
-                    }
-                    
-                    // Draw name
-                    ctx.font = '10px "Courier New"';
-                    ctx.fillStyle = mob.isBoss ? '#ffaa00' : '#fff';
-                    ctx.fillText(mob.name.split(' ')[1] || mob.name, screenX, screenY - 15);
-                });
-
-                // Draw other players
-                this.otherPlayers.forEach(player => {
-                    const screenX = player.x * this.tileSize - this.camera.x;
-                    const screenY = player.y * this.tileSize - this.camera.y;
-                    
-                    if (screenX < -50 || screenX > this.canvas.width + 50 || 
-                        screenY < -50 || screenY > this.canvas.height + 50) return;
-                    
-                    ctx.font = '28px "Courier New"';
-                    ctx.fillStyle = '#44ff44';
-                    ctx.fillText('👤', screenX, screenY + 24);
-                    
-                    ctx.font = '10px "Courier New"';
-                    ctx.fillStyle = '#44ff44';
-                    ctx.fillText(player.name || 'Player', screenX, screenY - 15);
-                });
-
-                // Draw player
-                const playerX = this.player.x * this.tileSize - this.camera.x;
-                const playerY = this.player.y * this.tileSize - this.camera.y;
-                
-                const classEmoji = {
-                    warrior: '⚔️',
-                    mage: '🔮',
-                    rogue: '🗡️',
-                    archer: '🏹',
-                    paladin: '🛡️'
-                }[currentCharacter?.class_name] || '👤';
-                
-                ctx.font = '32px "Courier New"';
-                ctx.fillStyle = '#ffd700';
-                ctx.fillText(classEmoji, playerX, playerY + 28);
-                
-                ctx.font = '10px "Courier New"';
-                ctx.fillStyle = '#ffd700';
-                ctx.fillText(currentCharacter?.name || 'You', playerX, playerY - 15);
-
-                // Draw damage numbers
-                this.damageNumbers.forEach(d => {
-                    ctx.font = 'bold 16px "Courier New"';
-                    ctx.fillStyle = d.critical ? '#ffaa00' : '#fff';
-                    ctx.fillText(d.damage, d.x - this.camera.x, d.y - this.camera.y - d.life * 0.5);
-                });
-                
-                this.renderMinimap();
-            }
-
-            renderMinimap() {
-                const canvas = document.getElementById('minimap-canvas');
-                const ctx = canvas.getContext('2d');
-                ctx.imageSmoothingEnabled = false;
-                
-                ctx.fillStyle = '#1a332a';
-                ctx.fillRect(0, 0, 200, 200);
-                
-                const scale = 200 / WORLD_SIZE;
-                
-                // Draw mobs on minimap
-                this.entities.filter(e => e.type === 'mob').forEach(mob => {
-                    const dx = (mob.x - this.player.x) * scale + 100;
-                    const dy = (mob.y - this.player.y) * scale + 100;
-                    
-                    if (dx >= 0 && dx <= 200 && dy >= 0 && dy <= 200) {
-                        ctx.fillStyle = mob.isBoss ? '#ffaa00' : '#ff4444';
-                        ctx.fillRect(dx - 1, dy - 1, 2, 2);
-                    }
-                });
-                
-                // Draw other players
-                this.otherPlayers.forEach(player => {
-                    const dx = (player.x - this.player.x) * scale + 100;
-                    const dy = (player.y - this.player.y) * scale + 100;
-                    
-                    if (dx >= 0 && dx <= 200 && dy >= 0 && dy <= 200) {
-                        ctx.fillStyle = '#44ff44';
-                        ctx.fillRect(dx - 1, dy - 1, 2, 2);
-                    }
-                });
-                
-                ctx.fillStyle = '#ffd700';
-                ctx.fillRect(98, 98, 4, 4);
-            }
-
-            movePlayer(dx, dy) {
-                const newX = Math.round(this.player.targetX + dx);
-                const newY = Math.round(this.player.targetY + dy);
-                
-                if (newX < 0 || newX >= WORLD_SIZE || newY < 0 || newY >= WORLD_SIZE) return;
-                
-                this.player.targetX += dx;
-                this.player.targetY += dy;
-                
-                // Send movement to server
-                if (ws && ws.readyState === WebSocket.OPEN && currentCharacter) {
-                    ws.send(JSON.stringify({
-                        type: 'move',
-                        character_id: currentCharacter.id,
-                        x: Math.round(this.player.targetX),
-                        y: Math.round(this.player.targetY)
-                    }));
-                }
-            }
-
-            interact() {
-                const playerX = Math.round(this.player.x);
-                const playerY = Math.round(this.player.y);
-                
-                const nearby = this.entities.find(e => 
-                    e.type === 'mob' &&
-                    Math.abs(e.x - playerX) <= 2 && 
-                    Math.abs(e.y - playerY) <= 2
-                );
-                
-                if (nearby) {
-                    startCombat(nearby);
-                }
-            }
-
-            addDamageNumber(x, y, damage, critical) {
-                this.damageNumbers.push({
-                    x: x * this.tileSize + 16,
-                    y: y * this.tileSize,
-                    damage: damage.toString(),
-                    critical: critical,
-                    life: 30
-                });
-            }
-        }
-
-        function handleKeyDown(event) {
-            if (event.target.tagName === 'INPUT') return;
-            
-            const key = event.key.toLowerCase();
-            
-            if (key === 'w' || key === 'arrowup') {
-                gameRenderer?.movePlayer(0, -1);
-            } else if (key === 's' || key === 'arrowdown') {
-                gameRenderer?.movePlayer(0, 1);
-            } else if (key === 'a' || key === 'arrowleft') {
-                gameRenderer?.movePlayer(-1, 0);
-            } else if (key === 'd' || key === 'arrowright') {
-                gameRenderer?.movePlayer(1, 0);
-            } else if (key === 'e' || key === ' ') {
-                gameRenderer?.interact();
-            } else if (key === '1' || key === '2' || key === '3' || key === '4') {
-                const skillIndex = parseInt(key) - 1;
-                const skills = ['power_strike', 'cleave', 'battle_cry', 'whirlwind'];
-                if (skills[skillIndex]) {
-                    useSkill(skills[skillIndex]);
-                }
-            } else if (key === 'i') {
-                openInventory();
-            } else if (key === 'j') {
-                openQuestLog();
-            } else if (key === 'escape') {
-                closeAllPopups();
-            }
-        }
-
-        function handleKeyUp(event) {}
-
-        // ==================== WEBSOCKET ====================
+        // WebSocket Connection
         function connectWebSocket() {
-            if (!token) return;
-            if (ws && ws.readyState === WebSocket.OPEN) return;
-            if (reconnectTimer) clearTimeout(reconnectTimer);
+            const token = localStorage.getItem('token');
+            ws = new WebSocket(`ws://localhost:8000/ws?token=${token}`);
 
-            ws = new WebSocket(`${WS_URL}/ws?token=${token}`);
-            
             ws.onopen = () => {
-                addChatMessage('System', 'Connected to server 🌐', 'system');
+                console.log('Connected to server');
             };
-            
+
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                handleWebSocketMessage(data);
-            };
-            
-            ws.onclose = () => {
-                addChatMessage('System', 'Disconnected - reconnecting... 🔌', 'system');
-                reconnectTimer = setTimeout(connectWebSocket, 5000);
-            };
-            
-            ws.onerror = () => {};
-        }
-
-        function handleWebSocketMessage(data) {
-            switch(data.type) {
-                case 'chat':
-                    addChatMessage(data.sender, data.content, data.channel);
-                    break;
-                case 'system':
-                    addChatMessage('System', data.message, 'system');
-                    break;
-                case 'movement':
-                    handleOtherPlayerMove(data);
-                    break;
-                case 'announcement':
-                    addChatMessage('📢 ANNOUNCEMENT', data.message, 'system');
-                    showNotification('📢 ' + data.message, 'info', 7000);
-                    break;
-                case 'error':
-                    showNotification(data.message, 'error');
-                    break;
-            }
-        }
-
-        function handleOtherPlayerMove(data) {
-            if (data.character_id !== currentCharacter?.id) {
-                otherPlayers.set(data.character_id, {
-                    id: data.character_id,
-                    x: data.x,
-                    y: data.y,
-                    name: data.name || 'Player'
-                });
-            }
-        }
-
-        function addChatMessage(sender, content, channel = 'global') {
-            if (currentChatChannel !== 'global' && channel !== 'system' && channel !== currentChatChannel) return;
-            
-            const messages = document.getElementById('chat-messages');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `chat-message ${channel}`;
-            
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            if (channel === 'system') {
-                msgDiv.innerHTML = `<span class="timestamp">[${timestamp}]</span> <span style="color:#77cc77">${content}</span>`;
-            } else if (channel === 'whisper') {
-                msgDiv.innerHTML = `<span class="timestamp">[${timestamp}]</span> <span class="sender" style="color:#cc77cc">${sender}</span> ${content}`;
-            } else {
-                msgDiv.innerHTML = `<span class="timestamp">[${timestamp}]</span> <span class="sender">${sender}</span> ${content}`;
-            }
-            
-            messages.appendChild(msgDiv);
-            messages.scrollTop = messages.scrollHeight;
-            
-            while (messages.children.length > 50) {
-                messages.removeChild(messages.firstChild);
-            }
-        }
-
-        function sendChat() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            if (!message || !ws || ws.readyState !== WebSocket.OPEN) return;
-            
-            input.value = '';
-            
-            if (message.startsWith('/w ')) {
-                const parts = message.slice(3).split(' ');
-                const target = parts[0];
-                const content = parts.slice(1).join(' ');
-                if (target && content) {
-                    ws.send(JSON.stringify({
-                        type: 'chat',
-                        channel: 'whisper',
-                        content,
-                        target
-                    }));
-                    addChatMessage(`→ ${target}`, content, 'whisper');
+                
+                switch(data.type) {
+                    case 'chat':
+                        addChatMessage(data);
+                        break;
+                    case 'presence':
+                        onlinePlayers = data.count;
+                        document.getElementById('onlineCount').textContent = onlinePlayers;
+                        break;
+                    case 'combat_update':
+                        if (combat && combat.current_enemy) {
+                            combat.current_enemy.current_hp = data.enemy_hp;
+                            updateCombat();
+                        }
+                        break;
                 }
-            } else {
-                ws.send(JSON.stringify({
-                    type: 'chat',
-                    channel: 'global',
-                    content: message
-                }));
-            }
+            };
+
+            ws.onclose = () => {
+                console.log('Disconnected from server');
+                // Try to reconnect after 3 seconds
+                setTimeout(connectWebSocket, 3000);
+            };
         }
 
-        function switchChatChannel(channel) {
-            document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            currentChatChannel = channel;
-        }
-
-        // ==================== COMBAT SYSTEM ====================
-        async function startCombat(enemy) {
-            if (!currentCharacter) return;
-            
-            showPopup('combat-popup');
-            document.getElementById('combat-player-name').textContent = currentCharacter.name;
-            document.getElementById('combat-enemy-name').textContent = enemy.name;
-            document.getElementById('combat-player-icon').textContent = {
-                warrior: '⚔️',
-                mage: '🔮',
-                rogue: '🗡️',
-                archer: '🏹',
-                paladin: '🛡️'
-            }[currentCharacter.class_name] || '⚔️';
-            
-            document.getElementById('combat-enemy-icon').textContent = enemy.emoji || '👾';
-            document.getElementById('combat-player-attack').textContent = currentCharacter.strength * 2;
-            document.getElementById('combat-enemy-attack').textContent = enemy.attack;
-            
-            let playerHP = currentCharacter.hp;
-            let enemyHP = enemy.hp;
-            const maxPlayerHP = currentCharacter.max_hp;
-            const maxEnemyHP = enemy.maxHp;
-            
-            const combatLog = document.getElementById('combat-log');
-            combatLog.innerHTML = '';
-            
-            const actionsDiv = document.getElementById('combat-actions');
-            actionsDiv.innerHTML = `
-                <button class="combat-skill-btn" onclick="combatAction('attack')">⚔️ Attack</button>
-                <button class="combat-skill-btn" onclick="combatAction('skill')">⚡ Power Strike</button>
-                <button class="combat-skill-btn" onclick="combatAction('flee')">🏃 Flee</button>
+        // Chat Functions
+        function addChatMessage(data) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            messageDiv.innerHTML = `
+                <span class="chat-username">${data.username}:</span>
+                <span>${data.message}</span>
+                <span class="chat-time">${new Date().toLocaleTimeString()}</span>
             `;
             
-            window.currentCombat = {
-                enemy: enemy,
-                playerHP: playerHP,
-                enemyHP: enemyHP,
-                maxPlayerHP: maxPlayerHP,
-                maxEnemyHP: maxEnemyHP
-            };
-            
-            updateCombatDisplay();
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        function updateCombatDisplay() {
-            if (!window.currentCombat) return;
-            
-            const combat = window.currentCombat;
-            document.getElementById('combat-player-hp').style.width = (combat.playerHP / combat.maxPlayerHP * 100) + '%';
-            document.getElementById('combat-player-hp-text').textContent = `${Math.round(combat.playerHP)}/${combat.maxPlayerHP}`;
-            document.getElementById('combat-enemy-hp').style.width = (combat.enemyHP / combat.maxEnemyHP * 100) + '%';
-            document.getElementById('combat-enemy-hp-text').textContent = `${Math.round(combat.enemyHP)}/${combat.maxEnemyHP}`;
+        function switchChannel(channel) {
+            currentChannel = channel;
+            document.querySelectorAll('.channel-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
         }
 
-        function addCombatLog(message, type = '') {
-            const combatLog = document.getElementById('combat-log');
-            const entry = document.createElement('div');
-            entry.className = 'combat-log-entry';
-            if (type === 'success') entry.style.color = '#44ff44';
-            else if (type === 'error') entry.style.color = '#ff4444';
-            else if (type === 'critical') entry.style.color = '#ffaa00';
-            else if (type === 'damage') entry.style.color = '#ff8888';
-            else if (type === 'system') entry.style.color = '#77cc77';
-            entry.textContent = message;
-            combatLog.appendChild(entry);
-            combatLog.scrollTop = combatLog.scrollHeight;
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('chatInput');
+                const message = input.value.trim();
+                
+                if (message && ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'chat',
+                        channel: currentChannel,
+                        message: message
+                    }));
+                    input.value = '';
+                }
+            }
+        }
+
+        // Game Functions
+        async function saveGame() {
+            if (!character || combat) return;
+
+            try {
+                const token = localStorage.getItem('token');
+                await fetch(`${API_BASE}/api/game/save`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(character)
+                });
+            } catch (error) {
+                console.error('Auto-save failed:', error);
+            }
+        }
+
+        function updateStats() {
+            if (!character) return;
+
+            document.getElementById('playerName').textContent = character.name;
+            document.getElementById('playerLevelClass').textContent = `Level ${character.level} ${character.class}`;
+            
+            document.getElementById('hpText').textContent = `${character.current_hp}/${character.max_hp}`;
+            document.getElementById('hpBar').style.width = `${(character.current_hp / character.max_hp) * 100}%`;
+            
+            document.getElementById('mpText').textContent = `${character.current_mana}/${character.max_mana}`;
+            document.getElementById('mpBar').style.width = `${(character.current_mana / character.max_mana) * 100}%`;
+            
+            document.getElementById('expText').textContent = `${character.exp}/${character.exp_needed}`;
+            document.getElementById('expBar').style.width = `${(character.exp / character.exp_needed) * 100}%`;
+            
+            document.getElementById('goldAmount').textContent = character.gold;
+        }
+
+        async function loadLocation(locationId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/game/location/${locationId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const location = await response.json();
+                
+                document.getElementById('locationName').textContent = location.name;
+                document.getElementById('locationDesc').textContent = location.description;
+                
+                character.current_location = locationId;
+                
+                // Load location actions
+                let html = '<div class="action-grid">';
+                
+                // Enemies
+                if (location.enemies && location.enemies.length > 0) {
+                    location.enemies.forEach(enemy => {
+                        html += `
+                            <div class="action-card" onclick="startCombat('${enemy.id}')">
+                                <h3>⚔️ ${enemy.name}</h3>
+                                <p>Level ${enemy.level} | ${enemy.exp_reward} EXP</p>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // Merchants
+                if (location.merchants) {
+                    location.merchants.forEach(merchant => {
+                        html += `
+                            <div class="action-card" onclick="openShop('${merchant}')">
+                                <h3>🛒 ${merchant.replace('_', ' ')}</h3>
+                                <p>Browse and purchase items</p>
+                            </div>
+                        `;
+                    });
+                }
+                
+                html += '</div>';
+                document.getElementById('gameContent').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Failed to load location:', error);
+            }
+        }
+
+        // Combat Functions
+        async function startCombat(enemyId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/game/combat/start`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ enemy_id: enemyId })
+                });
+                
+                combat = await response.json();
+                updateCombat();
+                
+            } catch (error) {
+                console.error('Failed to start combat:', error);
+            }
+        }
+
+        function updateCombat() {
+            if (!combat || !combat.current_enemy) return;
+
+            const enemy = combat.current_enemy;
+            const enemyHpPercent = (enemy.current_hp / enemy.max_hp) * 100;
+
+            let html = `
+                <div class="combat-area">
+                    <div class="combat-enemy">
+                        <div class="enemy-name">${enemy.name}</div>
+                        <div class="stat-bar-container">
+                            <div class="stat-label">
+                                <span>❤️ Enemy HP</span>
+                                <span>${enemy.current_hp}/${enemy.max_hp}</span>
+                            </div>
+                            <div class="stat-bar">
+                                <div class="stat-bar-fill hp-fill" style="width: ${enemyHpPercent}%"></div>
+                            </div>
+                        </div>
+            `;
+
+            // Abilities
+            if (enemy.abilities && enemy.abilities.length > 0) {
+                html += '<div style="margin-top: 15px;"><small>Abilities:</small><br>';
+                enemy.abilities.forEach(ability => {
+                    html += `<span style="background: rgba(255,107,107,0.2); padding: 3px 8px; border-radius: 12px; margin: 2px; display: inline-block; font-size: 0.8em;">${ability.name}</span>`;
+                });
+                html += '</div>';
+            }
+
+            html += `
+                    </div>
+                    <div class="combat-player">
+                        <h3>Your Turn</h3>
+                        <div class="combat-actions">
+                            <button class="combat-btn attack" onclick="combatAction('attack')" ${combat.turn !== 'player' ? 'disabled' : ''}>
+                                ⚔️ Attack
+                            </button>
+                            <button class="combat-btn skill" onclick="combatAction('skill')" ${combat.turn !== 'player' ? 'disabled' : ''}>
+                                ⚡ Skill
+                            </button>
+                            <button class="combat-btn flee" onclick="combatAction('flee')" ${combat.turn !== 'player' ? 'disabled' : ''}>
+                                🏃 Flee
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Combat Log
+            if (combat.combat_log && combat.combat_log.length > 0) {
+                html += '<div class="combat-log">';
+                combat.combat_log.slice(-10).forEach(log => {
+                    let className = 'system-message';
+                    if (log.type === 'player_attack') className = 'player-attack';
+                    if (log.type === 'enemy_attack') className = 'enemy-attack';
+                    html += `<div class="${className}">${log.message}</div>`;
+                });
+                html += '</div>';
+            }
+
+            document.getElementById('gameContent').innerHTML = html;
         }
 
         async function combatAction(action) {
-            if (!window.currentCombat) return;
-            
-            const combat = window.currentCombat;
-            const playerEl = document.getElementById('combat-player');
-            const enemyEl = document.getElementById('combat-enemy');
-            
-            if (action === 'flee') {
-                if (Math.random() > 0.5) {
-                    addCombatLog('You successfully fled! 🏃', 'system');
-                    setTimeout(closeCombat, 1000);
-                    return;
-                } else {
-                    addCombatLog('Failed to flee! ❌', 'error');
-                }
-            } else if (action === 'attack') {
-                // Player attacks
-                playerEl.classList.add('attacking');
-                setTimeout(() => playerEl.classList.remove('attacking'), 300);
+            if (!combat) return;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/game/combat/action`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ action })
+                });
                 
-                const isCritical = Math.random() < 0.1;
-                let damage = Math.max(1, 15 - combat.enemy.defense);
-                if (isCritical) {
-                    damage = Math.floor(damage * 1.5);
-                    addCombatLog(`⚡ CRITICAL HIT! You deal ${damage} damage!`, 'critical');
-                } else {
-                    addCombatLog(`You hit for ${damage} damage!`, 'success');
-                }
+                const result = await response.json();
                 
-                combat.enemyHP -= damage;
-                
-                // Add damage number
-                if (gameRenderer) {
-                    gameRenderer.addDamageNumber(combat.enemy.x, combat.enemy.y, damage, isCritical);
-                }
-                
-                enemyEl.classList.add('taking-damage');
-                setTimeout(() => enemyEl.classList.remove('taking-damage'), 300);
-                
-                if (combat.enemyHP <= 0) {
-                    enemyEl.classList.add('defeated');
-                    addCombatLog(`🏆 Victory! You defeated ${combat.enemy.name}!`, 'system');
-                    
-                    // Reward player
-                    currentCharacter.exp += combat.enemy.exp;
-                    currentCharacter.gold += combat.enemy.gold;
-                    
-                    // Check for quest update
-                    updateQuestProgress('kill', combat.enemy.class);
-                    
-                    checkLevelUp();
-                    updateHUD();
-                    
-                    // Remove enemy from world
-                    const index = worldEntities.findIndex(e => e.id === combat.enemy.id);
-                    if (index !== -1) {
-                        worldEntities.splice(index, 1);
-                    }
-                    
-                    setTimeout(closeCombat, 2000);
-                    return;
-                }
-            } else if (action === 'skill') {
-                // Skill attack
-                if (currentCharacter.mana >= 10) {
-                    currentCharacter.mana -= 10;
-                    
-                    playerEl.classList.add('attacking');
-                    setTimeout(() => playerEl.classList.remove('attacking'), 300);
-                    
-                    const isCritical = Math.random() < 0.2;
-                    let damage = Math.max(1, 25 - combat.enemy.defense);
-                    if (isCritical) {
-                        damage = Math.floor(damage * 1.5);
-                        addCombatLog(`⚡ POWER STRIKE CRITICAL! ${damage} damage!`, 'critical');
-                    } else {
-                        addCombatLog(`Power Strike hits for ${damage} damage!`, 'success');
-                    }
-                    
-                    combat.enemyHP -= damage;
-                    
-                    if (gameRenderer) {
-                        gameRenderer.addDamageNumber(combat.enemy.x, combat.enemy.y, damage, isCritical);
-                    }
-                    
-                    enemyEl.classList.add('taking-damage');
-                    setTimeout(() => enemyEl.classList.remove('taking-damage'), 300);
-                    
-                    if (combat.enemyHP <= 0) {
-                        enemyEl.classList.add('defeated');
-                        addCombatLog(`🏆 Victory! You defeated ${combat.enemy.name}!`, 'system');
+                if (result.combat_ended) {
+                    if (result.victory) {
+                        showToast(`Victory! Gained ${result.exp_gained} EXP and ${result.gold_gained} gold!`);
+                        character.exp += result.exp_gained;
+                        character.gold += result.gold_gained;
+                        character.kills += 1;
                         
-                        currentCharacter.exp += combat.enemy.exp;
-                        currentCharacter.gold += combat.enemy.gold;
-                        
-                        updateQuestProgress('kill', combat.enemy.class);
-                        
-                        checkLevelUp();
-                        updateHUD();
-                        
-                        const index = worldEntities.findIndex(e => e.id === combat.enemy.id);
-                        if (index !== -1) {
-                            worldEntities.splice(index, 1);
+                        // Check level up
+                        if (character.exp >= character.exp_needed) {
+                            character.level += 1;
+                            character.exp -= character.exp_needed;
+                            character.exp_needed = Math.floor(character.exp_needed * 1.5);
+                            showToast(`Level Up! You are now level ${character.level}!`, 'success');
                         }
                         
-                        setTimeout(closeCombat, 2000);
-                        return;
+                        updateStats();
+                        combat = null;
+                        loadLocation(character.current_location);
+                    } else {
+                        showToast('You were defeated! Lost some gold.', 'error');
+                        character.gold = Math.floor(character.gold * 0.9);
+                        character.current_hp = Math.floor(character.max_hp / 2);
+                        updateStats();
+                        combat = null;
+                        loadLocation(character.current_location);
                     }
                 } else {
-                    addCombatLog('Not enough mana! 💙', 'error');
-                    return;
-                }
-            }
-            
-            // Enemy attacks back
-            setTimeout(() => {
-                const enemyDamage = Math.max(1, combat.enemy.attack - 5);
-                combat.playerHP -= enemyDamage;
-                
-                enemyEl.classList.add('attacking');
-                setTimeout(() => enemyEl.classList.remove('attacking'), 300);
-                
-                playerEl.classList.add('taking-damage');
-                setTimeout(() => playerEl.classList.remove('taking-damage'), 300);
-                
-                if (gameRenderer) {
-                    gameRenderer.addDamageNumber(combat.player.x, combat.player.y, enemyDamage, false);
+                    combat = result;
+                    updateCombat();
                 }
                 
-                addCombatLog(`${combat.enemy.name} hits you for ${enemyDamage} damage!`, 'damage');
-                
-                if (combat.playerHP <= 0) {
-                    playerEl.classList.add('defeated');
-                    addCombatLog('💀 You were defeated!', 'error');
-                    currentCharacter.hp = 1;
-                    updateHUD();
-                    setTimeout(closeCombat, 2000);
-                    return;
-                }
-                
-                updateCombatDisplay();
-            }, 500);
-            
-            updateCombatDisplay();
-        }
-
-        function closeCombat() {
-            closePopup('combat-popup');
-            window.currentCombat = null;
-        }
-
-        function checkLevelUp() {
-            const expNeeded = currentCharacter.level * 100;
-            if (currentCharacter.exp >= expNeeded) {
-                currentCharacter.level++;
-                currentCharacter.exp -= expNeeded;
-                currentCharacter.max_hp += 20;
-                currentCharacter.max_mana += 10;
-                currentCharacter.hp = currentCharacter.max_hp;
-                currentCharacter.mana = currentCharacter.max_mana;
-                skillPoints += 2;
-                
-                showNotification(`🌟 Level Up! Level ${currentCharacter.level}!`, 'success');
-                updateHUD();
+            } catch (error) {
+                console.error('Combat action failed:', error);
             }
         }
 
-        // ==================== QUEST SYSTEM ====================
-        function openQuestLog() {
-            renderQuestLog();
-            showPopup('questlog-popup');
+        // Panel Functions
+        function togglePanel(panel) {
+            const modal = document.getElementById(`${panel}Modal`);
+            if (modal) {
+                modal.classList.add('active');
+                loadPanelContent(panel);
+            }
         }
 
-        function renderQuestLog() {
-            const content = document.getElementById('quest-log-content');
+        function closeModal(panel) {
+            document.getElementById(`${panel}Modal`).classList.remove('active');
+        }
+
+        async function loadPanelContent(panel) {
+            const token = localStorage.getItem('token');
             
-            let html = '';
-            for (let act = 1; act <= 5; act++) {
-                const actQuests = Object.values(QUEST_DB).filter(q => q.act === act);
-                
-                html += `<div style="margin-bottom:20px">`;
-                html += `<h3 style="color:var(--gold);margin-bottom:10px">ACT ${act} ${act === 1 ? '🌿' : act === 2 ? '⚔️' : act === 3 ? '💀' : act === 4 ? '⏳' : '🌌'}</h3>`;
-                
-                actQuests.forEach(quest => {
-                    const isActive = activeQuests.has(quest.id);
-                    const isCompleted = quests.find(q => q.quest_id === quest.id)?.status === 'completed';
-                    const progress = questProgress[quest.id] || 0;
-                    const maxProgress = quest.objectives[0]?.amount || 1;
-                    const percent = (progress / maxProgress) * 100;
-                    
-                    html += `
-                        <div class="quest-entry ${isActive ? 'active' : ''}" style="opacity: ${isCompleted ? 0.6 : 1}">
-                            <div class="quest-title">${quest.title} ${isCompleted ? '✓' : ''}</div>
-                            <div class="quest-desc">${quest.description}</div>
-                            ${!isCompleted ? `
-                                <div class="quest-progress">
-                                    <div class="quest-progress-fill" style="width:${percent}%"></div>
-                                </div>
-                            ` : ''}
-                            ${isActive ? '<span style="color:#44ff44;font-size:11px">● Active</span>' : ''}
+            switch(panel) {
+                case 'character':
+                    let statsHtml = `
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="font-size: 3em;">⚔️</div>
+                            <h2>${character.name}</h2>
+                            <p>Level ${character.level} ${character.class}</p>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                <div style="color: #aaa;">❤️ HP</div>
+                                <div style="font-size: 1.5em;">${character.current_hp}/${character.max_hp}</div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                <div style="color: #aaa;">💙 MP</div>
+                                <div style="font-size: 1.5em;">${character.current_mana}/${character.max_mana}</div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                <div style="color: #aaa;">⚔️ Attack</div>
+                                <div style="font-size: 1.5em;">${character.base_attack}</div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                <div style="color: #aaa;">🛡️ Defense</div>
+                                <div style="font-size: 1.5em;">${character.base_defense}</div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                <div style="color: #aaa;">✨ Magic</div>
+                                <div style="font-size: 1.5em;">${character.magic}</div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                <div style="color: #aaa;">🎯 Crit Chance</div>
+                                <div style="font-size: 1.5em;">${character.crit_chance}%</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <div style="display: flex; justify-content: space-between; color: #aaa;">
+                                <span>⚔️ Kills: ${character.kills}</span>
+                                <span>💀 Deaths: ${character.deaths}</span>
+                            </div>
                         </div>
                     `;
-                });
-                
-                html += `</div>`;
-            }
-            
-            content.innerHTML = html;
-        }
+                    document.getElementById('characterStats').innerHTML = statsHtml;
+                    break;
 
-        function renderActiveQuests() {
-            const container = document.getElementById('active-quests');
-            
-            if (activeQuests.size === 0) {
-                container.innerHTML = '<div style="color:var(--text-muted);font-size:12px">No active quests. Talk to NPCs to start your adventure!</div>';
-                return;
-            }
-            
-            container.innerHTML = '';
-            activeQuests.forEach(questId => {
-                const quest = QUEST_DB[questId];
-                if (!quest) return;
-                
-                const progress = questProgress[questId] || 0;
-                const maxProgress = quest.objectives[0]?.amount || 1;
-                const percent = (progress / maxProgress) * 100;
-                
-                const div = document.createElement('div');
-                div.className = 'quest-entry active';
-                div.innerHTML = `
-                    <div class="quest-title">${quest.title}</div>
-                    <div class="quest-desc">${quest.description}</div>
-                    <div class="quest-progress">
-                        <div class="quest-progress-fill" style="width:${percent}%"></div>
-                    </div>
-                    <div style="font-size:10px;color:var(--text-muted);margin-top:4px">${progress}/${maxProgress}</div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function startQuest(questId) {
-            if (activeQuests.has(questId)) return;
-            
-            const quest = QUEST_DB[questId];
-            if (!quest) return;
-            
-            activeQuests.add(questId);
-            questProgress[questId] = 0;
-            
-            showNotification(`📜 New Quest: ${quest.title}`, 'info');
-            
-            // Show dialogue
-            if (quest.dialogue) {
-                showStoryChoice(quest.dialogue, []);
-            }
-            
-            renderActiveQuests();
-        }
-
-        function updateQuestProgress(type, target) {
-            let completedQuests = [];
-            
-            activeQuests.forEach(questId => {
-                const quest = QUEST_DB[questId];
-                if (!quest) return;
-                
-                const objective = quest.objectives.find(obj => obj.type === type && obj.target === target);
-                if (objective) {
-                    let currentProgress = questProgress[questId] || 0;
-                    currentProgress++;
-                    questProgress[questId] = currentProgress;
-                    
-                    if (currentProgress >= objective.amount) {
-                        // Quest completed
-                        completeQuest(questId);
-                        completedQuests.push(quest);
-                    }
-                }
-            });
-            
-            renderActiveQuests();
-            
-            // Check for next quests
-            completedQuests.forEach(quest => {
-                if (quest.nextQuest && !activeQuests.has(quest.nextQuest) && !quests.find(q => q.quest_id === quest.nextQuest)?.status === 'completed') {
-                    startQuest(quest.nextQuest);
-                }
-                
-                // Check if final quest
-                if (quest.isFinal) {
-                    showEndingChoices(quest);
-                }
-            });
-        }
-
-        function completeQuest(questId) {
-            const quest = QUEST_DB[questId];
-            if (!quest) return;
-            
-            activeQuests.delete(questId);
-            
-            // Grant rewards
-            currentCharacter.exp += quest.rewards.exp;
-            currentCharacter.gold += quest.rewards.gold;
-            
-            quest.rewards.items?.forEach(itemId => {
-                inventory.push({
-                    id: Date.now() + Math.random(),
-                    item_id: itemId,
-                    quantity: 1
-                });
-            });
-            
-            checkLevelUp();
-            updateHUD();
-            
-            showNotification(`✅ Quest Complete: ${quest.title}! +${quest.rewards.exp} XP, +${quest.rewards.gold} Gold`, 'success');
-            
-            // Show completion message
-            if (quest.isBoss) {
-                showNotification(`🏆 Boss Defeated! Act ${quest.act} Complete!`, 'legendary', 8000);
-            }
-        }
-
-        function showStoryChoice(text, choices) {
-            const popup = document.getElementById('story-choice-popup');
-            const textEl = document.getElementById('story-choice-text');
-            const buttonsEl = document.getElementById('story-choice-buttons');
-            
-            textEl.textContent = text;
-            buttonsEl.innerHTML = '';
-            
-            if (choices.length > 0) {
-                choices.forEach(choice => {
-                    const btn = document.createElement('button');
-                    btn.className = 'story-choice-btn';
-                    btn.textContent = choice.text;
-                    btn.onclick = () => {
-                        closePopup('story-choice-popup');
-                        if (choice.ending) {
-                            showNotification(`✨ ${choice.ending}`, 'legendary', 10000);
-                        }
-                    };
-                    buttonsEl.appendChild(btn);
-                });
-            } else {
-                const btn = document.createElement('button');
-                btn.className = 'story-choice-btn';
-                btn.textContent = 'Continue...';
-                btn.onclick = () => closePopup('story-choice-popup');
-                buttonsEl.appendChild(btn);
-            }
-            
-            showPopup('story-choice-popup');
-        }
-
-        function showEndingChoices(quest) {
-            if (!quest.choices) return;
-            
-            const textEl = document.getElementById('story-choice-text');
-            const buttonsEl = document.getElementById('story-choice-buttons');
-            
-            textEl.textContent = "The Void Lord lies defeated. The fate of the realm is in your hands. Choose your ending:";
-            buttonsEl.innerHTML = '';
-            
-            quest.choices.forEach(choice => {
-                const btn = document.createElement('button');
-                btn.className = 'story-choice-btn';
-                btn.textContent = choice.text;
-                btn.onclick = () => {
-                    closePopup('story-choice-popup');
-                    showNotification(`🏆 GAME COMPLETE! ${choice.ending}`, 'legendary', 15000);
-                    
-                    // Grant bonus rewards based on ending
-                    if (choice.id === 'ending_hero') {
-                        currentCharacter.gold += 5000;
-                        currentCharacter.exp += 5000;
-                        showNotification('✨ Legendary Hero status achieved! +5000 Gold, +5000 XP', 'legendary');
-                    } else if (choice.id === 'ending_dark') {
-                        currentCharacter.gold += 10000;
-                        currentCharacter.strength += 50;
-                        showNotification('🌑 Dark Lord ascendant! +10000 Gold, +50 Strength', 'legendary');
-                    } else if (choice.id === 'ending_balance') {
-                        currentCharacter.gold += 3000;
-                        currentCharacter.exp += 3000;
-                        currentCharacter.intelligence += 30;
-                        currentCharacter.vitality += 30;
-                        showNotification('⚖️ Balance achieved! +3000 Gold, +3000 XP, +30 INT/VIT', 'legendary');
-                    }
-                    
-                    updateHUD();
-                };
-                buttonsEl.appendChild(btn);
-            });
-            
-            showPopup('story-choice-popup');
-        }
-
-        // ==================== HUD FUNCTIONS ====================
-        function updateHUD() {
-            if (!currentCharacter) return;
-            
-            const hpPercent = (currentCharacter.hp / currentCharacter.max_hp) * 100;
-            const mpPercent = (currentCharacter.mana / currentCharacter.max_mana) * 100;
-            const expNeeded = currentCharacter.level * 100;
-            const expPercent = (currentCharacter.exp / expNeeded) * 100;
-            
-            document.getElementById('hud-name').textContent = currentCharacter.name;
-            document.getElementById('hud-hp-bar').style.width = hpPercent + '%';
-            document.getElementById('hud-hp-text').textContent = `${currentCharacter.hp}/${currentCharacter.max_hp}`;
-            document.getElementById('hud-mp-bar').style.width = mpPercent + '%';
-            document.getElementById('hud-mp-text').textContent = `${currentCharacter.mana}/${currentCharacter.max_mana}`;
-            document.getElementById('hud-xp-bar').style.width = expPercent + '%';
-            document.getElementById('hud-xp-text').textContent = Math.floor(expPercent) + '%';
-            document.getElementById('hud-gold').textContent = currentCharacter.gold;
-            document.getElementById('hud-items').textContent = inventory.length;
-            
-            const attack = currentCharacter.strength * 2;
-            const defense = Math.floor(currentCharacter.vitality * 1.5);
-            document.getElementById('hud-attack').textContent = attack;
-            document.getElementById('hud-defense').textContent = defense;
-        }
-
-        function renderSkillBar() {
-            const bar = document.getElementById('hud-skills');
-            if (!currentCharacter) return;
-            
-            const skills = [
-                { id: 'power_strike', name: '⚡ Power Strike', key: '1' },
-                { id: 'cleave', name: '🌀 Cleave', key: '2' }
-            ];
-            
-            bar.innerHTML = skills.map(skill => `
-                <div class="skill-slot" onclick="useSkill('${skill.id}')" title="${skill.name}">
-                    <div class="skill-icon">${skill.name.split(' ')[0]}</div>
-                    <div class="skill-key">${skill.key}</div>
-                </div>
-            `).join('');
-        }
-
-        function useSkill(skillId) {
-            if (!currentCharacter) return;
-            
-            // Check cooldown
-            const now = Date.now();
-            if (skillCooldowns[skillId] && skillCooldowns[skillId] > now) {
-                const remaining = Math.ceil((skillCooldowns[skillId] - now) / 1000);
-                showNotification(`Skill on cooldown (${remaining}s)`, 'error');
-                return;
-            }
-            
-            if (currentCharacter.mana < 10) {
-                showNotification('Not enough mana! 💙', 'error');
-                return;
-            }
-            
-            currentCharacter.mana -= 10;
-            
-            // Set cooldown
-            skillCooldowns[skillId] = now + 3000; // 3 seconds
-            
-            updateHUD();
-            
-            // Visual feedback
-            const slot = event?.target?.closest('.skill-slot');
-            if (slot) {
-                slot.style.backgroundColor = '#44ff44';
-                setTimeout(() => slot.style.backgroundColor = '', 200);
-            }
-            
-            showNotification(`Used ${skillId === 'power_strike' ? '⚡ Power Strike' : '🌀 Cleave'}!`, 'success');
-            
-            // Find nearest enemy and attack
-            if (gameRenderer) {
-                const playerX = Math.round(gameRenderer.player.x);
-                const playerY = Math.round(gameRenderer.player.y);
-                
-                const nearest = worldEntities.find(e => 
-                    e.type === 'mob' &&
-                    Math.abs(e.x - playerX) < 3 && 
-                    Math.abs(e.y - playerY) < 3
-                );
-                
-                if (nearest) {
-                    startCombat(nearest);
-                }
-            }
-        }
-
-        // ==================== INVENTORY ====================
-        function openInventory() {
-            renderInventory();
-            showPopup('inventory-popup');
-        }
-
-        function renderInventory() {
-            const grid = document.getElementById('inventory-grid');
-            document.getElementById('inventory-gold').textContent = currentCharacter?.gold || 0;
-            
-            grid.innerHTML = '';
-            
-            for (let i = 0; i < 24; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'inv-slot';
-                
-                const item = inventory[i];
-                if (item) {
-                    const itemData = ITEMS[item.item_id] || { name: item.item_id, icon: '📦' };
-                    
-                    slot.innerHTML = `
-                        <div class="inv-item-icon">${itemData.icon}</div>
-                        ${item.quantity > 1 ? `<span class="inv-quantity">${item.quantity}</span>` : ''}
-                    `;
-                    slot.onclick = () => useInventoryItem(item);
-                }
-                
-                grid.appendChild(slot);
-            }
-        }
-
-        function useInventoryItem(item) {
-            const itemData = ITEMS[item.item_id];
-            
-            if (itemData?.type === 'consumable') {
-                if (itemData.effect.heal) {
-                    currentCharacter.hp = Math.min(currentCharacter.max_hp, currentCharacter.hp + itemData.effect.heal);
-                    showNotification(`Used ${itemData.name}! +${itemData.effect.heal} HP`, 'success');
-                }
-                if (itemData.effect.restoreMana) {
-                    currentCharacter.mana = Math.min(currentCharacter.max_mana, currentCharacter.mana + itemData.effect.restoreMana);
-                    showNotification(`Used ${itemData.name}! +${itemData.effect.restoreMana} MP`, 'success');
-                }
-                
-                // Remove item
-                const index = inventory.findIndex(i => i.id === item.id);
-                if (index !== -1) {
-                    if (inventory[index].quantity > 1) {
-                        inventory[index].quantity--;
+                case 'inventory':
+                    let inventoryHtml = '';
+                    if (inventory.length === 0) {
+                        inventoryHtml = '<p style="text-align: center; color: #aaa;">Your inventory is empty</p>';
                     } else {
-                        inventory.splice(index, 1);
+                        inventory.forEach(item => {
+                            inventoryHtml += `
+                                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <strong>${item.item_name}</strong>
+                                            <span style="color: #aaa; margin-left: 10px;">x${item.quantity}</span>
+                                        </div>
+                                        ${item.item_type === 'consumable' ? 
+                                            `<button class="combat-btn attack" onclick="useItem('${item.item_id}')">Use</button>` : 
+                                            `<button class="combat-btn skill" onclick="equipItem('${item.item_id}')">Equip</button>`
+                                        }
+                                    </div>
+                                </div>
+                            `;
+                        });
                     }
-                }
-                
-                updateHUD();
-                renderInventory();
-            } else {
-                showNotification(`📜 ${itemData?.name || item.item_id} - ${itemData?.description || 'A mysterious item.'}`, 'info');
+                    document.getElementById('inventoryContent').innerHTML = inventoryHtml;
+                    break;
+
+                case 'map':
+                    const response = await fetch(`${API_BASE}/api/game/locations`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const locations = await response.json();
+                    
+                    let mapHtml = '<div style="display: grid; gap: 10px;">';
+                    locations.forEach(loc => {
+                        mapHtml += `
+                            <div class="action-card" onclick="travelTo('${loc.id}')">
+                                <h3>${loc.name}</h3>
+                                <p>${loc.description}</p>
+                                <small style="color: #aaa;">${loc.enemies?.length || 0} enemies available</small>
+                            </div>
+                        `;
+                    });
+                    mapHtml += '</div>';
+                    document.getElementById('mapContent').innerHTML = mapHtml;
+                    break;
             }
         }
 
-        // ==================== INITIALIZATION ====================
-        window.onload = async function() {
-            createStarfield();
-            checkServerStatus();
-            
-            updateLoading(30, 'Connecting to server... 🌐');
-            await new Promise(r => setTimeout(r, 500));
-            
-            updateLoading(60, 'Loading game data... 📦');
-            await new Promise(r => setTimeout(r, 500));
-            
-            updateLoading(90, 'Preparing 5-act story... 📜');
-            await new Promise(r => setTimeout(r, 500));
-            
-            updateLoading(100, 'Welcome to Pixel Realm! ⚔️');
-            await new Promise(r => setTimeout(r, 300));
-            
-            if (token) {
-                try {
-                    await loadCharacters();
-                } catch {
-                    localStorage.removeItem('rpg_token');
-                    token = null;
-                    showScreen('login-screen');
-                }
-            } else {
-                showScreen('login-screen');
-            }
-            
-            // Start first quest automatically
-            setTimeout(() => {
-                if (activeQuests.size === 0) {
-                    startQuest('q1_1');
-                }
-            }, 2000);
-        };
+        async function travelTo(locationId) {
+            closeModal('map');
+            await loadLocation(locationId);
+            showToast(`Arrived at ${document.getElementById('locationName').textContent}`);
+        }
 
-        // Make functions global
-        window.handleLogin = handleLogin;
-        window.handleRegister = handleRegister;
-        window.logout = logout;
-        window.showCharacterCreation = showCharacterCreation;
-        window.createCharacter = createCharacter;
-        window.selectCharacter = selectCharacter;
-        window.enterGame = enterGame;
-        window.returnToLobby = returnToLobby;
-        window.openInventory = openInventory;
-        window.openQuestLog = openQuestLog;
-        window.closePopup = closePopup;
-        window.sendChat = sendChat;
-        window.switchChatChannel = switchChatChannel;
-        window.useSkill = useSkill;
-        window.startCombat = startCombat;
-        window.combatAction = combatAction;
-        window.closeCombat = closeCombat;
+        async function useItem(itemId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/game/item/use`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ item_id: itemId })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast(result.message);
+                    character = result.character;
+                    inventory = result.inventory;
+                    updateStats();
+                    loadPanelContent('inventory');
+                }
+            } catch (error) {
+                console.error('Failed to use item:', error);
+            }
+        }
+
+        async function equipItem(itemId) {
+            // Simplified equip - would need slot selection in real version
+            showToast('Equip feature coming soon!');
+        }
+
+        // Auto-refresh online count
+        setInterval(async () => {
+            try {
+                const response = await fetch(`${API_BASE}/api/game/online`);
+                const data = await response.json();
+                onlinePlayers = data.count;
+                document.getElementById('onlineCount').textContent = onlinePlayers;
+            } catch (error) {
+                console.error('Failed to get online count:', error);
+            }
+        }, 5000);
     </script>
 </body>
 </html>
