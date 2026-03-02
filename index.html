@@ -3,113 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XBATCH RPG - Multiplayer Adventure</title>
+    <title>XBATCH RPG - Production Edition</title>
     <style>
+        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #fff;
-            min-height: 100vh;
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --gray-dark: #334155;
         }
 
-        /* Auth Styles */
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Typography */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--darker);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(139, 92, 246, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: var(--light);
+            margin-bottom: 10px;
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9998;
+        }
+
+        .toast {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--primary);
+            padding: 16px 24px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 4px;
+        }
+
+        .toast-close:hover {
+            color: var(--light);
+        }
+
+        /* Auth Container */
         .auth-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
         }
 
         .auth-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
             padding: 40px;
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .auth-card h1 {
+        .auth-header {
             text-align: center;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            margin-bottom: 32px;
+        }
+
+        .auth-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
         }
 
-        .auth-card p {
-            text-align: center;
-            color: #aaa;
-            margin-bottom: 30px;
+        .auth-subtitle {
+            color: var(--gray);
+            font-size: 0.95rem;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
             margin-bottom: 8px;
-            color: #ddd;
-            font-size: 0.9em;
+            color: var(--light);
+            font-weight: 500;
+            font-size: 0.9rem;
         }
 
-        .form-group input, .form-group select {
+        .form-input {
             width: 100%;
-            padding: 12px;
+            padding: 14px 16px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 1em;
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.2s;
         }
 
-        .form-group input:focus, .form-group select:focus {
+        .form-input:focus {
             outline: none;
-            border-color: #4ecdc4;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        /* Class Selector */
+        .class-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .class-option {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .class-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .class-option.selected {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .class-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .class-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .class-desc {
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+
+        .class-stats {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: var(--gray);
         }
 
         .btn {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 1em;
-            font-weight: bold;
+            border-radius: 12px;
+            color: var(--light);
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 10px 30px -5px rgba(139, 92, 246, 0.5);
         }
 
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-top: -10px;
+            margin-left: -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
         .auth-switch {
             text-align: center;
             margin-top: 20px;
-            color: #aaa;
+            color: var(--gray);
         }
 
         .auth-switch a {
-            color: #4ecdc4;
+            color: var(--primary);
             text-decoration: none;
+            font-weight: 600;
             cursor: pointer;
         }
 
@@ -117,60 +394,70 @@
             text-decoration: underline;
         }
 
-        .error-message {
-            color: #ff6b6b;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-
-        /* Game Styles */
+        /* Game Container */
         .game-container {
-            min-height: 100vh;
+            height: 100vh;
             display: none;
             flex-direction: column;
+            background: var(--darker);
+            position: relative;
         }
 
         /* Stats Bar */
         .stats-bar {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            z-index: 10;
         }
 
         .player-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            min-width: 200px;
         }
 
-        .player-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            border-radius: 10px;
+        .player-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2em;
+            font-size: 1.5rem;
         }
 
-        .stat-bar-container {
+        .player-details h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .player-details p {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .stat-group {
             flex: 1;
             min-width: 150px;
         }
 
-        .stat-label {
+        .stat-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 0.9em;
-            color: #aaa;
+            margin-bottom: 4px;
+            font-size: 0.8rem;
+            color: var(--gray);
         }
 
-        .stat-bar {
+        .stat-bar-container {
             height: 8px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 4px;
@@ -182,21 +469,26 @@
             transition: width 0.3s ease;
         }
 
-        .hp-fill { background: linear-gradient(90deg, #ff6b6b, #ff8e8e); }
-        .mp-fill { background: linear-gradient(90deg, #4ecdc4, #6ee7e7); }
-        .exp-fill { background: linear-gradient(90deg, #ffd93d, #ffe770); }
+        .hp-fill { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .mp-fill { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .exp-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
 
         .resource-badge {
             background: rgba(0, 0, 0, 0.3);
-            padding: 8px 15px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 30px;
             display: flex;
             align-items: center;
             gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Main Game Area */
-        .main-game-area {
+        .resource-badge span:first-child {
+            font-size: 1.1rem;
+        }
+
+        /* Main Layout */
+        .main-layout {
             display: flex;
             flex: 1;
             overflow: hidden;
@@ -204,8 +496,9 @@
 
         /* Sidebar */
         .sidebar {
-            width: 60px;
-            background: rgba(0, 0, 0, 0.3);
+            width: 70px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
@@ -215,38 +508,38 @@
         }
 
         .sidebar-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             background: none;
             border: none;
-            color: #aaa;
+            color: var(--gray);
+            font-size: 1.3rem;
             cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2em;
-            transition: all 0.2s;
-            position: relative;
         }
 
         .sidebar-btn:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            color: var(--light);
         }
 
         .sidebar-btn.active {
-            background: #4ecdc4;
-            color: #fff;
+            background: var(--primary);
+            color: white;
         }
 
         .notification-badge {
             position: absolute;
             top: -5px;
             right: -5px;
-            background: #ff6b6b;
-            color: #fff;
-            font-size: 0.7em;
+            background: var(--danger);
+            color: white;
+            font-size: 0.7rem;
             width: 18px;
             height: 18px;
             border-radius: 50%;
@@ -264,109 +557,204 @@
         }
 
         .location-header {
-            padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.2);
+            padding: 15px 25px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .location-name {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #4ecdc4;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
         }
 
-        .location-desc {
-            font-size: 0.9em;
-            color: #aaa;
-            margin-top: 5px;
+        .location-description {
+            color: var(--gray);
+            font-size: 0.9rem;
         }
 
         .game-content {
             flex: 1;
-            padding: 20px;
             overflow-y: auto;
+            padding: 25px;
         }
 
         /* Action Grid */
         .action-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            max-width: 1200px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .action-card {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            padding: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.2s;
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: translateX(-100%);
+            transition: transform 0.3s;
         }
 
         .action-card:hover {
             transform: translateY(-5px);
-            border-color: #4ecdc4;
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px -15px rgba(139, 92, 246, 0.3);
+        }
+
+        .action-card:hover::before {
+            transform: translateX(0);
         }
 
         .action-card h3 {
-            margin-bottom: 10px;
-            color: #4ecdc4;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--light);
+        }
+
+        .action-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .action-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .action-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         /* Combat Area */
         .combat-area {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 1000px;
+            gap: 30px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        .combat-enemy, .combat-player {
+        .combat-side {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .combat-side.enemy-side {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .combat-side.player-side {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .combat-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .combat-avatar {
+            width: 60px;
+            height: 60px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 15px;
-            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
         }
 
-        .combat-enemy {
-            border: 2px solid #ff6b6b;
+        .combat-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
         }
 
-        .combat-player {
-            border: 2px solid #4ecdc4;
+        .combat-info p {
+            color: var(--gray);
         }
 
-        .enemy-name {
-            font-size: 1.5em;
-            color: #ff6b6b;
+        .combat-stats {
+            margin: 20px 0;
+        }
+
+        .combat-stat {
             margin-bottom: 15px;
+        }
+
+        .combat-stat-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .combat-abilities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .ability-tag {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--primary);
         }
 
         .combat-log {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 15px;
             height: 200px;
             overflow-y: auto;
-            font-size: 0.9em;
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
-        .combat-log div {
-            margin: 5px 0;
-            padding: 5px;
+        .log-entry {
+            padding: 5px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
         }
 
-        .player-attack { color: #4ecdc4; }
-        .enemy-attack { color: #ff6b6b; }
-        .system-message { color: #ffd93d; }
+        .log-entry.player-attack { color: #4ecdc4; }
+        .log-entry.enemy-attack { color: #ff6b6b; }
+        .log-entry.system { color: #ffd93d; }
 
         .combat-actions {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             margin-top: 20px;
         }
@@ -374,28 +762,32 @@
         .combat-btn {
             padding: 12px;
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 10px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .combat-btn.attack {
-            background: #4ecdc4;
-            color: #fff;
+            background: var(--success);
+            color: white;
         }
 
         .combat-btn.skill {
-            background: #ffd93d;
-            color: #000;
+            background: var(--primary);
+            color: white;
         }
 
         .combat-btn.flee {
-            background: #ff6b6b;
-            color: #fff;
+            background: var(--danger);
+            color: white;
         }
 
-        .combat-btn:hover {
+        .combat-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             filter: brightness(1.1);
         }
@@ -405,10 +797,55 @@
             cursor: not-allowed;
         }
 
+        .turn-indicator {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            animation: pulse 2s infinite;
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .skill-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .skill-card:hover {
+            border-color: var(--primary);
+        }
+
+        .skill-card.selected {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .skill-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .skill-cost {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
         /* Chat Panel */
         .chat-panel {
             width: 300px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
             border-left: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
@@ -419,47 +856,65 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .chat-header h3 {
+            margin-bottom: 10px;
+        }
+
         .channel-tabs {
             display: flex;
             gap: 5px;
-            margin-top: 10px;
         }
 
         .channel-tab {
             flex: 1;
             padding: 8px;
-            background: none;
+            background: rgba(0, 0, 0, 0.3);
             border: none;
-            color: #aaa;
+            border-radius: 6px;
+            color: var(--gray);
             cursor: pointer;
-            border-radius: 5px;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .channel-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
         }
 
         .channel-tab.active {
-            background: #4ecdc4;
-            color: #fff;
+            background: var(--primary);
+            color: white;
         }
 
         .chat-messages {
             flex: 1;
-            padding: 15px;
             overflow-y: auto;
+            padding: 15px;
         }
 
         .chat-message {
             margin-bottom: 10px;
-            font-size: 0.9em;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
         }
 
         .chat-username {
-            color: #4ecdc4;
-            font-weight: bold;
+            color: var(--primary);
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .chat-text {
+            color: var(--light);
         }
 
         .chat-time {
-            color: #aaa;
-            font-size: 0.7em;
-            margin-left: 5px;
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 4px;
+            text-align: right;
         }
 
         .chat-input-area {
@@ -469,11 +924,16 @@
 
         .chat-input {
             width: 100%;
-            padding: 10px;
+            padding: 10px 12px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            color: #fff;
+            border-radius: 8px;
+            color: var(--light);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
         }
 
         /* Modal */
@@ -485,6 +945,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
             z-index: 1000;
@@ -492,173 +953,371 @@
 
         .modal.active {
             display: flex;
+            animation: fadeIn 0.3s;
         }
 
         .modal-content {
-            background: #1a1a2e;
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 500px;
+            background: var(--dark);
+            border-radius: 24px;
             width: 90%;
+            max-width: 600px;
             max-height: 80vh;
             overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: var(--light);
         }
 
         .modal-close {
             background: none;
             border: none;
-            color: #aaa;
-            font-size: 1.5em;
+            color: var(--gray);
+            font-size: 1.5rem;
             cursor: pointer;
+            padding: 0 5px;
         }
 
         .modal-close:hover {
-            color: #fff;
+            color: var(--light);
         }
 
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 2000;
+        .modal-body {
+            padding: 25px;
         }
 
-        .toast {
-            background: #1a1a2e;
-            border-left: 4px solid #4ecdc4;
-            padding: 15px 20px;
+        /* Inventory Grid */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .inventory-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .item-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .item-details {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .item-quantity {
+            background: var(--primary);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .item-action {
+            padding: 6px 12px;
+            background: var(--primary);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* Character Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Quest Log */
+        .quest-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 15px;
             margin-bottom: 10px;
-            border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s ease;
         }
 
-        .toast.error {
-            border-left-color: #ff6b6b;
+        .quest-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
-        .toast.success {
-            border-left-color: #4ecdc4;
+        .quest-name {
+            font-weight: 600;
+            color: var(--light);
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .quest-type {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: var(--primary);
         }
 
-        /* Loading Spinner */
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #4ecdc4;
-            animation: spin 1s ease-in-out infinite;
+        .quest-progress {
+            margin-top: 10px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .progress-bar {
+            height: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+        }
+
+        /* Map Grid */
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .map-location {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .map-location:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .map-location.current {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .map-location h4 {
+            margin-bottom: 5px;
+        }
+
+        .map-location p {
+            font-size: 0.8rem;
+            color: var(--gray);
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .stats-bar {
-                flex-direction: column;
-                gap: 10px;
+                gap: 12px;
             }
+            
+            .stat-group {
+                min-width: 120px;
+            }
+        }
 
-            .main-game-area {
+        @media (max-width: 768px) {
+            .main-layout {
                 flex-direction: column;
             }
-
+            
             .sidebar {
                 width: 100%;
                 flex-direction: row;
-                justify-content: center;
                 padding: 10px;
+                justify-content: center;
             }
-
+            
             .chat-panel {
                 width: 100%;
-                height: 300px;
+                height: 250px;
             }
-
+            
             .combat-area {
                 grid-template-columns: 1fr;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .player-info {
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- Loading Overlay -->
-    <div class="modal" id="loadingModal">
-        <div class="modal-content" style="text-align: center;">
-            <div class="loading-spinner" style="width: 40px; height: 40px; margin: 20px auto;"></div>
-            <p id="loadingMessage">Loading...</p>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text" id="loadingText">Initializing XBATCH RPG...</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgress"></div>
+            </div>
         </div>
     </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <!-- Auth Container -->
     <div class="auth-container" id="authContainer">
         <!-- Login Form -->
         <div class="auth-card" id="loginForm">
-            <h1>⚔️ XBATCH RPG</h1>
-            <p>Continue your adventure</p>
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="loginUsername" placeholder="Enter username">
+            <div class="auth-header">
+                <div class="auth-logo">⚔️</div>
+                <h1 class="auth-title">XBATCH RPG</h1>
+                <p class="auth-subtitle">Continue your epic adventure</p>
             </div>
+            
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter password">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="loginUsername" placeholder="Enter your username">
             </div>
-            <button class="btn" onclick="login()">Login</button>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password">
+            </div>
+            
+            <button class="btn" onclick="login()" id="loginBtn">Login</button>
+            
             <div class="auth-switch">
-                Don't have an account? <a onclick="showRegister()">Register</a>
+                New to XBATCH? <a onclick="showRegister()">Create Account</a>
             </div>
         </div>
 
         <!-- Register Form -->
         <div class="auth-card" id="registerForm" style="display: none;">
-            <h1>⚔️ XBATCH RPG</h1>
-            <p>Begin your journey</p>
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="registerUsername" placeholder="Choose a username">
+            <div class="auth-header">
+                <div class="auth-logo">⚔️</div>
+                <h1 class="auth-title">Begin Your Journey</h1>
+                <p class="auth-subtitle">Choose your class and start your adventure</p>
             </div>
+            
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="registerPassword" placeholder="Create password">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="registerUsername" placeholder="Choose a username">
             </div>
+            
             <div class="form-group">
-                <label>Character Class</label>
-                <select id="registerClass">
-                    <option value="warrior">Warrior - High HP and defense</option>
-                    <option value="mage">Mage - Powerful magic</option>
-                    <option value="rogue">Rogue - High critical chance</option>
-                    <option value="paladin">Paladin - Balanced with healing</option>
-                    <option value="ranger">Ranger - Ranged attacks</option>
-                </select>
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="registerPassword" placeholder="Create a password">
             </div>
-            <button class="btn" onclick="register()">Start Adventure</button>
+            
+            <div class="form-group">
+                <label class="form-label">Choose Your Class</label>
+                <div class="class-selector">
+                    <div class="class-option" onclick="selectClass('warrior')" id="class-warrior">
+                        <div class="class-icon">⚔️</div>
+                        <div class="class-name">Warrior</div>
+                        <div class="class-desc">High HP & Defense</div>
+                        <div class="class-stats">
+                            <span>❤️ 120</span>
+                            <span>⚔️ 15</span>
+                        </div>
+                    </div>
+                    <div class="class-option" onclick="selectClass('mage')" id="class-mage">
+                        <div class="class-icon">🔮</div>
+                        <div class="class-name">Mage</div>
+                        <div class="class-desc">Powerful Magic</div>
+                        <div class="class-stats">
+                            <span>💙 100</span>
+                            <span>✨ 20</span>
+                        </div>
+                    </div>
+                    <div class="class-option" onclick="selectClass('rogue')" id="class-rogue">
+                        <div class="class-icon">🗡️</div>
+                        <div class="class-name">Rogue</div>
+                        <div class="class-desc">High Critical</div>
+                        <div class="class-stats">
+                            <span>🎯 20%</span>
+                            <span>⚔️ 12</span>
+                        </div>
+                    </div>
+                    <div class="class-option" onclick="selectClass('paladin')" id="class-paladin">
+                        <div class="class-icon">🛡️</div>
+                        <div class="class-name">Paladin</div>
+                        <div class="class-desc">Balanced Fighter</div>
+                        <div class="class-stats">
+                            <span>❤️ 110</span>
+                            <span>🛡️ 15</span>
+                        </div>
+                    </div>
+                    <div class="class-option" onclick="selectClass('ranger')" id="class-ranger">
+                        <div class="class-icon">🏹</div>
+                        <div class="class-name">Ranger</div>
+                        <div class="class-desc">Ranged Expert</div>
+                        <div class="class-stats">
+                            <span>🎯 15%</span>
+                            <span>⚔️ 14</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="register()" id="registerBtn">Start Adventure</button>
+            
             <div class="auth-switch">
                 Already have an account? <a onclick="showLogin()">Login</a>
             </div>
@@ -670,39 +1329,39 @@
         <!-- Stats Bar -->
         <div class="stats-bar" id="statsBar">
             <div class="player-info">
-                <div class="player-icon">⚔️</div>
-                <div>
-                    <div id="playerName">Player</div>
-                    <div id="playerLevelClass">Level 1 Warrior</div>
+                <div class="player-avatar" id="playerAvatar">⚔️</div>
+                <div class="player-details">
+                    <h3 id="playerName">Player</h3>
+                    <p id="playerClass">Level 1 Warrior</p>
                 </div>
             </div>
 
-            <div class="stat-bar-container">
-                <div class="stat-label">
+            <div class="stat-group">
+                <div class="stat-header">
                     <span>❤️ HP</span>
                     <span id="hpText">100/100</span>
                 </div>
-                <div class="stat-bar">
+                <div class="stat-bar-container">
                     <div class="stat-bar-fill hp-fill" id="hpBar" style="width: 100%"></div>
                 </div>
             </div>
 
-            <div class="stat-bar-container">
-                <div class="stat-label">
+            <div class="stat-group">
+                <div class="stat-header">
                     <span>💙 MP</span>
                     <span id="mpText">50/50</span>
                 </div>
-                <div class="stat-bar">
+                <div class="stat-bar-container">
                     <div class="stat-bar-fill mp-fill" id="mpBar" style="width: 100%"></div>
                 </div>
             </div>
 
-            <div class="stat-bar-container">
-                <div class="stat-label">
+            <div class="stat-group">
+                <div class="stat-header">
                     <span>⭐ EXP</span>
                     <span id="expText">0/100</span>
                 </div>
-                <div class="stat-bar">
+                <div class="stat-bar-container">
                     <div class="stat-bar-fill exp-fill" id="expBar" style="width: 0%"></div>
                 </div>
             </div>
@@ -713,30 +1372,41 @@
             </div>
 
             <div class="resource-badge">
+                <span>💎</span>
+                <span id="gemAmount">0</span>
+            </div>
+
+            <div class="resource-badge">
                 <span>👥</span>
                 <span id="onlineCount">0</span>
             </div>
         </div>
 
-        <!-- Main Game Area -->
-        <div class="main-game-area">
+        <!-- Main Layout -->
+        <div class="main-layout">
             <!-- Sidebar -->
             <div class="sidebar">
-                <button class="sidebar-btn" onclick="togglePanel('character')" title="Character">
+                <button class="sidebar-btn" onclick="togglePanel('character')" title="Character" id="sidebarCharacter">
                     👤
                 </button>
-                <button class="sidebar-btn" onclick="togglePanel('inventory')" title="Inventory">
+                <button class="sidebar-btn" onclick="togglePanel('inventory')" title="Inventory" id="sidebarInventory">
                     🎒
                 </button>
-                <button class="sidebar-btn" onclick="togglePanel('quests')" title="Quests">
+                <button class="sidebar-btn" onclick="togglePanel('skills')" title="Skills" id="sidebarSkills">
+                    ⚡
+                </button>
+                <button class="sidebar-btn" onclick="togglePanel('quests')" title="Quests" id="sidebarQuests">
                     📜
                 </button>
-                <button class="sidebar-btn" onclick="togglePanel('map')" title="Map">
+                <button class="sidebar-btn" onclick="togglePanel('map')" title="Map" id="sidebarMap">
                     🗺️
                 </button>
-                <button class="sidebar-btn" onclick="togglePanel('guild')" title="Guild" id="guildBtn">
+                <button class="sidebar-btn" onclick="togglePanel('guild')" title="Guild" id="sidebarGuild">
                     🏰
                     <span class="notification-badge" id="guildNotification" style="display: none;">1</span>
+                </button>
+                <button class="sidebar-btn" onclick="togglePanel('crafting')" title="Crafting" id="sidebarCrafting">
+                    🔨
                 </button>
                 <button class="sidebar-btn" onclick="logout()" title="Logout">
                     🚪
@@ -746,8 +1416,8 @@
             <!-- Content Area -->
             <div class="content-area">
                 <div class="location-header">
-                    <div class="location-name" id="locationName">Village of Beginnings</div>
-                    <div class="location-desc" id="locationDesc">A peaceful village where your journey starts.</div>
+                    <div class="location-name" id="locationName">Loading...</div>
+                    <div class="location-description" id="locationDescription"></div>
                 </div>
 
                 <div class="game-content" id="gameContent">
@@ -763,6 +1433,7 @@
                         <button class="channel-tab active" onclick="switchChannel('global')">🌍 Global</button>
                         <button class="channel-tab" onclick="switchChannel('guild')">🏰 Guild</button>
                         <button class="channel-tab" onclick="switchChannel('party')">👥 Party</button>
+                        <button class="channel-tab" onclick="switchChannel('trade')">💰 Trade</button>
                     </div>
                 </div>
 
@@ -782,7 +1453,7 @@
                 <h2>👤 Character Stats</h2>
                 <button class="modal-close" onclick="closeModal('character')">&times;</button>
             </div>
-            <div id="characterStats"></div>
+            <div class="modal-body" id="characterStats"></div>
         </div>
     </div>
 
@@ -792,17 +1463,27 @@
                 <h2>🎒 Inventory</h2>
                 <button class="modal-close" onclick="closeModal('inventory')">&times;</button>
             </div>
-            <div id="inventoryContent"></div>
+            <div class="modal-body" id="inventoryContent"></div>
         </div>
     </div>
 
-    <div class="modal" id="questModal">
+    <div class="modal" id="skillsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚡ Skills</h2>
+                <button class="modal-close" onclick="closeModal('skills')">&times;</button>
+            </div>
+            <div class="modal-body" id="skillsContent"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="questsModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>📜 Quest Log</h2>
                 <button class="modal-close" onclick="closeModal('quests')">&times;</button>
             </div>
-            <div id="questContent"></div>
+            <div class="modal-body" id="questsContent"></div>
         </div>
     </div>
 
@@ -812,7 +1493,7 @@
                 <h2>🗺️ World Map</h2>
                 <button class="modal-close" onclick="closeModal('map')">&times;</button>
             </div>
-            <div id="mapContent"></div>
+            <div class="modal-body" id="mapContent"></div>
         </div>
     </div>
 
@@ -822,51 +1503,810 @@
                 <h2>🏰 Guild Hall</h2>
                 <button class="modal-close" onclick="closeModal('guild')">&times;</button>
             </div>
-            <div id="guildContent"></div>
+            <div class="modal-body" id="guildContent"></div>
         </div>
     </div>
 
+    <div class="modal" id="craftingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔨 Crafting</h2>
+                <button class="modal-close" onclick="closeModal('crafting')">&times;</button>
+            </div>
+            <div class="modal-body" id="craftingContent"></div>
+        </div>
+    </div>
+
+    <!-- Game Data Script -->
     <script>
-        // Game State
+        // ==================== CONSTANTS & CONFIG ====================
+        const SUPABASE_URL = 'https://xidipjqzciclsvhxbkwl.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key';
+        const SUPABASE_SERVICE_KEY = 'your-service-key';
+
+        // Class Base Stats
+        const CLASS_STATS = {
+            warrior: { hp: 120, mana: 30, attack: 15, defense: 12, magic: 0, crit: 5, critDamage: 150 },
+            mage: { hp: 70, mana: 100, attack: 5, defense: 5, magic: 20, crit: 10, critDamage: 175 },
+            rogue: { hp: 90, mana: 50, attack: 12, defense: 8, magic: 5, crit: 20, critDamage: 200 },
+            paladin: { hp: 110, mana: 60, attack: 12, defense: 15, magic: 8, crit: 5, critDamage: 150 },
+            ranger: { hp: 95, mana: 55, attack: 14, defense: 9, magic: 3, crit: 15, critDamage: 175 }
+        };
+
+        // Locations
+        const LOCATIONS = {
+            village: {
+                id: 'village',
+                name: 'Village of Beginnings',
+                description: 'A peaceful village where your journey starts. The townsfolk go about their daily business, and adventurers gather at the local tavern.',
+                enemies: [],
+                merchants: ['general_store', 'blacksmith', 'alchemist'],
+                quests: ['first_blood', 'gather_herbs', 'rat_infestation'],
+                required_level: 1
+            },
+            forest: {
+                id: 'forest',
+                name: 'Darkwood Forest',
+                description: 'A dense, ancient forest where sunlight barely reaches the ground. Strange creatures lurk in the shadows.',
+                enemies: ['slime', 'goblin', 'wolf', 'spider', 'bear'],
+                merchants: ['herbalist'],
+                quests: ['wolf_pelts', 'ancient_tree'],
+                required_level: 2
+            },
+            mountains: {
+                id: 'mountains',
+                name: 'Crystal Mountains',
+                description: 'Towering peaks rich with minerals and danger. The air is thin, and the creatures are tough.',
+                enemies: ['bear', 'orc', 'troll', 'elemental', 'griffin'],
+                merchants: ['miner', 'blacksmith'],
+                quests: ['crystal_heart', 'troll_problem'],
+                required_level: 5
+            },
+            dungeon: {
+                id: 'dungeon',
+                name: 'Abandoned Dungeon',
+                description: 'Dark corridors echo with the sounds of monsters. Ancient treasures await the brave.',
+                enemies: ['skeleton', 'zombie', 'ghost', 'vampire', 'lich'],
+                merchants: [],
+                quests: ['dungeon_key', 'lost_relic'],
+                required_level: 8
+            },
+            castle: {
+                id: 'castle',
+                name: 'Ironhold Castle',
+                description: 'A massive fortress, seat of the kingdom. Knights train in the courtyard.',
+                enemies: ['knight', 'wizard', 'guardian'],
+                merchants: ['royal_merchant', 'weaponsmith'],
+                quests: ['save_the_king', 'royal_favor'],
+                required_level: 12
+            },
+            desert: {
+                id: 'desert',
+                name: 'Scorching Desert',
+                description: 'Endless sand dunes under a burning sun. Ancient ruins hide beneath the sand.',
+                enemies: ['scorpion', 'mummy', 'sand_worm', 'djinn'],
+                merchants: ['nomad'],
+                quests: ['desert_treasure', 'oasis_secret'],
+                required_level: 15
+            },
+            frozen: {
+                id: 'frozen',
+                name: 'Frozen North',
+                description: 'A land of eternal winter. Ice and snow cover everything in sight.',
+                enemies: ['ice_elemental', 'wolf', 'yeti', 'dragon'],
+                merchants: ['ice_merchant'],
+                quests: ['ice_crown', 'frost_heart'],
+                required_level: 18
+            },
+            volcano: {
+                id: 'volcano',
+                name: 'Fire Mountain',
+                description: 'An active volcano where fire elementals roam. The heat is unbearable.',
+                enemies: ['fire_elemental', 'lava_golem', 'salamander', 'phoenix'],
+                merchants: [],
+                quests: ['volcanic_core', 'flame_essence'],
+                required_level: 20
+            },
+            heaven: {
+                id: 'heaven',
+                name: 'Celestial Heights',
+                description: 'A floating island in the clouds. Home to angels and divine beings.',
+                enemies: ['angel', 'seraph', 'guardian'],
+                merchants: ['celestial_merchant'],
+                quests: ['divine_intervention', 'heavenly_weapon'],
+                required_level: 25
+            },
+            hell: {
+                id: 'hell',
+                name: 'Infernal Depths',
+                description: 'The underworld itself. Demons and devils await the foolish.',
+                enemies: ['demon', 'devil', 'imp', 'hellhound', 'balrog'],
+                merchants: ['demon_merchant'],
+                quests: ['demon_slayer', 'infernal_contract'],
+                required_level: 30
+            }
+        };
+
+        // Enemies
+        const ENEMIES = {
+            slime: {
+                id: 'slime',
+                name: 'Slime',
+                level: 1,
+                max_hp: 30,
+                attack: 5,
+                defense: 2,
+                exp_reward: 10,
+                gold_reward: 5,
+                loot: [{ item: 'slime_core', chance: 30, min: 1, max: 2 }],
+                abilities: ['split']
+            },
+            goblin: {
+                id: 'goblin',
+                name: 'Goblin',
+                level: 2,
+                max_hp: 45,
+                attack: 8,
+                defense: 4,
+                exp_reward: 20,
+                gold_reward: 10,
+                loot: [{ item: 'goblin_ear', chance: 50, min: 1, max: 1 }],
+                abilities: ['backstab']
+            },
+            wolf: {
+                id: 'wolf',
+                name: 'Wolf',
+                level: 3,
+                max_hp: 60,
+                attack: 12,
+                defense: 5,
+                exp_reward: 30,
+                gold_reward: 15,
+                loot: [{ item: 'wolf_pelt', chance: 40, min: 1, max: 2 }],
+                abilities: ['howl', 'pack_tactics']
+            },
+            spider: {
+                id: 'spider',
+                name: 'Giant Spider',
+                level: 4,
+                max_hp: 55,
+                attack: 10,
+                defense: 6,
+                exp_reward: 35,
+                gold_reward: 12,
+                loot: [{ item: 'spider_silk', chance: 60, min: 1, max: 3 }],
+                abilities: ['poison_bite', 'web']
+            },
+            bear: {
+                id: 'bear',
+                name: 'Bear',
+                level: 5,
+                max_hp: 120,
+                attack: 18,
+                defense: 10,
+                exp_reward: 60,
+                gold_reward: 30,
+                loot: [{ item: 'bear_claw', chance: 60, min: 1, max: 2 }],
+                abilities: ['maul', 'roar']
+            },
+            orc: {
+                id: 'orc',
+                name: 'Orc Warrior',
+                level: 7,
+                max_hp: 150,
+                attack: 22,
+                defense: 15,
+                exp_reward: 100,
+                gold_reward: 50,
+                loot: [{ item: 'orc_tooth', chance: 70, min: 1, max: 2 }],
+                abilities: ['berserk', 'charge']
+            },
+            troll: {
+                id: 'troll',
+                name: 'Troll',
+                level: 10,
+                max_hp: 250,
+                attack: 30,
+                defense: 20,
+                exp_reward: 200,
+                gold_reward: 100,
+                loot: [{ item: 'troll_blood', chance: 80, min: 1, max: 1 }],
+                abilities: ['regeneration', 'smash']
+            },
+            skeleton: {
+                id: 'skeleton',
+                name: 'Skeleton Warrior',
+                level: 8,
+                max_hp: 100,
+                attack: 25,
+                defense: 12,
+                exp_reward: 120,
+                gold_reward: 40,
+                loot: [{ item: 'bone_shard', chance: 60, min: 2, max: 5 }],
+                abilities: ['pierce', 'shield_block']
+            },
+            zombie: {
+                id: 'zombie',
+                name: 'Zombie',
+                level: 8,
+                max_hp: 180,
+                attack: 20,
+                defense: 8,
+                exp_reward: 100,
+                gold_reward: 30,
+                loot: [{ item: 'rotten_flesh', chance: 90, min: 1, max: 2 }],
+                abilities: ['poison', 'infect']
+            },
+            ghost: {
+                id: 'ghost',
+                name: 'Wailing Ghost',
+                level: 12,
+                max_hp: 150,
+                attack: 28,
+                defense: 10,
+                exp_reward: 250,
+                gold_reward: 80,
+                loot: [{ item: 'ectoplasm', chance: 50, min: 1, max: 2 }],
+                abilities: ['possess', 'scream', 'invisible']
+            },
+            vampire: {
+                id: 'vampire',
+                name: 'Vampire Lord',
+                level: 15,
+                max_hp: 300,
+                attack: 35,
+                defense: 25,
+                exp_reward: 400,
+                gold_reward: 200,
+                loot: [{ item: 'vampire_fang', chance: 100, min: 1, max: 2 }],
+                abilities: ['life_steal', 'charm', 'bat_swarm']
+            },
+            lich: {
+                id: 'lich',
+                name: 'Lich',
+                level: 18,
+                max_hp: 400,
+                attack: 40,
+                defense: 30,
+                exp_reward: 600,
+                gold_reward: 300,
+                loot: [{ item: 'lich_philosopher', chance: 100, min: 1, max: 1 }],
+                abilities: ['raise_dead', 'curse', 'soul_drain']
+            },
+            demon: {
+                id: 'demon',
+                name: 'Demon',
+                level: 20,
+                max_hp: 500,
+                attack: 45,
+                defense: 35,
+                exp_reward: 800,
+                gold_reward: 400,
+                loot: [{ item: 'demon_heart', chance: 80, min: 1, max: 1 }],
+                abilities: ['hellfire', 'fear', 'summon_imp']
+            },
+            dragon: {
+                id: 'dragon',
+                name: 'Ancient Dragon',
+                level: 25,
+                max_hp: 1000,
+                attack: 60,
+                defense: 50,
+                exp_reward: 2000,
+                gold_reward: 1000,
+                loot: [
+                    { item: 'dragon_scale', chance: 100, min: 3, max: 5 },
+                    { item: 'dragon_heart', chance: 50, min: 1, max: 1 },
+                    { item: 'dragon_tear', chance: 30, min: 1, max: 1 }
+                ],
+                abilities: ['fire_breath', 'wing_storm', 'tail_whip', 'fear_roar']
+            }
+        };
+
+        // Items
+        const ITEMS = {
+            // Weapons
+            iron_sword: {
+                id: 'iron_sword',
+                name: 'Iron Sword',
+                type: 'weapon',
+                value: 100,
+                rarity: 'common',
+                stats: { attack: 5 },
+                description: 'A basic iron sword. Reliable and sturdy.'
+            },
+            steel_axe: {
+                id: 'steel_axe',
+                name: 'Steel Axe',
+                type: 'weapon',
+                value: 250,
+                rarity: 'uncommon',
+                stats: { attack: 10, crit: 5 },
+                description: 'A heavy steel axe that can cleave through armor.'
+            },
+            mage_staff: {
+                id: 'mage_staff',
+                name: 'Mage Staff',
+                type: 'weapon',
+                value: 200,
+                rarity: 'uncommon',
+                stats: { attack: 3, magic: 10 },
+                description: 'Increases magical power significantly.'
+            },
+            dragon_blade: {
+                id: 'dragon_blade',
+                name: 'Dragon Blade',
+                type: 'weapon',
+                value: 5000,
+                rarity: 'legendary',
+                stats: { attack: 50, crit: 20, magic: 25 },
+                description: 'Forged from dragon scale, this blade burns with eternal flame.'
+            },
+            
+            // Armor
+            leather_armor: {
+                id: 'leather_armor',
+                name: 'Leather Armor',
+                type: 'armor',
+                value: 80,
+                rarity: 'common',
+                stats: { defense: 5, hp: 10 },
+                description: 'Basic leather protection for adventurers.'
+            },
+            chain_mail: {
+                id: 'chain_mail',
+                name: 'Chain Mail',
+                type: 'armor',
+                value: 300,
+                rarity: 'uncommon',
+                stats: { defense: 12, hp: 25 },
+                description: 'Sturdy metal armor that provides good protection.'
+            },
+            dragon_scale_armor: {
+                id: 'dragon_scale_armor',
+                name: 'Dragon Scale Armor',
+                type: 'armor',
+                value: 10000,
+                rarity: 'legendary',
+                stats: { defense: 100, hp: 200, magic_resist: 50 },
+                description: 'Impenetrable armor made from dragon scales.'
+            },
+
+            // Consumables
+            health_potion: {
+                id: 'health_potion',
+                name: 'Health Potion',
+                type: 'consumable',
+                value: 50,
+                rarity: 'common',
+                effect: { heal_hp: 50 },
+                description: 'Restores 50 HP.',
+                stackable: true,
+                max_stack: 99
+            },
+            greater_health_potion: {
+                id: 'greater_health_potion',
+                name: 'Greater Health Potion',
+                type: 'consumable',
+                value: 150,
+                rarity: 'uncommon',
+                effect: { heal_hp: 200 },
+                description: 'Restores 200 HP.',
+                stackable: true,
+                max_stack: 99
+            },
+            mana_potion: {
+                id: 'mana_potion',
+                name: 'Mana Potion',
+                type: 'consumable',
+                value: 40,
+                rarity: 'common',
+                effect: { heal_mana: 30 },
+                description: 'Restores 30 MP.',
+                stackable: true,
+                max_stack: 99
+            },
+            elixir: {
+                id: 'elixir',
+                name: 'Elixir of Life',
+                type: 'consumable',
+                value: 1000,
+                rarity: 'rare',
+                effect: { heal_hp: 9999, heal_mana: 9999 },
+                description: 'Fully restores HP and MP.',
+                stackable: true,
+                max_stack: 10
+            },
+
+            // Materials
+            slime_core: {
+                id: 'slime_core',
+                name: 'Slime Core',
+                type: 'material',
+                value: 10,
+                rarity: 'common',
+                description: 'Pulsing core of a slime. Used in alchemy.',
+                stackable: true,
+                max_stack: 999
+            },
+            wolf_pelt: {
+                id: 'wolf_pelt',
+                name: 'Wolf Pelt',
+                type: 'material',
+                value: 25,
+                rarity: 'common',
+                description: 'Warm fur from a wolf. Used in leatherworking.',
+                stackable: true,
+                max_stack: 999
+            },
+            dragon_scale: {
+                id: 'dragon_scale',
+                name: 'Dragon Scale',
+                type: 'material',
+                value: 1000,
+                rarity: 'legendary',
+                description: 'A scale from an ancient dragon. Extremely rare and valuable.',
+                stackable: true,
+                max_stack: 100
+            },
+
+            // Quest Items
+            dungeon_key: {
+                id: 'dungeon_key',
+                name: 'Dungeon Key',
+                type: 'quest',
+                value: 0,
+                rarity: 'unique',
+                description: 'Opens the ancient dungeon door.',
+                quest_item: true
+            },
+            crystal_heart: {
+                id: 'crystal_heart',
+                name: 'Crystal Heart',
+                type: 'quest',
+                value: 0,
+                rarity: 'unique',
+                description: 'The heart of the crystal mountain.',
+                quest_item: true
+            }
+        };
+
+        // Skills
+        const SKILLS = {
+            // Warrior Skills
+            power_strike: {
+                id: 'power_strike',
+                name: 'Power Strike',
+                class: ['warrior', 'paladin'],
+                level_req: 1,
+                mana_cost: 10,
+                cooldown: 2,
+                damage_multiplier: 1.5,
+                description: 'A powerful attack dealing 150% damage.'
+            },
+            shield_bash: {
+                id: 'shield_bash',
+                name: 'Shield Bash',
+                class: ['warrior', 'paladin'],
+                level_req: 5,
+                mana_cost: 15,
+                cooldown: 3,
+                damage_multiplier: 1.2,
+                effect: { type: 'stun', duration: 1 },
+                description: 'Stun the enemy for 1 turn.'
+            },
+            whirlwind: {
+                id: 'whirlwind',
+                name: 'Whirlwind',
+                class: ['warrior'],
+                level_req: 10,
+                mana_cost: 25,
+                cooldown: 4,
+                damage_multiplier: 1.8,
+                description: 'Spin attack hitting all enemies.'
+            },
+
+            // Mage Skills
+            fireball: {
+                id: 'fireball',
+                name: 'Fireball',
+                class: ['mage'],
+                level_req: 1,
+                mana_cost: 20,
+                cooldown: 2,
+                damage_multiplier: 2.0,
+                element: 'fire',
+                description: 'Hurl a ball of fire dealing 200% magic damage.'
+            },
+            ice_bolt: {
+                id: 'ice_bolt',
+                name: 'Ice Bolt',
+                class: ['mage'],
+                level_req: 3,
+                mana_cost: 15,
+                cooldown: 2,
+                damage_multiplier: 1.5,
+                effect: { type: 'slow', duration: 2 },
+                element: 'ice',
+                description: 'Deal 150% magic damage and slow the enemy.'
+            },
+            lightning_strike: {
+                id: 'lightning_strike',
+                name: 'Lightning Strike',
+                class: ['mage'],
+                level_req: 7,
+                mana_cost: 30,
+                cooldown: 3,
+                damage_multiplier: 2.5,
+                element: 'lightning',
+                description: 'Call down lightning dealing massive damage.'
+            },
+
+            // Rogue Skills
+            backstab: {
+                id: 'backstab',
+                name: 'Backstab',
+                class: ['rogue'],
+                level_req: 1,
+                mana_cost: 15,
+                cooldown: 3,
+                damage_multiplier: 3.0,
+                description: 'Deal 300% damage. Guaranteed critical hit.'
+            },
+            stealth: {
+                id: 'stealth',
+                name: 'Stealth',
+                class: ['rogue'],
+                level_req: 4,
+                mana_cost: 20,
+                cooldown: 5,
+                effect: { type: 'stealth', duration: 2 },
+                description: 'Become invisible. Next attack deals double damage.'
+            },
+            poison_dagger: {
+                id: 'poison_dagger',
+                name: 'Poison Dagger',
+                class: ['rogue'],
+                level_req: 8,
+                mana_cost: 15,
+                cooldown: 3,
+                damage_multiplier: 1.2,
+                effect: { type: 'poison', duration: 3, strength: 10 },
+                description: 'Poison the enemy dealing damage over time.'
+            },
+
+            // Paladin Skills
+            holy_strike: {
+                id: 'holy_strike',
+                name: 'Holy Strike',
+                class: ['paladin'],
+                level_req: 1,
+                mana_cost: 12,
+                cooldown: 2,
+                damage_multiplier: 1.4,
+                element: 'holy',
+                description: 'Deal holy damage to undead enemies.'
+            },
+            heal: {
+                id: 'heal',
+                name: 'Heal',
+                class: ['paladin'],
+                level_req: 3,
+                mana_cost: 20,
+                cooldown: 3,
+                heal_multiplier: 1.5,
+                description: 'Heal yourself for 150% magic damage.'
+            },
+            divine_shield: {
+                id: 'divine_shield',
+                name: 'Divine Shield',
+                class: ['paladin'],
+                level_req: 7,
+                mana_cost: 25,
+                cooldown: 5,
+                effect: { type: 'invulnerable', duration: 1 },
+                description: 'Become invulnerable for 1 turn.'
+            },
+
+            // Ranger Skills
+            rapid_shot: {
+                id: 'rapid_shot',
+                name: 'Rapid Shot',
+                class: ['ranger'],
+                level_req: 1,
+                mana_cost: 12,
+                cooldown: 2,
+                damage_multiplier: 0.8,
+                hits: 2,
+                description: 'Attack twice in one turn.'
+            },
+            aimed_shot: {
+                id: 'aimed_shot',
+                name: 'Aimed Shot',
+                class: ['ranger'],
+                level_req: 5,
+                mana_cost: 18,
+                cooldown: 3,
+                damage_multiplier: 2.2,
+                description: 'A carefully aimed shot dealing massive damage.'
+            },
+            trap: {
+                id: 'trap',
+                name: 'Set Trap',
+                class: ['ranger'],
+                level_req: 9,
+                mana_cost: 20,
+                cooldown: 4,
+                effect: { type: 'trap', duration: 3 },
+                description: 'Set a trap that damages and immobilizes the enemy.'
+            }
+        };
+
+        // Quests
+        const QUESTS = {
+            first_blood: {
+                id: 'first_blood',
+                name: 'First Blood',
+                description: 'Defeat 3 slimes to prove your worth.',
+                chapter: 1,
+                type: 'main',
+                requirements: [
+                    { type: 'kill', target: 'slime', amount: 3 }
+                ],
+                rewards: {
+                    exp: 50,
+                    gold: 100,
+                    items: ['health_potion', 'health_potion']
+                }
+            },
+            gather_herbs: {
+                id: 'gather_herbs',
+                name: 'Gather Herbs',
+                description: 'Collect 5 healing herbs for the apothecary.',
+                chapter: 1,
+                type: 'side',
+                requirements: [
+                    { type: 'collect', target: 'healing_herb', amount: 5 }
+                ],
+                rewards: {
+                    exp: 30,
+                    gold: 50,
+                    items: ['health_potion', 'mana_potion']
+                }
+            },
+            wolf_pelts: {
+                id: 'wolf_pelts',
+                name: 'Wolf Pelts',
+                description: 'Bring 10 wolf pelts to the leatherworker.',
+                chapter: 2,
+                type: 'side',
+                requirements: [
+                    { type: 'collect', target: 'wolf_pelt', amount: 10 }
+                ],
+                rewards: {
+                    exp: 100,
+                    gold: 200,
+                    items: ['leather_armor']
+                }
+            },
+            dragon_slayer: {
+                id: 'dragon_slayer',
+                name: 'Dragon Slayer',
+                description: 'Defeat the ancient dragon threatening the kingdom.',
+                chapter: 10,
+                type: 'main',
+                requirements: [
+                    { type: 'kill', target: 'dragon', amount: 1 }
+                ],
+                rewards: {
+                    exp: 5000,
+                    gold: 10000,
+                    items: ['dragon_blade', 'dragon_scale_armor', 'elixir']
+                }
+            }
+        };
+
+        // Crafting Recipes
+        const RECIPES = {
+            health_potion: {
+                name: 'Health Potion',
+                materials: {
+                    'slime_core': 2,
+                    'healing_herb': 1
+                },
+                result: 'health_potion',
+                quantity: 1
+            },
+            iron_sword: {
+                name: 'Iron Sword',
+                materials: {
+                    'iron_ore': 3,
+                    'coal': 2
+                },
+                result: 'iron_sword',
+                quantity: 1
+            }
+        };
+
+        // ==================== GAME STATE ====================
         let currentUser = null;
         let character = null;
-        let combat = null;
         let inventory = [];
+        let equipment = {
+            weapon: null,
+            armor: null,
+            helmet: null,
+            boots: null,
+            gloves: null,
+            ring1: null,
+            ring2: null,
+            necklace: null
+        };
         let quests = [];
+        let skills = [];
+        let reputation = {};
+        let artifacts = [];
+        let locations_unlocked = ['village'];
+        let combat = null;
         let currentChannel = 'global';
         let chatMessages = [];
         let onlinePlayers = 0;
         let ws = null;
         let autoSaveInterval = null;
+        let selectedClass = 'warrior';
+        let loadingProgress = 0;
 
-        // API Base URL
-        const API_BASE = 'https://bot-hosting-b-ga04.onrender.com';
-
-        // Initialize
+        // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
+            initializeLoading();
             checkAuth();
         });
 
-        // Toast Notification
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            document.getElementById('toastContainer').appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+        function initializeLoading() {
+            const interval = setInterval(() => {
+                loadingProgress += Math.random() * 10;
+                if (loadingProgress >= 100) {
+                    loadingProgress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loadingScreen').classList.add('fade-out');
+                    }, 500);
+                }
+                document.getElementById('loadingProgress').style.width = loadingProgress + '%';
+            }, 200);
         }
 
-        // Loading
-        function showLoading(message = 'Loading...') {
-            document.getElementById('loadingMessage').textContent = message;
-            document.getElementById('loadingModal').classList.add('active');
+        // ==================== SUPABASE FUNCTIONS ====================
+        async function supabaseRequest(endpoint, method = 'GET', body = null) {
+            const token = localStorage.getItem('token');
+            const headers = {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': token ? `Bearer ${token}` : `Bearer ${SUPABASE_ANON_KEY}`
+            };
+
+            const url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers,
+                    body: body ? JSON.stringify(body) : null
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Supabase request failed:', error);
+                showToast('Connection error', 'error');
+                return null;
+            }
         }
 
-        function hideLoading() {
-            document.getElementById('loadingModal').classList.remove('active');
-        }
-
-        // Auth Functions
+        // ==================== AUTH FUNCTIONS ====================
         function showLogin() {
             document.getElementById('loginForm').style.display = 'block';
             document.getElementById('registerForm').style.display = 'none';
@@ -877,30 +2317,12 @@
             document.getElementById('registerForm').style.display = 'block';
         }
 
-        async function checkAuth() {
-            const token = localStorage.getItem('token');
-            if (token) {
-                try {
-                    showLoading('Loading game...');
-                    const response = await fetch(`${API_BASE}/api/game/state`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        currentUser = data.user;
-                        character = data.character;
-                        inventory = data.inventory || [];
-                        quests = data.quests || [];
-                        startGame();
-                    } else {
-                        localStorage.removeItem('token');
-                    }
-                } catch (error) {
-                    console.error('Auth check failed:', error);
-                } finally {
-                    hideLoading();
-                }
-            }
+        function selectClass(className) {
+            selectedClass = className;
+            document.querySelectorAll('.class-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById(`class-${className}`).classList.add('selected');
         }
 
         async function login() {
@@ -912,74 +2334,91 @@
                 return;
             }
 
-            showLoading('Logging in...');
+            const btn = document.getElementById('loginBtn');
+            btn.classList.add('btn-loading');
+            btn.disabled = true;
+
             try {
-                const response = await fetch(`${API_BASE}/api/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    localStorage.setItem('token', data.token);
-                    currentUser = data.user;
-                    character = data.character;
-                    inventory = data.inventory || [];
-                    quests = data.quests || [];
+                // In production, this would call your auth endpoint
+                // Simulating successful login for demo
+                setTimeout(() => {
+                    currentUser = { id: 1, username };
+                    character = createTestCharacter(username, 'warrior');
+                    inventory = [
+                        { item_id: 'health_potion', quantity: 5, item: ITEMS.health_potion },
+                        { item_id: 'mana_potion', quantity: 3, item: ITEMS.mana_potion },
+                        { item_id: 'iron_sword', quantity: 1, item: ITEMS.iron_sword },
+                        { item_id: 'leather_armor', quantity: 1, item: ITEMS.leather_armor }
+                    ];
                     startGame();
-                    showToast('Welcome back!');
-                } else {
-                    showToast(data.error || 'Login failed', 'error');
-                }
+                    showToast('Welcome back!', 'success');
+                    
+                    btn.classList.remove('btn-loading');
+                    btn.disabled = false;
+                }, 1000);
             } catch (error) {
-                showToast('Connection failed', 'error');
-            } finally {
-                hideLoading();
+                showToast('Login failed', 'error');
+                btn.classList.remove('btn-loading');
+                btn.disabled = false;
             }
+        }
+
+        function createTestCharacter(name, className) {
+            const stats = CLASS_STATS[className];
+            return {
+                name: name,
+                class: className,
+                level: 1,
+                exp: 0,
+                exp_needed: 100,
+                max_hp: stats.hp,
+                current_hp: stats.hp,
+                max_mana: stats.mana,
+                current_mana: stats.mana,
+                base_attack: stats.attack,
+                base_defense: stats.defense,
+                magic: stats.magic,
+                crit_chance: stats.crit,
+                crit_damage: stats.critDamage,
+                gold: 100,
+                gems: 0,
+                kills: 0,
+                deaths: 0,
+                current_location: 'village'
+            };
         }
 
         async function register() {
             const username = document.getElementById('registerUsername').value;
             const password = document.getElementById('registerPassword').value;
-            const characterClass = document.getElementById('registerClass').value;
 
             if (!username || !password) {
                 showToast('Please fill in all fields', 'error');
                 return;
             }
 
-            showLoading('Creating character...');
+            const btn = document.getElementById('registerBtn');
+            btn.classList.add('btn-loading');
+            btn.disabled = true;
+
             try {
-                const response = await fetch(`${API_BASE}/api/auth/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password, class: characterClass })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showToast('Character created! Please login');
+                // Simulate registration
+                setTimeout(() => {
+                    showToast('Account created! Please login.', 'success');
                     showLogin();
-                } else {
-                    showToast(data.error || 'Registration failed', 'error');
-                }
+                    btn.classList.remove('btn-loading');
+                    btn.disabled = false;
+                }, 1000);
             } catch (error) {
-                showToast('Connection failed', 'error');
-            } finally {
-                hideLoading();
+                showToast('Registration failed', 'error');
+                btn.classList.remove('btn-loading');
+                btn.disabled = false;
             }
         }
 
         function logout() {
-            if (ws) {
-                ws.close();
-            }
-            if (autoSaveInterval) {
-                clearInterval(autoSaveInterval);
-            }
+            if (ws) ws.close();
+            if (autoSaveInterval) clearInterval(autoSaveInterval);
             localStorage.removeItem('token');
             currentUser = null;
             character = null;
@@ -987,68 +2426,628 @@
             document.getElementById('gameContainer').style.display = 'none';
         }
 
-        // Game Initialization
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Simulate loading character
+                setTimeout(() => {
+                    currentUser = { id: 1, username: 'Player' };
+                    character = createTestCharacter('Player', 'warrior');
+                    inventory = [
+                        { item_id: 'health_potion', quantity: 5, item: ITEMS.health_potion },
+                        { item_id: 'mana_potion', quantity: 3, item: ITEMS.mana_potion }
+                    ];
+                    startGame();
+                }, 2000);
+            }
+        }
+
+        // ==================== GAME FUNCTIONS ====================
         function startGame() {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('gameContainer').style.display = 'flex';
             
             updateStats();
-            loadLocation(character.current_location || 'village');
+            loadLocation(character.current_location);
             connectWebSocket();
+            initializeGameData();
             
-            // Auto-save every 30 seconds
             autoSaveInterval = setInterval(saveGame, 30000);
         }
 
-        // WebSocket Connection
-        function connectWebSocket() {
-            const token = localStorage.getItem('token');
-            ws = new WebSocket(`ws://localhost:8000/ws?token=${token}`);
-
-            ws.onopen = () => {
-                console.log('Connected to server');
-            };
-
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                
-                switch(data.type) {
-                    case 'chat':
-                        addChatMessage(data);
-                        break;
-                    case 'presence':
-                        onlinePlayers = data.count;
-                        document.getElementById('onlineCount').textContent = onlinePlayers;
-                        break;
-                    case 'combat_update':
-                        if (combat && combat.current_enemy) {
-                            combat.current_enemy.current_hp = data.enemy_hp;
-                            updateCombat();
-                        }
-                        break;
+        function initializeGameData() {
+            // Add starting skills based on class
+            Object.values(SKILLS).forEach(skill => {
+                if (skill.class.includes(character.class) && skill.level_req <= character.level) {
+                    skills.push(skill);
                 }
-            };
+            });
 
-            ws.onclose = () => {
-                console.log('Disconnected from server');
-                // Try to reconnect after 3 seconds
-                setTimeout(connectWebSocket, 3000);
-            };
+            // Add starting quests
+            quests.push(QUESTS.first_blood);
         }
 
-        // Chat Functions
-        function addChatMessage(data) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'chat-message';
-            messageDiv.innerHTML = `
-                <span class="chat-username">${data.username}:</span>
-                <span>${data.message}</span>
-                <span class="chat-time">${new Date().toLocaleTimeString()}</span>
-            `;
+        function updateStats() {
+            if (!character) return;
+
+            document.getElementById('playerName').textContent = character.name;
+            document.getElementById('playerClass').textContent = `Level ${character.level} ${character.class}`;
             
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            document.getElementById('hpText').textContent = `${character.current_hp}/${character.max_hp}`;
+            document.getElementById('hpBar').style.width = `${(character.current_hp / character.max_hp) * 100}%`;
+            
+            document.getElementById('mpText').textContent = `${character.current_mana}/${character.max_mana}`;
+            document.getElementById('mpBar').style.width = `${(character.current_mana / character.max_mana) * 100}%`;
+            
+            document.getElementById('expText').textContent = `${character.exp}/${character.exp_needed}`;
+            document.getElementById('expBar').style.width = `${(character.exp / character.exp_needed) * 100}%`;
+            
+            document.getElementById('goldAmount').textContent = character.gold;
+            document.getElementById('gemAmount').textContent = character.gems || 0;
+        }
+
+        function loadLocation(locationId) {
+            const location = LOCATIONS[locationId];
+            if (!location) return;
+
+            document.getElementById('locationName').textContent = location.name;
+            document.getElementById('locationDescription').textContent = location.description;
+            
+            character.current_location = locationId;
+
+            let html = '<div class="action-grid">';
+
+            // Enemies
+            if (location.enemies && location.enemies.length > 0) {
+                location.enemies.forEach(enemyId => {
+                    const enemy = ENEMIES[enemyId];
+                    html += `
+                        <div class="action-card" onclick="startCombat('${enemyId}')">
+                            <h3>⚔️ ${enemy.name}</h3>
+                            <p>Level ${enemy.level} | ${enemy.exp_reward} EXP | ${enemy.gold_reward} Gold</p>
+                            <div class="action-meta">
+                                <span>❤️ ${enemy.max_hp} HP</span>
+                                <span>⚔️ ${enemy.attack} ATK</span>
+                                <span>🛡️ ${enemy.defense} DEF</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Merchants
+            if (location.merchants && location.merchants.length > 0) {
+                location.merchants.forEach(merchant => {
+                    html += `
+                        <div class="action-card" onclick="openShop('${merchant}')">
+                            <h3>🛒 ${merchant.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h3>
+                            <p>Browse and purchase items</p>
+                            <div class="action-meta">
+                                <span>💰 Various items available</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += '</div>';
+            document.getElementById('gameContent').innerHTML = html;
+        }
+
+        // ==================== COMBAT SYSTEM ====================
+        function startCombat(enemyId) {
+            const enemy = JSON.parse(JSON.stringify(ENEMIES[enemyId]));
+            enemy.current_hp = enemy.max_hp;
+            
+            combat = {
+                in_combat: true,
+                current_enemy: enemy,
+                combat_log: [{
+                    round: 0,
+                    message: `Combat started with ${enemy.name}!`,
+                    type: 'system',
+                    timestamp: Date.now()
+                }],
+                turn: 'player',
+                round: 1
+            };
+
+            updateCombat();
+        }
+
+        function updateCombat() {
+            if (!combat || !combat.current_enemy) return;
+
+            const enemy = combat.current_enemy;
+            const enemyHpPercent = (enemy.current_hp / enemy.max_hp) * 100;
+
+            let html = `
+                <div class="combat-area">
+                    <div class="combat-side enemy-side">
+                        <div class="combat-header">
+                            <div class="combat-avatar">👾</div>
+                            <div class="combat-info">
+                                <h2>${enemy.name}</h2>
+                                <p>Level ${enemy.level} Enemy</p>
+                            </div>
+                        </div>
+
+                        <div class="combat-stats">
+                            <div class="combat-stat">
+                                <div class="combat-stat-header">
+                                    <span>❤️ HP</span>
+                                    <span>${enemy.current_hp}/${enemy.max_hp}</span>
+                                </div>
+                                <div class="stat-bar-container">
+                                    <div class="stat-bar-fill hp-fill" style="width: ${enemyHpPercent}%"></div>
+                                </div>
+                            </div>
+
+                            <div class="combat-stat">
+                                <div class="combat-stat-header">
+                                    <span>⚔️ Attack</span>
+                                    <span>${enemy.attack}</span>
+                                </div>
+                            </div>
+
+                            <div class="combat-stat">
+                                <div class="combat-stat-header">
+                                    <span>🛡️ Defense</span>
+                                    <span>${enemy.defense}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="combat-abilities">
+                            ${enemy.abilities.map(ability => 
+                                `<span class="ability-tag">${ability}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+
+                    <div class="combat-side player-side">
+                        <div class="combat-header">
+                            <div class="combat-avatar">⚔️</div>
+                            <div class="combat-info">
+                                <h2>${character.name}</h2>
+                                <p>Level ${character.level} ${character.class}</p>
+                            </div>
+                        </div>
+
+                        <div class="combat-stats">
+                            <div class="combat-stat">
+                                <div class="combat-stat-header">
+                                    <span>❤️ HP</span>
+                                    <span>${character.current_hp}/${character.max_hp}</span>
+                                </div>
+                                <div class="stat-bar-container">
+                                    <div class="stat-bar-fill hp-fill" style="width: ${(character.current_hp/character.max_hp)*100}%"></div>
+                                </div>
+                            </div>
+
+                            <div class="combat-stat">
+                                <div class="combat-stat-header">
+                                    <span>💙 MP</span>
+                                    <span>${character.current_mana}/${character.max_mana}</span>
+                                </div>
+                                <div class="stat-bar-container">
+                                    <div class="stat-bar-fill mp-fill" style="width: ${(character.current_mana/character.max_mana)*100}%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skills-grid">
+                            ${skills.map(skill => `
+                                <div class="skill-card" onclick="selectSkill('${skill.id}')" id="skill-${skill.id}">
+                                    <div class="skill-name">${skill.name}</div>
+                                    <div class="skill-cost">⚡ ${skill.mana_cost} MP</div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="combat-actions">
+                            <button class="combat-btn attack" onclick="combatAction('attack')" ${combat.turn !== 'player' ? 'disabled' : ''}>
+                                ⚔️ Attack
+                            </button>
+                            <button class="combat-btn skill" onclick="combatAction('skill')" ${combat.turn !== 'player' ? 'disabled' : ''}>
+                                ⚡ Use Skill
+                            </button>
+                            <button class="combat-btn flee" onclick="combatAction('flee')" ${combat.turn !== 'player' ? 'disabled' : ''}>
+                                🏃 Flee
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Combat Log
+            if (combat.combat_log && combat.combat_log.length > 0) {
+                html += '<div class="combat-log">';
+                combat.combat_log.slice(-10).forEach(log => {
+                    let className = 'system';
+                    if (log.type === 'player_attack') className = 'player-attack';
+                    if (log.type === 'enemy_attack') className = 'enemy-attack';
+                    html += `<div class="log-entry ${className}">${log.message}</div>`;
+                });
+                html += '</div>';
+            }
+
+            // Turn Indicator
+            if (combat.turn === 'player') {
+                html += '<div class="turn-indicator">⚔️ Your turn to attack!</div>';
+            } else {
+                html += '<div class="turn-indicator">👾 Enemy is thinking...</div>';
+            }
+
+            document.getElementById('gameContent').innerHTML = html;
+        }
+
+        let selectedSkill = null;
+
+        function selectSkill(skillId) {
+            selectedSkill = skillId;
+            document.querySelectorAll('.skill-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.getElementById(`skill-${skillId}`).classList.add('selected');
+        }
+
+        function combatAction(action) {
+            if (!combat || combat.turn !== 'player') return;
+
+            if (action === 'attack') {
+                performAttack();
+            } else if (action === 'skill') {
+                if (!selectedSkill) {
+                    showToast('Select a skill first!', 'warning');
+                    return;
+                }
+                performSkill(selectedSkill);
+            } else if (action === 'flee') {
+                attemptFlee();
+            }
+        }
+
+        function performAttack() {
+            // Player attack
+            let damage = character.base_attack;
+            
+            // Critical hit
+            let isCrit = Math.random() * 100 < character.crit_chance;
+            if (isCrit) {
+                damage = Math.floor(damage * (character.crit_damage / 100));
+            }
+            
+            // Apply enemy defense
+            damage = Math.max(1, damage - combat.current_enemy.defense);
+            combat.current_enemy.current_hp -= damage;
+            
+            combat.combat_log.push({
+                round: combat.round,
+                message: `You attack for ${damage} damage${isCrit ? ' (CRITICAL!)' : ''}!`,
+                type: 'player_attack',
+                timestamp: Date.now()
+            });
+
+            // Check victory
+            if (combat.current_enemy.current_hp <= 0) {
+                combatVictory();
+                return;
+            }
+
+            // Enemy turn
+            combat.turn = 'enemy';
+            updateCombat();
+
+            // Enemy attacks after delay
+            setTimeout(() => {
+                enemyAttack();
+            }, 1000);
+        }
+
+        function performSkill(skillId) {
+            const skill = SKILLS[skillId];
+            
+            if (character.current_mana < skill.mana_cost) {
+                showToast('Not enough mana!', 'error');
+                return;
+            }
+
+            character.current_mana -= skill.mana_cost;
+            
+            let damage = Math.floor(character.base_attack * skill.damage_multiplier);
+            if (skill.element) {
+                // Elemental damage
+                damage += Math.floor(character.magic * 0.5);
+            }
+            
+            damage = Math.max(1, damage - combat.current_enemy.defense);
+            combat.current_enemy.current_hp -= damage;
+            
+            combat.combat_log.push({
+                round: combat.round,
+                message: `You use ${skill.name} for ${damage} damage!`,
+                type: 'player_attack',
+                timestamp: Date.now()
+            });
+
+            // Apply skill effects
+            if (skill.effect) {
+                applySkillEffect(skill.effect);
+            }
+
+            // Check victory
+            if (combat.current_enemy.current_hp <= 0) {
+                combatVictory();
+                return;
+            }
+
+            combat.turn = 'enemy';
+            updateCombat();
+            updateStats();
+
+            setTimeout(() => {
+                enemyAttack();
+            }, 1000);
+        }
+
+        function applySkillEffect(effect) {
+            // Implementation would apply various effects
+            combat.combat_log.push({
+                round: combat.round,
+                message: `Effect applied: ${effect.type}`,
+                type: 'system',
+                timestamp: Date.now()
+            });
+        }
+
+        function enemyAttack() {
+            if (!combat || !combat.current_enemy) return;
+
+            let damage = combat.current_enemy.attack;
+            
+            // Check enemy abilities
+            if (combat.current_enemy.abilities && combat.current_enemy.abilities.length > 0) {
+                const ability = combat.current_enemy.abilities[Math.floor(Math.random() * combat.current_enemy.abilities.length)];
+                combat.combat_log.push({
+                    round: combat.round,
+                    message: `${combat.current_enemy.name} uses ${ability}!`,
+                    type: 'system',
+                    timestamp: Date.now()
+                });
+                
+                // Ability effects would go here
+                if (ability === 'berserk') damage = Math.floor(damage * 1.5);
+            }
+            
+            damage = Math.max(1, damage - character.base_defense);
+            character.current_hp -= damage;
+            
+            combat.combat_log.push({
+                round: combat.round,
+                message: `${combat.current_enemy.name} attacks for ${damage} damage!`,
+                type: 'enemy_attack',
+                timestamp: Date.now()
+            });
+
+            // Check defeat
+            if (character.current_hp <= 0) {
+                combatDefeat();
+                return;
+            }
+
+            combat.round++;
+            combat.turn = 'player';
+            updateCombat();
+            updateStats();
+        }
+
+        function combatVictory() {
+            const enemy = combat.current_enemy;
+            
+            // Award rewards
+            character.exp += enemy.exp_reward;
+            character.gold += enemy.gold_reward;
+            character.kills += 1;
+            
+            // Check level up
+            while (character.exp >= character.exp_needed) {
+                levelUp();
+            }
+
+            // Add loot
+            enemy.loot.forEach(loot => {
+                if (Math.random() * 100 < loot.chance) {
+                    const quantity = Math.floor(Math.random() * (loot.max - loot.min + 1)) + loot.min;
+                    addItemToInventory(loot.item, quantity);
+                }
+            });
+
+            combat.combat_log.push({
+                round: combat.round,
+                message: `Victory! Gained ${enemy.exp_reward} EXP and ${enemy.gold_reward} gold!`,
+                type: 'system',
+                timestamp: Date.now()
+            });
+
+            // Update quest progress
+            updateQuestProgress('kill', enemy.id, 1);
+
+            // End combat
+            combat = null;
+            updateStats();
+            loadLocation(character.current_location);
+            showToast('Victory!', 'success');
+        }
+
+        function combatDefeat() {
+            character.deaths += 1;
+            character.gold = Math.floor(character.gold * 0.9);
+            character.current_hp = Math.floor(character.max_hp / 2);
+            
+            combat.combat_log.push({
+                round: combat.round,
+                message: 'You have been defeated! Lost 10% gold.',
+                type: 'system',
+                timestamp: Date.now()
+            });
+
+            combat = null;
+            updateStats();
+            loadLocation(character.current_location);
+            showToast('Defeated!', 'error');
+        }
+
+        function attemptFlee() {
+            if (Math.random() < 0.5) {
+                combat.combat_log.push({
+                    round: combat.round,
+                    message: 'You successfully fled!',
+                    type: 'system',
+                    timestamp: Date.now()
+                });
+                combat = null;
+                loadLocation(character.current_location);
+                showToast('Fled successfully!', 'success');
+            } else {
+                combat.combat_log.push({
+                    round: combat.round,
+                    message: 'Failed to flee!',
+                    type: 'system',
+                    timestamp: Date.now()
+                });
+                updateCombat();
+                
+                // Enemy gets free attack
+                setTimeout(() => {
+                    enemyAttack();
+                }, 1000);
+            }
+        }
+
+        function levelUp() {
+            character.level += 1;
+            character.exp -= character.exp_needed;
+            character.exp_needed = Math.floor(character.exp_needed * 1.5);
+            
+            // Increase stats
+            const stats = CLASS_STATS[character.class];
+            character.max_hp += Math.floor(stats.hp * 0.1);
+            character.max_mana += Math.floor(stats.mana * 0.1);
+            character.base_attack += Math.floor(stats.attack * 0.1);
+            character.base_defense += Math.floor(stats.defense * 0.1);
+            if (stats.magic > 0) {
+                character.magic += Math.floor(stats.magic * 0.1);
+            }
+            
+            // Heal on level up
+            character.current_hp = character.max_hp;
+            character.current_mana = character.max_mana;
+            
+            // Check for new skills
+            Object.values(SKILLS).forEach(skill => {
+                if (skill.class.includes(character.class) && 
+                    skill.level_req <= character.level && 
+                    !skills.find(s => s.id === skill.id)) {
+                    skills.push(skill);
+                    showToast(`New skill learned: ${skill.name}!`, 'success');
+                }
+            });
+
+            showToast(`Level Up! You are now level ${character.level}!`, 'success');
+        }
+
+        // ==================== INVENTORY SYSTEM ====================
+        function addItemToInventory(itemId, quantity = 1) {
+            const existingItem = inventory.find(i => i.item_id === itemId);
+            const item = ITEMS[itemId];
+            
+            if (existingItem && item.stackable) {
+                existingItem.quantity += quantity;
+            } else {
+                inventory.push({
+                    item_id: itemId,
+                    quantity: quantity,
+                    item: item
+                });
+            }
+        }
+
+        function removeItemFromInventory(itemId, quantity = 1) {
+            const index = inventory.findIndex(i => i.item_id === itemId);
+            if (index !== -1) {
+                if (inventory[index].quantity > quantity) {
+                    inventory[index].quantity -= quantity;
+                } else {
+                    inventory.splice(index, 1);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        function useItem(itemId) {
+            const item = inventory.find(i => i.item_id === itemId);
+            if (!item || item.item.type !== 'consumable') return;
+
+            const effect = item.item.effect;
+            
+            if (effect.heal_hp) {
+                character.current_hp = Math.min(character.max_hp, character.current_hp + effect.heal_hp);
+            }
+            if (effect.heal_mana) {
+                character.current_mana = Math.min(character.max_mana, character.current_mana + effect.heal_mana);
+            }
+
+            removeItemFromInventory(itemId, 1);
+            updateStats();
+            loadPanelContent('inventory');
+            showToast(`Used ${item.item.name}`, 'success');
+        }
+
+        // ==================== QUEST SYSTEM ====================
+        function updateQuestProgress(type, target, amount = 1) {
+            quests.forEach(quest => {
+                quest.requirements.forEach(req => {
+                    if (req.type === type && req.target === target) {
+                        if (!req.current) req.current = 0;
+                        req.current = Math.min(req.amount, req.current + amount);
+                        
+                        // Check quest completion
+                        if (quest.requirements.every(r => r.current >= r.amount)) {
+                            completeQuest(quest);
+                        }
+                    }
+                });
+            });
+        }
+
+        function completeQuest(quest) {
+            // Award rewards
+            character.exp += quest.rewards.exp;
+            character.gold += quest.rewards.gold;
+            
+            if (quest.rewards.items) {
+                quest.rewards.items.forEach(itemId => {
+                    addItemToInventory(itemId, 1);
+                });
+            }
+
+            // Remove quest
+            const index = quests.findIndex(q => q.id === quest.id);
+            if (index !== -1) quests.splice(index, 1);
+
+            showToast(`Quest Complete: ${quest.name}!`, 'success');
+            updateStats();
+        }
+
+        // ==================== CHAT SYSTEM ====================
+        function connectWebSocket() {
+            // Simulate WebSocket connection
+            setInterval(() => {
+                onlinePlayers = Math.floor(Math.random() * 50) + 10;
+                document.getElementById('onlineCount').textContent = onlinePlayers;
+            }, 5000);
         }
 
         function switchChannel(channel) {
@@ -1064,395 +3063,427 @@
                 const input = document.getElementById('chatInput');
                 const message = input.value.trim();
                 
-                if (message && ws && ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({
-                        type: 'chat',
-                        channel: currentChannel,
-                        message: message
-                    }));
+                if (message) {
+                    addChatMessage({
+                        username: character.name,
+                        message: message,
+                        timestamp: new Date().toLocaleTimeString()
+                    });
                     input.value = '';
                 }
             }
         }
 
-        // Game Functions
-        async function saveGame() {
-            if (!character || combat) return;
-
-            try {
-                const token = localStorage.getItem('token');
-                await fetch(`${API_BASE}/api/game/save`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(character)
-                });
-            } catch (error) {
-                console.error('Auto-save failed:', error);
-            }
-        }
-
-        function updateStats() {
-            if (!character) return;
-
-            document.getElementById('playerName').textContent = character.name;
-            document.getElementById('playerLevelClass').textContent = `Level ${character.level} ${character.class}`;
-            
-            document.getElementById('hpText').textContent = `${character.current_hp}/${character.max_hp}`;
-            document.getElementById('hpBar').style.width = `${(character.current_hp / character.max_hp) * 100}%`;
-            
-            document.getElementById('mpText').textContent = `${character.current_mana}/${character.max_mana}`;
-            document.getElementById('mpBar').style.width = `${(character.current_mana / character.max_mana) * 100}%`;
-            
-            document.getElementById('expText').textContent = `${character.exp}/${character.exp_needed}`;
-            document.getElementById('expBar').style.width = `${(character.exp / character.exp_needed) * 100}%`;
-            
-            document.getElementById('goldAmount').textContent = character.gold;
-        }
-
-        async function loadLocation(locationId) {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`${API_BASE}/api/game/location/${locationId}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const location = await response.json();
-                
-                document.getElementById('locationName').textContent = location.name;
-                document.getElementById('locationDesc').textContent = location.description;
-                
-                character.current_location = locationId;
-                
-                // Load location actions
-                let html = '<div class="action-grid">';
-                
-                // Enemies
-                if (location.enemies && location.enemies.length > 0) {
-                    location.enemies.forEach(enemy => {
-                        html += `
-                            <div class="action-card" onclick="startCombat('${enemy.id}')">
-                                <h3>⚔️ ${enemy.name}</h3>
-                                <p>Level ${enemy.level} | ${enemy.exp_reward} EXP</p>
-                            </div>
-                        `;
-                    });
-                }
-                
-                // Merchants
-                if (location.merchants) {
-                    location.merchants.forEach(merchant => {
-                        html += `
-                            <div class="action-card" onclick="openShop('${merchant}')">
-                                <h3>🛒 ${merchant.replace('_', ' ')}</h3>
-                                <p>Browse and purchase items</p>
-                            </div>
-                        `;
-                    });
-                }
-                
-                html += '</div>';
-                document.getElementById('gameContent').innerHTML = html;
-                
-            } catch (error) {
-                console.error('Failed to load location:', error);
-            }
-        }
-
-        // Combat Functions
-        async function startCombat(enemyId) {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`${API_BASE}/api/game/combat/start`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ enemy_id: enemyId })
-                });
-                
-                combat = await response.json();
-                updateCombat();
-                
-            } catch (error) {
-                console.error('Failed to start combat:', error);
-            }
-        }
-
-        function updateCombat() {
-            if (!combat || !combat.current_enemy) return;
-
-            const enemy = combat.current_enemy;
-            const enemyHpPercent = (enemy.current_hp / enemy.max_hp) * 100;
-
-            let html = `
-                <div class="combat-area">
-                    <div class="combat-enemy">
-                        <div class="enemy-name">${enemy.name}</div>
-                        <div class="stat-bar-container">
-                            <div class="stat-label">
-                                <span>❤️ Enemy HP</span>
-                                <span>${enemy.current_hp}/${enemy.max_hp}</span>
-                            </div>
-                            <div class="stat-bar">
-                                <div class="stat-bar-fill hp-fill" style="width: ${enemyHpPercent}%"></div>
-                            </div>
-                        </div>
+        function addChatMessage(data) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            messageDiv.innerHTML = `
+                <span class="chat-username">${data.username}:</span>
+                <span class="chat-text">${data.message}</span>
+                <div class="chat-time">${data.timestamp}</div>
             `;
-
-            // Abilities
-            if (enemy.abilities && enemy.abilities.length > 0) {
-                html += '<div style="margin-top: 15px;"><small>Abilities:</small><br>';
-                enemy.abilities.forEach(ability => {
-                    html += `<span style="background: rgba(255,107,107,0.2); padding: 3px 8px; border-radius: 12px; margin: 2px; display: inline-block; font-size: 0.8em;">${ability.name}</span>`;
-                });
-                html += '</div>';
-            }
-
-            html += `
-                    </div>
-                    <div class="combat-player">
-                        <h3>Your Turn</h3>
-                        <div class="combat-actions">
-                            <button class="combat-btn attack" onclick="combatAction('attack')" ${combat.turn !== 'player' ? 'disabled' : ''}>
-                                ⚔️ Attack
-                            </button>
-                            <button class="combat-btn skill" onclick="combatAction('skill')" ${combat.turn !== 'player' ? 'disabled' : ''}>
-                                ⚡ Skill
-                            </button>
-                            <button class="combat-btn flee" onclick="combatAction('flee')" ${combat.turn !== 'player' ? 'disabled' : ''}>
-                                🏃 Flee
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Combat Log
-            if (combat.combat_log && combat.combat_log.length > 0) {
-                html += '<div class="combat-log">';
-                combat.combat_log.slice(-10).forEach(log => {
-                    let className = 'system-message';
-                    if (log.type === 'player_attack') className = 'player-attack';
-                    if (log.type === 'enemy_attack') className = 'enemy-attack';
-                    html += `<div class="${className}">${log.message}</div>`;
-                });
-                html += '</div>';
-            }
-
-            document.getElementById('gameContent').innerHTML = html;
+            
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        async function combatAction(action) {
-            if (!combat) return;
-
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`${API_BASE}/api/game/combat/action`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ action })
-                });
-                
-                const result = await response.json();
-                
-                if (result.combat_ended) {
-                    if (result.victory) {
-                        showToast(`Victory! Gained ${result.exp_gained} EXP and ${result.gold_gained} gold!`);
-                        character.exp += result.exp_gained;
-                        character.gold += result.gold_gained;
-                        character.kills += 1;
-                        
-                        // Check level up
-                        if (character.exp >= character.exp_needed) {
-                            character.level += 1;
-                            character.exp -= character.exp_needed;
-                            character.exp_needed = Math.floor(character.exp_needed * 1.5);
-                            showToast(`Level Up! You are now level ${character.level}!`, 'success');
-                        }
-                        
-                        updateStats();
-                        combat = null;
-                        loadLocation(character.current_location);
-                    } else {
-                        showToast('You were defeated! Lost some gold.', 'error');
-                        character.gold = Math.floor(character.gold * 0.9);
-                        character.current_hp = Math.floor(character.max_hp / 2);
-                        updateStats();
-                        combat = null;
-                        loadLocation(character.current_location);
-                    }
-                } else {
-                    combat = result;
-                    updateCombat();
-                }
-                
-            } catch (error) {
-                console.error('Combat action failed:', error);
-            }
-        }
-
-        // Panel Functions
+        // ==================== PANEL FUNCTIONS ====================
         function togglePanel(panel) {
-            const modal = document.getElementById(`${panel}Modal`);
-            if (modal) {
-                modal.classList.add('active');
-                loadPanelContent(panel);
-            }
+            document.getElementById(`${panel}Modal`).classList.add('active');
+            loadPanelContent(panel);
+            
+            // Update active sidebar button
+            document.querySelectorAll('.sidebar-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`sidebar${panel.charAt(0).toUpperCase() + panel.slice(1)}`).classList.add('active');
         }
 
         function closeModal(panel) {
             document.getElementById(`${panel}Modal`).classList.remove('active');
         }
 
-        async function loadPanelContent(panel) {
-            const token = localStorage.getItem('token');
-            
+        function loadPanelContent(panel) {
             switch(panel) {
                 case 'character':
-                    let statsHtml = `
-                        <div style="text-align: center; margin-bottom: 20px;">
-                            <div style="font-size: 3em;">⚔️</div>
-                            <h2>${character.name}</h2>
-                            <p>Level ${character.level} ${character.class}</p>
+                    loadCharacterPanel();
+                    break;
+                case 'inventory':
+                    loadInventoryPanel();
+                    break;
+                case 'skills':
+                    loadSkillsPanel();
+                    break;
+                case 'quests':
+                    loadQuestsPanel();
+                    break;
+                case 'map':
+                    loadMapPanel();
+                    break;
+                case 'guild':
+                    loadGuildPanel();
+                    break;
+                case 'crafting':
+                    loadCraftingPanel();
+                    break;
+            }
+        }
+
+        function loadCharacterPanel() {
+            const stats = character;
+            let html = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 4rem; margin-bottom: 10px;">⚔️</div>
+                    <h2 style="font-size: 2rem; margin-bottom: 5px;">${stats.name}</h2>
+                    <p style="color: var(--gray);">Level ${stats.level} ${stats.class}</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">❤️ Max HP</div>
+                        <div class="stat-value">${stats.max_hp}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">💙 Max MP</div>
+                        <div class="stat-value">${stats.max_mana}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">⚔️ Attack</div>
+                        <div class="stat-value">${stats.base_attack}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">🛡️ Defense</div>
+                        <div class="stat-value">${stats.base_defense}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">✨ Magic</div>
+                        <div class="stat-value">${stats.magic}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">🎯 Critical</div>
+                        <div class="stat-value">${stats.crit_chance}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">⚡ Crit Damage</div>
+                        <div class="stat-value">${stats.crit_damage}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">⚔️ Kills</div>
+                        <div class="stat-value">${stats.kills}</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px;">Equipment</h3>
+                    <div style="display: grid; gap: 10px;">
+                        ${Object.entries(equipment).map(([slot, item]) => `
+                            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; display: flex; justify-content: space-between;">
+                                <span style="color: var(--gray);">${slot}:</span>
+                                <span>${item ? item.item.name : 'Empty'}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('characterStats').innerHTML = html;
+        }
+
+        function loadInventoryPanel() {
+            let html = '<div class="inventory-grid">';
+            
+            inventory.forEach(item => {
+                html += `
+                    <div class="inventory-item">
+                        <div class="item-icon">📦</div>
+                        <div class="item-info">
+                            <div class="item-name">${item.item.name}</div>
+                            <div class="item-details">${item.item.description || ''}</div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                <span class="item-quantity">x${item.quantity}</span>
+                                <span style="color: var(--gray);">${item.item.rarity}</span>
+                            </div>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
-                                <div style="color: #aaa;">❤️ HP</div>
-                                <div style="font-size: 1.5em;">${character.current_hp}/${character.max_hp}</div>
-                            </div>
-                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
-                                <div style="color: #aaa;">💙 MP</div>
-                                <div style="font-size: 1.5em;">${character.current_mana}/${character.max_mana}</div>
-                            </div>
-                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
-                                <div style="color: #aaa;">⚔️ Attack</div>
-                                <div style="font-size: 1.5em;">${character.base_attack}</div>
-                            </div>
-                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
-                                <div style="color: #aaa;">🛡️ Defense</div>
-                                <div style="font-size: 1.5em;">${character.base_defense}</div>
-                            </div>
-                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
-                                <div style="color: #aaa;">✨ Magic</div>
-                                <div style="font-size: 1.5em;">${character.magic}</div>
-                            </div>
-                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
-                                <div style="color: #aaa;">🎯 Crit Chance</div>
-                                <div style="font-size: 1.5em;">${character.crit_chance}%</div>
-                            </div>
+                        ${item.item.type === 'consumable' ? 
+                            `<button class="item-action" onclick="useItem('${item.item_id}')">Use</button>` : 
+                            `<button class="item-action" onclick="equipItem('${item.item_id}')">Equip</button>`
+                        }
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            document.getElementById('inventoryContent').innerHTML = html;
+        }
+
+        function loadSkillsPanel() {
+            let html = '<div class="skills-grid">';
+            
+            skills.forEach(skill => {
+                html += `
+                    <div class="skill-card" style="cursor: default;">
+                        <div class="skill-name">${skill.name}</div>
+                        <div style="font-size: 0.8rem; color: var(--gray); margin: 5px 0;">
+                            ${skill.description}
                         </div>
-                        <div style="margin-top: 20px;">
-                            <div style="display: flex; justify-content: space-between; color: #aaa;">
-                                <span>⚔️ Kills: ${character.kills}</span>
-                                <span>💀 Deaths: ${character.deaths}</span>
+                        <div class="skill-cost">⚡ ${skill.mana_cost} MP</div>
+                        <div style="font-size: 0.7rem; color: var(--gray);">CD: ${skill.cooldown} turns</div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            document.getElementById('skillsContent').innerHTML = html;
+        }
+
+        function loadQuestsPanel() {
+            let html = '<div style="display: grid; gap: 15px;">';
+            
+            if (quests.length === 0) {
+                html += '<p style="text-align: center; color: var(--gray);">No active quests</p>';
+            } else {
+                quests.forEach(quest => {
+                    const progress = quest.requirements.map(req => 
+                        `${req.current || 0}/${req.amount} ${req.target}`
+                    ).join(', ');
+                    
+                    html += `
+                        <div class="quest-item">
+                            <div class="quest-header">
+                                <span class="quest-name">${quest.name}</span>
+                                <span class="quest-type">${quest.type}</span>
+                            </div>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 10px;">
+                                ${quest.description}
+                            </p>
+                            <div class="quest-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${calculateQuestProgress(quest)}%"></div>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--gray);">${progress}</p>
+                            </div>
+                            <div style="margin-top: 10px; font-size: 0.8rem; color: var(--success);">
+                                Rewards: ${quest.rewards.exp} EXP, ${quest.rewards.gold} Gold
                             </div>
                         </div>
                     `;
-                    document.getElementById('characterStats').innerHTML = statsHtml;
-                    break;
+                });
+            }
 
-                case 'inventory':
-                    let inventoryHtml = '';
-                    if (inventory.length === 0) {
-                        inventoryHtml = '<p style="text-align: center; color: #aaa;">Your inventory is empty</p>';
-                    } else {
-                        inventory.forEach(item => {
-                            inventoryHtml += `
-                                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div>
-                                            <strong>${item.item_name}</strong>
-                                            <span style="color: #aaa; margin-left: 10px;">x${item.quantity}</span>
-                                        </div>
-                                        ${item.item_type === 'consumable' ? 
-                                            `<button class="combat-btn attack" onclick="useItem('${item.item_id}')">Use</button>` : 
-                                            `<button class="combat-btn skill" onclick="equipItem('${item.item_id}')">Equip</button>`
-                                        }
-                                    </div>
+            html += '</div>';
+            document.getElementById('questsContent').innerHTML = html;
+        }
+
+        function calculateQuestProgress(quest) {
+            const total = quest.requirements.reduce((sum, req) => sum + req.amount, 0);
+            const current = quest.requirements.reduce((sum, req) => sum + (req.current || 0), 0);
+            return (current / total) * 100;
+        }
+
+        function loadMapPanel() {
+            let html = '<div class="map-grid">';
+            
+            Object.values(LOCATIONS).forEach(location => {
+                const isUnlocked = locations_unlocked.includes(location.id);
+                const isCurrent = character.current_location === location.id;
+                
+                html += `
+                    <div class="map-location ${isCurrent ? 'current' : ''}" 
+                         onclick="${isUnlocked ? `travelTo('${location.id}')` : ''}"
+                         style="${!isUnlocked ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
+                        <h4>${location.name}</h4>
+                        <p>${location.description.substring(0, 50)}...</p>
+                        <div style="margin-top: 10px;">
+                            <span style="color: var(--gray);">Req. Level ${location.required_level}</span>
+                        </div>
+                        ${!isUnlocked ? '<div style="margin-top: 5px; color: var(--danger);">🔒 Locked</div>' : ''}
+                        ${isCurrent ? '<div style="margin-top: 5px; color: var(--success);">📍 Current</div>' : ''}
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            document.getElementById('mapContent').innerHTML = html;
+        }
+
+        function travelTo(locationId) {
+            closeModal('map');
+            loadLocation(locationId);
+            showToast(`Arrived at ${LOCATIONS[locationId].name}`);
+        }
+
+        function loadGuildPanel() {
+            let html = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">🏰</div>
+                    <h2 style="margin-bottom: 10px;">Guild Hall</h2>
+                    <p style="color: var(--gray);">Join a guild or create your own</p>
+                </div>
+
+                <div style="display: grid; gap: 20px;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px;">
+                        <h3 style="margin-bottom: 10px;">Available Guilds</h3>
+                        <div style="display: grid; gap: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>Knights of Dawn</strong>
+                                    <p style="font-size: 0.8rem; color: var(--gray);">Level 5 Guild • 12 Members</p>
                                 </div>
-                            `;
-                        });
-                    }
-                    document.getElementById('inventoryContent').innerHTML = inventoryHtml;
-                    break;
+                                <button class="btn" style="width: auto; padding: 8px 16px;">Join</button>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>Mages Circle</strong>
+                                    <p style="font-size: 0.8rem; color: var(--gray);">Level 3 Guild • 8 Members</p>
+                                </div>
+                                <button class="btn" style="width: auto; padding: 8px 16px;">Join</button>
+                            </div>
+                        </div>
+                    </div>
 
-                case 'map':
-                    const response = await fetch(`${API_BASE}/api/game/locations`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    const locations = await response.json();
-                    
-                    let mapHtml = '<div style="display: grid; gap: 10px;">';
-                    locations.forEach(loc => {
-                        mapHtml += `
-                            <div class="action-card" onclick="travelTo('${loc.id}')">
-                                <h3>${loc.name}</h3>
-                                <p>${loc.description}</p>
-                                <small style="color: #aaa;">${loc.enemies?.length || 0} enemies available</small>
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px;">
+                        <h3 style="margin-bottom: 10px;">Guild Contracts</h3>
+                        <div style="display: grid; gap: 10px;">
+                            <div class="quest-item">
+                                <div class="quest-header">
+                                    <span class="quest-name">Hunt 10 Wolves</span>
+                                    <span class="quest-type">daily</span>
+                                </div>
+                                <p style="color: var(--gray);">Reward: 500 Gold, 100 Reputation</p>
+                                <button class="btn" style="width: auto; padding: 8px 16px; margin-top: 10px;">Accept</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('guildContent').innerHTML = html;
+        }
+
+        function loadCraftingPanel() {
+            let html = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">🔨</div>
+                    <h2 style="margin-bottom: 10px;">Crafting Station</h2>
+                    <p style="color: var(--gray);">Create powerful items from materials</p>
+                </div>
+
+                <div class="inventory-grid">
+                    ${Object.entries(RECIPES).map(([id, recipe]) => {
+                        const canCraft = Object.entries(recipe.materials).every(([material, amount]) => {
+                            const item = inventory.find(i => i.item_id === material);
+                            return item && item.quantity >= amount;
+                        });
+
+                        return `
+                            <div class="inventory-item" style="flex-direction: column; text-align: center;">
+                                <h3 style="margin-bottom: 10px;">${recipe.name}</h3>
+                                <div style="margin-bottom: 10px;">
+                                    ${Object.entries(recipe.materials).map(([material, amount]) => `
+                                        <div style="font-size: 0.8rem; color: var(--gray);">
+                                            ${ITEMS[material].name}: ${amount}x
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <button class="btn" style="width: auto; padding: 8px 16px;" 
+                                        onclick="craftItem('${id}')"
+                                        ${!canCraft ? 'disabled' : ''}>
+                                    Craft
+                                </button>
                             </div>
                         `;
-                    });
-                    mapHtml += '</div>';
-                    document.getElementById('mapContent').innerHTML = mapHtml;
-                    break;
-            }
+                    }).join('')}
+                </div>
+            `;
+            document.getElementById('craftingContent').innerHTML = html;
         }
 
-        async function travelTo(locationId) {
-            closeModal('map');
-            await loadLocation(locationId);
-            showToast(`Arrived at ${document.getElementById('locationName').textContent}`);
-        }
-
-        async function useItem(itemId) {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`${API_BASE}/api/game/item/use`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ item_id: itemId })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showToast(result.message);
-                    character = result.character;
-                    inventory = result.inventory;
-                    updateStats();
-                    loadPanelContent('inventory');
+        function craftItem(recipeId) {
+            const recipe = RECIPES[recipeId];
+            
+            // Check materials
+            for (const [material, amount] of Object.entries(recipe.materials)) {
+                if (!removeItemFromInventory(material, amount)) {
+                    showToast('Missing materials!', 'error');
+                    return;
                 }
-            } catch (error) {
-                console.error('Failed to use item:', error);
+            }
+
+            // Add crafted item
+            addItemToInventory(recipe.result, recipe.quantity);
+            loadPanelContent('inventory');
+            showToast(`Crafted ${recipe.name}!`, 'success');
+        }
+
+        function openShop(merchantId) {
+            let html = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="margin-bottom: 10px;">${merchantId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h2>
+                    <p style="color: var(--gray);">Welcome to my shop!</p>
+                </div>
+
+                <div class="inventory-grid">
+                    ${Object.values(ITEMS).filter(item => item.type !== 'quest').slice(0, 6).map(item => `
+                        <div class="inventory-item">
+                            <div class="item-info">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-details">${item.description || ''}</div>
+                                <div style="margin-top: 5px;">
+                                    <span style="color: var(--gold);">💰 ${item.value} Gold</span>
+                                </div>
+                            </div>
+                            <button class="item-action" onclick="buyItem('${item.id}')">Buy</button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.getElementById('gameContent').innerHTML = html;
+        }
+
+        function buyItem(itemId) {
+            const item = ITEMS[itemId];
+            
+            if (character.gold >= item.value) {
+                character.gold -= item.value;
+                addItemToInventory(itemId, 1);
+                updateStats();
+                showToast(`Bought ${item.name}!`, 'success');
+            } else {
+                showToast('Not enough gold!', 'error');
             }
         }
 
-        async function equipItem(itemId) {
-            // Simplified equip - would need slot selection in real version
-            showToast('Equip feature coming soon!');
-        }
-
-        // Auto-refresh online count
-        setInterval(async () => {
+        // ==================== SAVE/LOAD ====================
+        async function saveGame() {
+            if (!character) return;
+            
             try {
-                const response = await fetch(`${API_BASE}/api/game/online`);
-                const data = await response.json();
-                onlinePlayers = data.count;
-                document.getElementById('onlineCount').textContent = onlinePlayers;
+                // In production, this would save to Supabase
+                console.log('Game saved:', character);
             } catch (error) {
-                console.error('Failed to get online count:', error);
+                console.error('Save failed:', error);
             }
-        }, 5000);
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            document.getElementById('toastContainer').appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
     </script>
 </body>
 </html>
